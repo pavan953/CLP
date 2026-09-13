@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { ThreeDCard } from '../components/ThreeDCard';
-import { ThreeDMedicalScene } from '../components/ThreeDMedicalScene';
 import {
   HeartPulse,
   Stethoscope,
@@ -20,8 +19,8 @@ import {
   MapPin,
   Building2,
   Ambulance,
-  Eye,
-  Layers
+  BadgeCheck,
+  Check
 } from 'lucide-react';
 
 export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
@@ -165,44 +164,87 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
               </div>
             </div>
 
-            {/* Right Hero: Authentic 3D WebGL Medical Scene */}
+            {/* Right Hero: Clinical Care & Services Showcase (Clean Modern Visual) */}
             <div className="lg:col-span-6">
-              <div className="relative rounded-3xl bg-gradient-to-tr from-slate-950 via-slate-900 to-medical-950 p-4 sm:p-6 shadow-2xl shadow-medical-900/30 border border-slate-700/60 overflow-hidden preserve-3d">
-                {/* Floating Status Chips */}
-                <div className="absolute top-4 left-4 z-20 flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-cyan-500/40 text-cyan-300 text-xs font-semibold shadow-md animate-hover-gentle">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
-                  <Activity className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Clinical Biometric Stream</span>
-                </div>
+              <div className="relative bg-gradient-to-tr from-medical-700 via-medical-600 to-teal-700 p-6 sm:p-8 rounded-3xl text-white shadow-2xl overflow-hidden border border-white/20 shadow-3d-cyan">
+                <div className="absolute top-0 right-0 -mr-10 -mt-10 w-52 h-52 bg-white/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-44 h-44 bg-teal-400/15 rounded-full blur-2xl pointer-events-none" />
 
-                <div className="absolute top-4 right-4 z-20 hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-teal-900/70 backdrop-blur-md border border-teal-400/30 text-teal-200 text-[11px] font-medium">
-                  <Layers className="w-3 h-3" />
-                  <span>Interactive Medical Model</span>
-                </div>
-
-                {/* The 3D WebGL Three.js Medical Scene */}
-                <div className="w-full h-[280px] sm:h-[360px] md:h-[390px] relative z-10 flex items-center justify-center">
-                  <ThreeDMedicalScene />
-                </div>
-
-                {/* Sub-Card with Highlights */}
-                <div className="relative z-20 mt-2 bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner text-white space-y-2.5">
+                <div className="relative z-10 space-y-6">
+                  {/* Top Status Banner */}
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-teal-200 uppercase tracking-wider">Clinical Living Sync</span>
-                    <span className="text-[10px] font-semibold bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-full border border-teal-400/30">
-                      Realtime Connected
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-md">
+                        <HeartPulse className="w-7 h-7 text-teal-200" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-bold text-white leading-tight">Clinic Living Plus Pavilion</div>
+                        <p className="text-[11px] text-teal-100">Outpatient & Consultation Center</p>
+                      </div>
+                    </div>
+
+                    <span className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-400/20 text-emerald-200 border border-emerald-300/30 backdrop-blur-md">
+                      <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                      <span>OPD Open Now</span>
                     </span>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-200">
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" />
-                      <span>Direct physician booking</span>
+
+                  {/* Consultation Features Quick Glance */}
+                  <div className="space-y-3 bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15 shadow-inner text-xs">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 rounded-lg bg-teal-400/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-teal-300" />
+                      </div>
+                      <span className="font-medium text-slate-100">Direct physician calendar reservation with zero wait time</span>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" />
-                      <span>Live status updates</span>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 rounded-lg bg-teal-400/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-teal-300" />
+                      </div>
+                      <span className="font-medium text-slate-100">Live appointment status tracking: Pending, Approved, Completed</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 rounded-lg bg-teal-400/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-teal-300" />
+                      </div>
+                      <span className="font-medium text-slate-100">Automated clinical AI intake briefs prepared for your doctor</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <div className="w-6 h-6 rounded-lg bg-teal-400/20 flex items-center justify-center flex-shrink-0">
+                        <CheckCircle2 className="w-4 h-4 text-teal-300" />
+                      </div>
+                      <span className="font-medium text-slate-100">Permanent digital medical history and health records</span>
                     </div>
                   </div>
+
+                  {/* Quick Schedule Preview */}
+                  <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs text-medical-100">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="w-4 h-4 text-teal-300" />
+                      <span>Mon – Sat: <strong>8:00 AM – 8:00 PM</strong></span>
+                    </div>
+                    <span className="font-bold text-white bg-white/20 px-2.5 py-1 rounded-full text-[10px]">
+                      24/7 Trauma Ready
+                    </span>
+                  </div>
+
+                  {/* Visitor Action CTA */}
+                  {!user && (
+                    <div className="pt-2 border-t border-white/15 grid grid-cols-2 gap-3">
+                      <button
+                        onClick={() => onNavigateToAuth('patient', 'login')}
+                        className="py-3 px-4 rounded-xl text-xs font-bold text-slate-900 bg-white hover:bg-slate-50 transition shadow-sm text-center active:scale-95"
+                      >
+                        Patient Login
+                      </button>
+                      <button
+                        onClick={() => onNavigateToAuth('patient', 'signup')}
+                        className="py-3 px-4 rounded-xl text-xs font-bold text-white bg-teal-500 hover:bg-teal-400 transition shadow-sm text-center active:scale-95"
+                      >
+                        New Patient Sign Up
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

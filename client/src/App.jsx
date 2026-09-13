@@ -67,8 +67,8 @@ export function App() {
       <div className="pointer-events-none fixed top-1/3 right-10 w-96 h-96 bg-teal-200/15 rounded-full blur-3xl z-0" />
       <div className="pointer-events-none fixed bottom-10 left-10 w-80 h-80 bg-sky-200/20 rounded-full blur-3xl z-0" />
 
-      {/* Top Header */}
-      <div className="relative z-30">
+      {/* Top Header - Sticky with Glass Effect */}
+      <div className="sticky top-0 z-50">
         <Navbar
           currentView={currentView}
           onNavigate={handleNavigate}

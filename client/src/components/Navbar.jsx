@@ -30,7 +30,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-lg border-b border-slate-200/90 shadow-soft">
+      <header className="w-full bg-white/75 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/70 shadow-sm shadow-slate-900/5 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           {/* Brand Logo & Name */}
           <div
@@ -189,9 +189,9 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
           </div>
         </div>
 
-        {/* Mobile Navigation Dropdown Drawer with 3D Glass Effect */}
+        {/* Mobile Navigation Dropdown Drawer with Glass Effect */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl px-4 py-4 space-y-2 shadow-2xl animate-fade-in">
+          <div className="md:hidden border-t border-slate-200/70 bg-white/80 backdrop-blur-2xl px-4 py-4 space-y-2 shadow-2xl animate-fade-in">
             {user && (
               <button
                 onClick={() => { setMobileMenuOpen(false); onNavigate('dashboard'); }}
