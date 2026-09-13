@@ -7,7 +7,6 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 
-// Helper to format safe user object without password and strictly enforce role-specific fields
 const formatSafeUser = (user) => {
   const base = {
     id: user._id || user.id,
@@ -33,7 +32,6 @@ const formatSafeUser = (user) => {
     };
   }
 
-  // Patient role: strictly omit specialty, department, qualification, experience, bio, consultationFee, availableDays, cabinNumber, isProfileComplete
   return {
     ...base,
     bloodGroup: user.bloodGroup || '',
@@ -44,8 +42,6 @@ const formatSafeUser = (user) => {
   };
 };
 
-// @desc    Register a new Patient (Public registration is strictly for Patients)
-// @route   POST /api/auth/register
 const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
@@ -85,7 +81,6 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Public registration is locked to patient role
     const newUser = await DataService.createUser({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -111,8 +106,6 @@ const register = async (req, res) => {
   }
 };
 
-// @desc    Login user (Patient or Doctor) with strict verification and role enforcement
-// @route   POST /api/auth/login
 const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
@@ -140,7 +133,6 @@ const login = async (req, res) => {
       });
     }
 
-    // Strict Role Enforcement: Prevent patients logging in via doctor portal and vice versa
     if (role && role !== user.role) {
       if (role === 'doctor' && user.role === 'patient') {
         return res.status(403).json({
@@ -173,8 +165,6 @@ const login = async (req, res) => {
   }
 };
 
-// @desc    Admin / Doctor onboarding: Add a verified doctor to the hospital staff
-// @route   POST /api/auth/add-doctor
 const addDoctor = async (req, res) => {
   try {
     const { name, email, password, specialty, department, phone, qualification, experience, bio, consultationFee, cabinNumber } = req.body;
@@ -227,15 +217,13 @@ const addDoctor = async (req, res) => {
   }
 };
 
-// @desc    Update User / Doctor Profile Settings
-// @route   PUT /api/auth/profile
 const updateProfile = async (req, res) => {
   try {
     const userId = req.user._id || req.user.id;
     const {
       name,
       phone,
-      // Doctor fields
+
       specialty,
       department,
       qualification,
@@ -244,13 +232,13 @@ const updateProfile = async (req, res) => {
       consultationFee,
       availableDays,
       cabinNumber,
-      // Patient fields
+
       bloodGroup,
       dateOfBirth,
       gender,
       emergencyContact,
       allergies,
-      // Password change
+
       currentPassword,
       newPassword
     } = req.body;
@@ -269,8 +257,7 @@ const updateProfile = async (req, res) => {
       if (consultationFee !== undefined) updateFields.consultationFee = consultationFee.trim();
       if (availableDays !== undefined) updateFields.availableDays = availableDays.trim();
       if (cabinNumber !== undefined) updateFields.cabinNumber = cabinNumber.trim();
-      
-      // Mark profile complete if key fields are provided
+
       if (qualification || bio || updateFields.qualification || updateFields.bio) {
         updateFields.isProfileComplete = true;
       }
@@ -282,7 +269,6 @@ const updateProfile = async (req, res) => {
       if (allergies !== undefined) updateFields.allergies = allergies.trim();
     }
 
-    // Handle password change if requested
     if (currentPassword && newPassword) {
       if (newPassword.length < 6) {
         return res.status(400).json({
@@ -327,8 +313,6 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// @desc    Get current user profile
-// @route   GET /api/auth/me
 const getMe = async (req, res) => {
   return res.status(200).json({
     success: true,
@@ -336,8 +320,6 @@ const getMe = async (req, res) => {
   });
 };
 
-// @desc    Get all verified doctors in the hospital directory
-// @route   GET /api/auth/doctors
 const getDoctors = async (req, res) => {
   try {
     const doctors = await DataService.getDoctors();
@@ -354,8 +336,6 @@ const getDoctors = async (req, res) => {
   }
 };
 
-// @desc    Get all registered patients in the hospital system (Doctor / Admin only)
-// @route   GET /api/auth/patients
 const getPatients = async (req, res) => {
   try {
     const patients = await DataService.getPatients();
@@ -381,3 +361,4 @@ module.exports = {
   getDoctors,
   getPatients
 };
+

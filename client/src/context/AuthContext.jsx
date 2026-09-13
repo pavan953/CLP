@@ -11,7 +11,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => getToken());
   const [loading, setLoading] = useState(true);
 
-  // Restore session from token on mount
   useEffect(() => {
     const initAuth = async () => {
       const storedToken = getToken();
@@ -21,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         try {
           setUser(JSON.parse(storedUser));
           setToken(storedToken);
-          // Refresh profile in background
+
           const res = await api.getMe();
           if (res.success && res.user) {
             setUser(res.user);
@@ -101,3 +100,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

@@ -22,13 +22,11 @@ import {
 
 export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   const { user, role, updateUser } = useAuth();
-  const [activeTab, setActiveTab] = useState('profile'); // 'profile' or 'security'
+  const [activeTab, setActiveTab] = useState('profile');
 
-  // Profile fields initialized from user context
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
-  
-  // Doctor specific fields
+
   const [specialty, setSpecialty] = useState(user?.specialty || '');
   const [department, setDepartment] = useState(user?.department || '');
   const [qualification, setQualification] = useState(user?.qualification || '');
@@ -38,14 +36,12 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   const [availableDays, setAvailableDays] = useState(user?.availableDays || 'Mon - Fri');
   const [cabinNumber, setCabinNumber] = useState(user?.cabinNumber || '');
 
-  // Patient specific fields
   const [bloodGroup, setBloodGroup] = useState(user?.bloodGroup || '');
   const [dateOfBirth, setDateOfBirth] = useState(user?.dateOfBirth || '');
   const [gender, setGender] = useState(user?.gender || '');
   const [emergencyContact, setEmergencyContact] = useState(user?.emergencyContact || '');
   const [allergies, setAllergies] = useState(user?.allergies || '');
 
-  // Password fields
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -83,7 +79,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
         payload.allergies = allergies.trim();
       }
 
-      // If security tab or password provided
       if (currentPassword || newPassword) {
         if (!currentPassword) {
           throw new Error('Please enter your current password to change password.');
@@ -118,7 +113,7 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   return (
     <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
       <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-2xl w-full max-h-[90vh] flex flex-col overflow-hidden">
-        {/* Modal Header */}
+
         <div className="p-6 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2.5 rounded-2xl bg-white/15 backdrop-blur-md text-white border border-white/20">
@@ -143,7 +138,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
           </button>
         </div>
 
-        {/* Tab Switcher */}
         <div className="px-6 pt-4 border-b border-slate-100 flex items-center space-x-4 bg-slate-50/70">
           <button
             type="button"
@@ -172,7 +166,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
           </button>
         </div>
 
-        {/* Form Body */}
         <form onSubmit={handleSaveProfile} className="flex-1 overflow-y-auto p-6 space-y-5">
           {errorMsg && (
             <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2">
@@ -183,7 +176,7 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
 
           {activeTab === 'profile' && (
             <>
-              {/* Basic Details */}
+
               <div className="space-y-4">
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
                   Basic Details
@@ -246,7 +239,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
                 </div>
               </div>
 
-              {/* DOCTOR SPECIFIC CLINICAL PROFILE */}
               {role === 'doctor' && (
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <div className="flex items-center justify-between">
@@ -359,7 +351,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
                 </div>
               )}
 
-              {/* PATIENT SPECIFIC MEDICAL PROFILE */}
               {role === 'patient' && (
                 <div className="space-y-4 pt-4 border-t border-slate-100">
                   <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
@@ -497,7 +488,6 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
             </div>
           )}
 
-          {/* Modal Actions */}
           <div className="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
             <button
               type="button"
@@ -530,3 +520,4 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
     </div>
   );
 };
+

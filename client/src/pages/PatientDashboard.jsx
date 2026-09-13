@@ -28,7 +28,6 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
     }
   };
 
-  // Real-time synchronization polling every 5 seconds
   useEffect(() => {
     fetchMyAppointments(false);
 
@@ -58,7 +57,7 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Patient Welcome Banner with 3D Card Depth */}
+
       <ThreeDCard depth={12} maxRotation={5} className="rounded-3xl mb-8">
         <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-medical-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-teal-900/20 preserve-3d">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -76,13 +75,12 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 translate-z-20">
-              {/* Live Sync Indicator */}
+
               <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15 badge-3d">
                 <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
                 <span>Live Sync Active</span>
               </div>
 
-              {/* Health Profile & Settings Button */}
               <button
                 onClick={onOpenProfile}
                 className="px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5 badge-3d"
@@ -103,10 +101,8 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
         </div>
       </ThreeDCard>
 
-      {/* Patient Stats Overview with 3D Sheen */}
       <StatsOverview appointments={appointments} />
 
-      {/* Navigation Tabs */}
       <div className="flex items-center justify-between border-b border-slate-200 mb-6 overflow-x-auto pb-1">
         <div className="flex items-center space-x-2">
           <button
@@ -156,7 +152,6 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
         </button>
       </div>
 
-      {/* Active Tab Content */}
       <div className="space-y-8">
         {activeTab === 'book' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -213,3 +208,4 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
     </div>
   );
 };
+

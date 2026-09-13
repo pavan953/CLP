@@ -30,7 +30,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
-  // --- Doctor Professional Profile (Strictly for Doctors only) ---
+
   specialty: {
     type: String,
     trim: true
@@ -66,7 +66,7 @@ const UserSchema = new mongoose.Schema({
   isProfileComplete: {
     type: Boolean
   },
-  // --- Patient Medical Profile ---
+
   bloodGroup: {
     type: String,
     trim: true,
@@ -96,7 +96,6 @@ const UserSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Enforce role separation: If user is a patient, strictly remove doctor fields
 UserSchema.pre('save', function(next) {
   if (this.role === 'patient') {
     this.specialty = undefined;
@@ -113,3 +112,4 @@ UserSchema.pre('save', function(next) {
 });
 
 module.exports = mongoose.model('User', UserSchema);
+

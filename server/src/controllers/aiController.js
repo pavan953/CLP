@@ -1,5 +1,4 @@
-// @desc    Generate a concise clinical visit summary from patient reason/symptoms
-// @route   POST /api/ai/summarize
+
 const summarizeVisitReason = async (req, res) => {
   try {
     const { reason, doctorName, patientName } = req.body;
@@ -13,7 +12,6 @@ const summarizeVisitReason = async (req, res) => {
 
     const text = reason.trim();
 
-    // Check if an external AI key (e.g. Gemini or OpenAI) is configured
     if (process.env.GEMINI_API_KEY) {
       try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`, {
@@ -41,7 +39,6 @@ const summarizeVisitReason = async (req, res) => {
       }
     }
 
-    // Intelligent Clinical Triage Heuristic Engine (High accuracy offline fallback)
     const lower = text.toLowerCase();
     let priority = 'Standard';
     let specialtyHint = 'General Consultation';
@@ -88,3 +85,4 @@ const summarizeVisitReason = async (req, res) => {
 module.exports = {
   summarizeVisitReason
 };
+

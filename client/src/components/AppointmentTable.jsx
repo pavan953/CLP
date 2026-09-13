@@ -29,7 +29,6 @@ export const AppointmentTable = ({
   const [expandedId, setExpandedId] = useState(null);
   const [updatingId, setUpdatingId] = useState(null);
 
-  // Filtered List
   const filteredAppointments = appointments.filter(appt => {
     const matchesStatus = statusFilter === 'All' || appt.status === statusFilter;
     const term = searchTerm.toLowerCase().trim();
@@ -55,16 +54,15 @@ export const AppointmentTable = ({
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-      {/* Header & Filters */}
+
       <div className="p-5 sm:p-6 border-b border-slate-100 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h2 className="text-lg sm:text-xl font-bold text-slate-900">{title}</h2>
           <p className="text-xs text-slate-500">{description}</p>
         </div>
 
-        {/* Search & Status Filter Controls */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Search Input */}
+
           <div className="relative min-w-[200px]">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
@@ -76,7 +74,6 @@ export const AppointmentTable = ({
             />
           </div>
 
-          {/* Status Filter */}
           <div className="relative">
             <select
               value={statusFilter}
@@ -95,7 +92,6 @@ export const AppointmentTable = ({
         </div>
       </div>
 
-      {/* Empty State */}
       {filteredAppointments.length === 0 ? (
         <div className="p-12 text-center">
           <div className="w-12 h-12 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-3 text-slate-400">
@@ -110,7 +106,7 @@ export const AppointmentTable = ({
         </div>
       ) : (
         <>
-          {/* Desktop Table View */}
+
           <div className="hidden lg:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
@@ -132,7 +128,7 @@ export const AppointmentTable = ({
                   return (
                     <React.Fragment key={id}>
                       <tr className="hover:bg-slate-50/70 transition-colors">
-                        {/* Patient name */}
+
                         <td className="py-4 px-6 font-semibold text-slate-900">
                           <div className="flex items-center space-x-2.5">
                             <div className="w-8 h-8 rounded-full bg-medical-50 text-medical-700 flex items-center justify-center font-bold text-xs">
@@ -153,7 +149,6 @@ export const AppointmentTable = ({
                           </div>
                         </td>
 
-                        {/* Mobile number */}
                         <td className="py-4 px-6 text-slate-600 font-medium">
                           <div className="flex items-center space-x-1.5">
                             <Phone className="w-3.5 h-3.5 text-slate-400" />
@@ -161,7 +156,6 @@ export const AppointmentTable = ({
                           </div>
                         </td>
 
-                        {/* Doctor */}
                         <td className="py-4 px-6 text-slate-700">
                           <div className="flex items-center space-x-1.5">
                             <Stethoscope className="w-3.5 h-3.5 text-medical-600" />
@@ -169,7 +163,6 @@ export const AppointmentTable = ({
                           </div>
                         </td>
 
-                        {/* Date & Time */}
                         <td className="py-4 px-6 text-slate-600">
                           <div className="space-y-0.5">
                             <div className="flex items-center space-x-1.5 font-medium text-slate-800">
@@ -183,15 +176,13 @@ export const AppointmentTable = ({
                           </div>
                         </td>
 
-                        {/* Status */}
                         <td className="py-4 px-6">
                           <StatusBadge status={appt.status} />
                         </td>
 
-                        {/* Actions */}
                         <td className="py-4 px-6 text-right">
                           <div className="flex items-center justify-end space-x-2">
-                            {/* Doctor or Admin can mark as Completed */}
+
                             {role === 'doctor' && appt.status !== 'Completed' && (
                               <button
                                 onClick={() => handleAction(id, 'Completed')}
@@ -204,7 +195,6 @@ export const AppointmentTable = ({
                               </button>
                             )}
 
-                            {/* Cancel action (Doctor, Admin, or Patient if pending) */}
                             {appt.status !== 'Cancelled' && (
                               <button
                                 onClick={() => handleAction(id, 'Cancelled')}
@@ -217,7 +207,6 @@ export const AppointmentTable = ({
                               </button>
                             )}
 
-                            {/* Status already completed or cancelled info indicator */}
                             {appt.status === 'Completed' && role !== 'doctor' && (
                               <span className="text-xs text-slate-400 italic">No further actions</span>
                             )}
@@ -228,7 +217,6 @@ export const AppointmentTable = ({
                         </td>
                       </tr>
 
-                      {/* Expandable Details Row (Reason & AI Summary) */}
                       {isExpanded && (
                         <tr className="bg-slate-50/50">
                           <td colSpan={6} className="px-6 py-3 border-t border-slate-100 text-xs">
@@ -259,7 +247,6 @@ export const AppointmentTable = ({
             </table>
           </div>
 
-          {/* Mobile Card List View */}
           <div className="lg:hidden divide-y divide-slate-100">
             {filteredAppointments.map((appt) => {
               const id = appt._id || appt.id;
@@ -310,7 +297,6 @@ export const AppointmentTable = ({
                     </div>
                   )}
 
-                  {/* Actions Bar */}
                   <div className="pt-1 flex items-center justify-end space-x-2">
                     {role === 'doctor' && appt.status !== 'Completed' && (
                       <button
@@ -343,3 +329,4 @@ export const AppointmentTable = ({
     </div>
   );
 };
+

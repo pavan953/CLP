@@ -5,7 +5,6 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState('');
 
-  // Year & Month
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
 
@@ -14,7 +13,6 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
 
-  // Navigate months
   const prevMonth = () => {
     setCurrentDate(new Date(year, month - 1, 1));
   };
@@ -23,11 +21,9 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
     setCurrentDate(new Date(year, month + 1, 1));
   };
 
-  // Days in current month
   const firstDayIndex = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
 
-  // Map appointments to date string YYYY-MM-DD
   const apptsByDate = {};
   appointments.forEach(appt => {
     const dStr = appt.appointmentDate;
@@ -49,7 +45,7 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-      {/* Calendar Header */}
+
       <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 rounded-xl bg-teal-50 text-teal-600 border border-teal-100">
@@ -87,7 +83,6 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
         </div>
       </div>
 
-      {/* Weekday Labels */}
       <div className="grid grid-cols-7 border-b border-slate-100 bg-slate-50/70 text-center py-2 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
         <span>Sun</span>
         <span>Mon</span>
@@ -98,14 +93,12 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
         <span>Sat</span>
       </div>
 
-      {/* Days Grid */}
       <div className="grid grid-cols-7 divide-x divide-y divide-slate-100 border-b border-slate-100">
-        {/* Leading empty cells */}
+
         {Array.from({ length: firstDayIndex }).map((_, i) => (
           <div key={`empty-${i}`} className="h-16 sm:h-20 bg-slate-50/40 p-1"></div>
         ))}
 
-        {/* Days of month */}
         {Array.from({ length: totalDays }).map((_, i) => {
           const dayNum = i + 1;
           const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
@@ -143,7 +136,6 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
                 )}
               </div>
 
-              {/* Day preview dots */}
               <div className="space-y-1 overflow-hidden">
                 {dayAppts.slice(0, 2).map((a, idx) => (
                   <div
@@ -170,7 +162,6 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
         })}
       </div>
 
-      {/* Selected Day Details Panel */}
       {selectedDateStr && (
         <div className="p-4 sm:p-6 bg-slate-50/80 border-t border-slate-200 animate-fade-in">
           <div className="flex items-center justify-between mb-3">
@@ -223,3 +214,4 @@ export const CalendarView = ({ appointments = [], onSelectDate }) => {
     </div>
   );
 };
+

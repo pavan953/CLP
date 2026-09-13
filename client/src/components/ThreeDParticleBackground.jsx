@@ -1,15 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-/**
- * ThreeDParticleBackground — Real-time 3D Particle Cloud with Parallax & Depth
- * 
- * Features:
- * - 3D spatial particle positions floating across X, Y, and Z depth
- * - Dynamic constellation line connections between nearby nodes
- * - Smooth camera parallax that tracks mouse and touch movement
- * - High performance WebGL rendering with zero interaction interference (pointer-events-none)
- */
 export const ThreeDParticleBackground = () => {
   const mountRef = useRef(null);
 
@@ -20,12 +11,10 @@ export const ThreeDParticleBackground = () => {
     let width = window.innerWidth;
     let height = window.innerHeight;
 
-    // 1. Scene & Camera Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(60, width / height, 1, 1000);
     camera.position.z = 400;
 
-    // 2. Renderer
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       alpha: true,
@@ -35,7 +24,6 @@ export const ThreeDParticleBackground = () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // 3. 3D Particles Group
     const particleGroup = new THREE.Group();
     scene.add(particleGroup);
 
@@ -43,17 +31,16 @@ export const ThreeDParticleBackground = () => {
     const maxDistance = 110;
     const bounds = { x: 500, y: 400, z: 300 };
 
-    // Generate random particle data
     const particlesData = [];
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
     const palette = [
-      new THREE.Color(0x0284c7), // Sky/Cyan
-      new THREE.Color(0x0d9488), // Medical Teal
-      new THREE.Color(0x2563eb), // Sapphire
-      new THREE.Color(0x059669), // Emerald
-      new THREE.Color(0x4f46e5)  // Indigo
+      new THREE.Color(0x0284c7),
+      new THREE.Color(0x0d9488),
+      new THREE.Color(0x2563eb),
+      new THREE.Color(0x059669),
+      new THREE.Color(0x4f46e5)
     ];
 
     for (let i = 0; i < particleCount; i++) {
@@ -84,7 +71,6 @@ export const ThreeDParticleBackground = () => {
     particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     particleGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-    // Particle Material with Soft Glow Texture
     const canvas = document.createElement('canvas');
     canvas.width = 48;
     canvas.height = 48;
@@ -112,7 +98,6 @@ export const ThreeDParticleBackground = () => {
     const pointCloud = new THREE.Points(particleGeo, particleMat);
     particleGroup.add(pointCloud);
 
-    // 4. Line Connections between close particles
     const maxLineSegments = particleCount * 6;
     const linePositions = new Float32Array(maxLineSegments * 6);
     const lineColors = new Float32Array(maxLineSegments * 6);
@@ -132,7 +117,6 @@ export const ThreeDParticleBackground = () => {
     const linesMesh = new THREE.LineSegments(lineGeo, lineMat);
     particleGroup.add(linesMesh);
 
-    // 5. Mouse & Parallax Tracking
     let mouseX = 0;
     let mouseY = 0;
     let targetX = 0;
@@ -148,7 +132,6 @@ export const ThreeDParticleBackground = () => {
     window.addEventListener('mousemove', onPointerMove, { passive: true });
     window.addEventListener('touchmove', onPointerMove, { passive: true });
 
-    // 6. Resize Handler
     const handleResize = () => {
       width = window.innerWidth;
       height = window.innerHeight;
@@ -159,12 +142,10 @@ export const ThreeDParticleBackground = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // 7. Animation Loop
     let animId;
     const animate = () => {
       animId = requestAnimationFrame(animate);
 
-      // Smooth camera parallax
       targetX += (mouseX - targetX) * 0.05;
       targetY += (mouseY - targetY) * 0.05;
 
@@ -172,7 +153,6 @@ export const ThreeDParticleBackground = () => {
       camera.position.y = -targetY;
       camera.lookAt(scene.position);
 
-      // Rotate group gently in 3D
       particleGroup.rotation.y += 0.0014;
       particleGroup.rotation.x += 0.0007;
 
@@ -181,7 +161,6 @@ export const ThreeDParticleBackground = () => {
       let colorIndex = 0;
       let connectedLines = 0;
 
-      // Update particle positions
       const time = Date.now() * 0.0012;
       for (let i = 0; i < particleCount; i++) {
         const i3 = i * 3;
@@ -191,12 +170,10 @@ export const ThreeDParticleBackground = () => {
         pos[i3 + 1] += pData.velocity.y + Math.sin(time + pData.seed) * 0.15;
         pos[i3 + 2] += pData.velocity.z;
 
-        // Bounce back smoothly within 3D bounding box
         if (pos[i3] < -bounds.x || pos[i3] > bounds.x) pData.velocity.x = -pData.velocity.x;
         if (pos[i3 + 1] < -bounds.y || pos[i3 + 1] > bounds.y) pData.velocity.y = -pData.velocity.y;
         if (pos[i3 + 2] < -bounds.z || pos[i3 + 2] > bounds.z) pData.velocity.z = -pData.velocity.z;
 
-        // Calculate distances to form 3D connecting filaments
         for (let j = i + 1; j < particleCount; j++) {
           const j3 = j * 3;
           const dx = pos[i3] - pos[j3];
@@ -215,7 +192,6 @@ export const ThreeDParticleBackground = () => {
             linePositions[lineIndex++] = pos[j3 + 1];
             linePositions[lineIndex++] = pos[j3 + 2];
 
-            // Line colors fade with distance
             const r = 0.02 * alpha;
             const g = 0.52 * alpha;
             const b = 0.78 * alpha;
@@ -268,3 +244,4 @@ export const ThreeDParticleBackground = () => {
     />
   );
 };
+

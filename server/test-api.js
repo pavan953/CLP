@@ -47,11 +47,10 @@ const runTests = async () => {
   console.log('--- Starting Clinic Living Plus Real-Time Test Suite ---');
 
   try {
-    // 1. Health check
+
     const health = await request('GET', '/health');
     console.log('✔ Health Check:', health.status, health.body);
 
-    // 2. Test Non-Existent Account Login (Should notify user that no account exists)
     const fakeLogin = await request('POST', '/auth/login', {
       email: 'nonexistent.user.12345@gmail.com',
       password: 'password123'
@@ -61,7 +60,6 @@ const runTests = async () => {
       throw new Error(`Expected 404 for non-existent user, got ${fakeLogin.status}`);
     }
 
-    // 3. Test Wrong Password Login (Expected 401)
     const wrongPass = await request('POST', '/auth/login', {
       email: 'admin@hospital.com',
       password: 'wrong_password_xyz'
@@ -71,7 +69,6 @@ const runTests = async () => {
       throw new Error(`Expected 401 for wrong password, got ${wrongPass.status}`);
     }
 
-    // 4. Authenticate Chief Doctor / Hospital Admin
     const adminLogin = await request('POST', '/auth/login', {
       email: 'admin@hospital.com',
       password: 'Admin@123'
@@ -83,7 +80,6 @@ const runTests = async () => {
     const docEmail = `marcus.${runId}@hospital.com`;
     const patientEmail = `elena.${runId}@gmail.com`;
 
-    // 5. Admin adds a verified Doctor to Hospital staff
     const addDoc = await request('POST', '/auth/add-doctor', {
       name: 'Dr. Marcus Chen',
       email: docEmail,
@@ -97,7 +93,6 @@ const runTests = async () => {
       throw new Error(`Expected 201 for doctor onboarding, got ${addDoc.status}`);
     }
 
-    // 6. Register a real Patient
     const realPatient = await request('POST', '/auth/register', {
       name: 'Elena Rostova',
       email: patientEmail,
@@ -110,7 +105,6 @@ const runTests = async () => {
     }
     const patientToken = realPatient.body.token;
 
-    // 6b. Test: Patient tries to login through Doctor Portal (Should be rejected with 403)
     const patientAsDoctor = await request('POST', '/auth/login', {
       email: patientEmail,
       password: 'PatientPassword123',
@@ -121,7 +115,6 @@ const runTests = async () => {
       throw new Error(`Expected 403 for patient logging in as doctor, got ${patientAsDoctor.status}`);
     }
 
-    // 6c. Test: Doctor tries to login through Patient Portal (Should be rejected with 403)
     const doctorAsPatient = await request('POST', '/auth/login', {
       email: 'admin@hospital.com',
       password: 'Admin@123',
@@ -132,7 +125,6 @@ const runTests = async () => {
       throw new Error(`Expected 403 for doctor logging in as patient, got ${doctorAsPatient.status}`);
     }
 
-    // 6d. Test: Duplicate registration with existing email (Expected 409)
     const duplicateRegister = await request('POST', '/auth/register', {
       name: 'Duplicate Elena',
       email: patientEmail,
@@ -143,11 +135,9 @@ const runTests = async () => {
       throw new Error(`Expected 409 for duplicate registration, got ${duplicateRegister.status}`);
     }
 
-    // 7. Verify Doctors list on public landing page
     const doctors = await request('GET', '/auth/doctors');
     console.log(`✔ Verified Doctors on Duty: Found ${doctors.body.doctors?.length} doctors`);
 
-    // 7b. Test: Attempt booking with 11-digit mobile number (Should be rejected with 400)
     const invalidPhoneLong = await request('POST', '/appointments', {
       patientName: 'Elena Rostova',
       mobileNumber: '98765432101',
@@ -160,7 +150,6 @@ const runTests = async () => {
       throw new Error(`Expected 400 for 11-digit phone number, got ${invalidPhoneLong.status}`);
     }
 
-    // 7c. Test: Attempt booking with 9-digit mobile number (Should be rejected with 400)
     const invalidPhoneShort = await request('POST', '/appointments', {
       patientName: 'Elena Rostova',
       mobileNumber: '987654321',
@@ -173,7 +162,6 @@ const runTests = async () => {
       throw new Error(`Expected 400 for 9-digit phone number, got ${invalidPhoneShort.status}`);
     }
 
-    // 8. Patient books an appointment with Dr. Marcus Chen (Valid 10 digits)
     const booking = await request('POST', '/appointments', {
       patientName: 'Elena Rostova',
       mobileNumber: '9876543210',
@@ -188,17 +176,14 @@ const runTests = async () => {
     }
     const apptId = booking.body.appointment._id || booking.body.appointment.id;
 
-    // 9. Doctor views patient queue (Real-time data)
     const doctorQueue = await request('GET', '/appointments', null, adminToken);
     console.log(`✔ Doctor Real-Time Patient Queue Count: ${doctorQueue.body.count}`);
 
-    // 10. Doctor marks appointment as Completed
     const completeAction = await request('PATCH', `/appointments/${apptId}/status`, {
       status: 'Completed'
     }, adminToken);
     console.log('✔ Doctor Mark as Completed:', completeAction.status, completeAction.body.message);
 
-    // 11. Doctor creates/updates clinical profile
     const doctorProfileUpdate = await request('PUT', '/auth/profile', {
       qualification: 'MBBS, MD (Cardiology), FACC',
       experience: '14+ Years',
@@ -208,12 +193,11 @@ const runTests = async () => {
     }, adminToken);
     console.log('✔ Doctor Clinical Profile Update:', doctorProfileUpdate.status, doctorProfileUpdate.body.user?.qualification, 'Complete:', doctorProfileUpdate.body.user?.isProfileComplete);
 
-    // 12. Patient updates health profile settings (and attempt to inject doctor fields, which must be rejected/ignored)
     const patientProfileUpdate = await request('PUT', '/auth/profile', {
       bloodGroup: 'O+',
       emergencyContact: '+1 (555) 998-0011',
       allergies: 'Penicillin allergy',
-      // Malicious attempt to inject doctor fields:
+
       specialty: 'Fake Surgeon',
       department: 'Surgery',
       qualification: 'Fake Degree',
@@ -221,7 +205,6 @@ const runTests = async () => {
     }, patientToken);
     console.log('✔ Patient Health Profile Update:', patientProfileUpdate.status, 'Blood Group:', patientProfileUpdate.body.user?.bloodGroup);
 
-    // 13. Strict Role-Specific Schema Verification: Ensure patient object has ZERO doctor fields
     const patientMe = await request('GET', '/auth/me', null, patientToken);
     const pUser = patientMe.body.user;
     const forbiddenDoctorKeys = ['specialty', 'department', 'qualification', 'experience', 'bio', 'consultationFee', 'availableDays', 'cabinNumber', 'isProfileComplete'];
@@ -241,3 +224,4 @@ const runTests = async () => {
 };
 
 setTimeout(runTests, 1500);
+

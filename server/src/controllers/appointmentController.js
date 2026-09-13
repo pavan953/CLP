@@ -1,18 +1,14 @@
 const DataService = require('../services/dataService');
 
-// Helper to validate phone number (strictly 10 digits)
 const isValidPhone = (phone) => {
   const cleaned = (phone || '').replace(/\D/g, '');
   return cleaned.length === 10;
 };
 
-// @desc    Create new appointment
-// @route   POST /api/appointments
 const createAppointment = async (req, res) => {
   try {
     const { patientName, mobileNumber, doctorName, appointmentDate, appointmentTime, reason, aiSummary, doctorId } = req.body;
 
-    // Validation
     const errors = [];
     if (!patientName || patientName.trim().length < 2) {
       errors.push('Patient name must be at least 2 characters.');
@@ -68,21 +64,17 @@ const createAppointment = async (req, res) => {
   }
 };
 
-// @desc    Get appointments (Role-aware & Filterable)
-// @route   GET /api/appointments
 const getAppointments = async (req, res) => {
   try {
     const { status, date, doctorName, search } = req.query;
     const filter = {};
 
-    // Role-specific scoping:
-    // If the authenticated user is a patient, they retrieve their own appointments
     if (req.user && req.user.role === 'patient') {
       filter.patientId = req.user._id || req.user.id;
     }
-    // If the authenticated user is a doctor, they see all patient appointments (or can filter by their name)
+
     else if (req.user && req.user.role === 'doctor') {
-      // Optional: doctor can choose to see only their assigned appointments or all appointments
+
       if (req.query.myOnly === 'true') {
         filter.doctorName = req.user.name;
       }
@@ -94,7 +86,6 @@ const getAppointments = async (req, res) => {
 
     let appointments = await DataService.getAppointments(filter);
 
-    // Optional text search for doctor / admin
     if (search && search.trim()) {
       const q = search.trim().toLowerCase();
       appointments = appointments.filter(a =>
@@ -118,8 +109,6 @@ const getAppointments = async (req, res) => {
   }
 };
 
-// @desc    Update appointment status (Completed / Cancelled)
-// @route   PATCH /api/appointments/:id/status
 const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -140,8 +129,6 @@ const updateStatus = async (req, res) => {
       });
     }
 
-    // Role check:
-    // Patients can only cancel their own pending appointments
     if (req.user && req.user.role === 'patient') {
       const pId = req.user._id || req.user.id;
       if (appointment.patientId && appointment.patientId.toString() !== pId.toString()) {
@@ -174,8 +161,6 @@ const updateStatus = async (req, res) => {
   }
 };
 
-// @desc    Delete appointment
-// @route   DELETE /api/appointments/:id
 const deleteAppointment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -205,3 +190,4 @@ module.exports = {
   updateStatus,
   deleteAppointment
 };
+

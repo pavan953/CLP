@@ -8,8 +8,6 @@ const {
 } = require('../controllers/appointmentController');
 const { protect } = require('../middleware/auth');
 
-// Flexible create: can be called with or without auth token
-// If token is present, we attach the user; if not, it still records the booking!
 const optionalAuth = async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     return protect(req, res, next);
@@ -28,3 +26,4 @@ router.route('/:id')
   .delete(protect, deleteAppointment);
 
 module.exports = router;
+

@@ -1,21 +1,12 @@
 import React, { useRef, useState, useCallback } from 'react';
 
-/**
- * ThreeDCard — Interactive 3D Card with Dynamic Physics & Specular Lighting
- * 
- * Features:
- * - Real-time 3D rotation following cursor position (rotateX & rotateY)
- * - Dynamic specular glare spotlight that tracks light reflection
- * - Multi-plane depth rendering (preserve-3d + translateZ child offsets)
- * - Mobile responsive touch support and smooth spring return
- */
 export const ThreeDCard = ({
   children,
   className = '',
-  maxRotation = 10, // Max degrees of tilt
+  maxRotation = 10,
   glare = true,
   scale = 1.02,
-  depth = 15, // translateZ depth in px
+  depth = 15,
   onClick,
   style = {}
 }) => {
@@ -63,7 +54,6 @@ export const ThreeDCard = ({
     const x = touch.clientX - rect.left;
     const y = touch.clientY - rect.top;
 
-    // Check bounds
     if (x < 0 || x > rect.width || y < 0 || y > rect.height) return;
 
     const centerX = rect.width / 2;
@@ -105,7 +95,7 @@ export const ThreeDCard = ({
       }}
       className={`relative overflow-hidden ${className}`}
     >
-      {/* Dynamic Specular Glare Overlay */}
+
       {glare && (
         <div
           className="pointer-events-none absolute inset-0 z-30 transition-opacity duration-300 rounded-inherit"
@@ -116,10 +106,10 @@ export const ThreeDCard = ({
         />
       )}
 
-      {/* 3D Depth Content Layer */}
       <div className="relative z-10 h-full w-full" style={{ transformStyle: 'preserve-3d' }}>
         {children}
       </div>
     </div>
   );
 };
+

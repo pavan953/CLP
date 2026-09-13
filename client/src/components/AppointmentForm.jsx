@@ -21,24 +21,20 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
   const [doctors, setDoctors] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(true);
 
-  // Form Fields strictly required by assignment
   const [patientName, setPatientName] = useState(user?.role === 'patient' ? user.name : '');
   const [mobileNumber, setMobileNumber] = useState(user?.phone || '');
   const [doctorName, setDoctorName] = useState(preselectedDoctor || '');
   const [doctorId, setDoctorId] = useState('');
   const [appointmentDate, setAppointmentDate] = useState('');
   const [appointmentTime, setAppointmentTime] = useState('');
-  
-  // Optional Reason & AI Bonus
+
   const [reason, setReason] = useState('');
   const [aiSummary, setAiSummary] = useState('');
   const [isGeneratingAi, setIsGeneratingAi] = useState(false);
 
-  // Status & Validation
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch available doctors
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -65,7 +61,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
     fetchDoctors();
   }, []);
 
-  // Set min date to today YYYY-MM-DD
   const today = new Date().toISOString().split('T')[0];
 
   const handleDoctorChange = (e) => {
@@ -154,8 +149,7 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
       const res = await api.createAppointment(payload);
       if (res.success) {
         showToast('Appointment booked successfully! All data has been saved.', 'success');
-        
-        // Reset fields
+
         if (user?.role !== 'patient') {
           setPatientName('');
           setMobileNumber('');
@@ -179,7 +173,7 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
-      {/* Header */}
+
       <div className="p-5 sm:p-6 border-b border-slate-100 bg-gradient-to-r from-medical-50/60 to-white">
         <div className="flex items-center space-x-3">
           <div className="p-2.5 rounded-xl bg-medical-600 text-white shadow-sm">
@@ -194,7 +188,7 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
 
       <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-5">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {/* 1. Patient Name */}
+
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Patient Name <span className="text-rose-500">*</span>
@@ -223,7 +217,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
             )}
           </div>
 
-          {/* 2. Mobile Number */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
               Mobile Number <span className="text-rose-500">*</span>
@@ -255,7 +248,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
           </div>
         </div>
 
-        {/* 3. Doctor Name */}
         <div>
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
             Select Doctor <span className="text-rose-500">*</span>
@@ -291,7 +283,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
           )}
         </div>
 
-        {/* 4. Appointment Date & 5. Time Slot */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -353,7 +344,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
           </div>
         </div>
 
-        {/* Optional Bonus: Reason & AI Summary */}
         <div className="pt-2 border-t border-slate-100">
           <div className="flex items-center justify-between mb-1.5">
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -392,7 +382,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
             </p>
           )}
 
-          {/* AI Summary Output Preview */}
           {aiSummary && (
             <div className="mt-3 p-3 rounded-xl bg-purple-50/70 border border-purple-200 text-xs text-purple-950 flex items-start space-x-2">
               <Sparkles className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
@@ -404,7 +393,6 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
           )}
         </div>
 
-        {/* 6. Submit button */}
         <div className="pt-3">
           <button
             type="submit"
@@ -428,3 +416,4 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
     </div>
   );
 };
+

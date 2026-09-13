@@ -5,13 +5,11 @@ const path = require('path');
 const { connectDB, getStatus } = require('./config/db');
 const seedInitialData = require('./config/seed');
 
-// Load environment variables
 dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 const PORT = process.env.PORT || 5050;
 
-// Middleware
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -19,12 +17,10 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/appointments', require('./routes/appointmentRoutes'));
 app.use('/api/ai', require('./routes/aiRoutes'));
 
-// Health & Status Check
 app.get('/api/health', (req, res) => {
   const status = getStatus();
   res.status(200).json({
@@ -35,7 +31,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);
   res.status(500).json({
@@ -44,7 +39,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start Server & Connect Database
 const startServer = async () => {
   await connectDB();
   await seedInitialData();
@@ -60,3 +54,4 @@ const startServer = async () => {
 };
 
 startServer();
+

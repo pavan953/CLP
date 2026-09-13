@@ -32,7 +32,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
     <>
       <header className="w-full bg-white/75 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/70 shadow-sm shadow-slate-900/5 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Brand Logo & Name */}
+
           <div
             onClick={() => { setMobileMenuOpen(false); onNavigate('landing'); }}
             className="flex items-center space-x-3 cursor-pointer group"
@@ -51,7 +51,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-600">
             {user && (
               <button
@@ -93,11 +92,10 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
             </button>
           </nav>
 
-          {/* Auth / Dashboard Controls & Mobile Menu Toggle */}
           <div className="flex items-center space-x-2 sm:space-x-3">
             {user ? (
               <>
-                {/* Dashboard Navigation button */}
+
                 <button
                   onClick={() => onNavigate('dashboard')}
                   className={`hidden sm:flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold rounded-xl transition ${
@@ -110,7 +108,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   <span>{role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}</span>
                 </button>
 
-                {/* Verified Role Badge (Clickable to open profile settings) */}
                 <button
                   onClick={onOpenProfile}
                   title="Click to view & edit profile settings"
@@ -129,7 +126,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   </div>
                 </button>
 
-                {/* Mobile Profile button */}
                 <button
                   onClick={onOpenProfile}
                   title="Profile Settings"
@@ -138,7 +134,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   <User className="w-4 h-4" />
                 </button>
 
-                {/* Logout Button (Triggers Confirmation Modal) */}
                 <button
                   onClick={() => setShowLogoutModal(true)}
                   title="Sign out from portal"
@@ -150,7 +145,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
               </>
             ) : (
               <div className="flex items-center space-x-2">
-                {/* Login / Sign In Button */}
+
                 <button
                   onClick={() => onNavigate('auth', 'patient', 'login')}
                   className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
@@ -158,7 +153,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   Sign In
                 </button>
 
-                {/* Signup / Register Button */}
                 <button
                   onClick={() => onNavigate('auth', 'patient', 'signup')}
                   className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-medical-600 btn-3d flex items-center space-x-1"
@@ -167,7 +161,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   <span>Sign Up</span>
                 </button>
 
-                {/* Staff / Doctor Portal Button */}
                 <button
                   onClick={() => onNavigate('auth', 'doctor', 'login')}
                   className="hidden lg:flex px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition items-center space-x-1.5 border border-slate-200 badge-3d"
@@ -178,7 +171,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
               </div>
             )}
 
-            {/* Mobile Menu Hamburger Toggle */}
             <button
               onClick={() => setMobileMenuOpen(prev => !prev)}
               className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition border border-slate-200"
@@ -189,7 +181,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
           </div>
         </div>
 
-        {/* Mobile Navigation Dropdown Drawer with Glass Effect */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-200/70 bg-white/80 backdrop-blur-2xl px-4 py-4 space-y-2 shadow-2xl animate-fade-in">
             {user && (
@@ -276,7 +267,6 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
         )}
       </header>
 
-      {/* Logout Confirmation Dialog Modal */}
       {showLogoutModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-sm w-full overflow-hidden p-6 space-y-4">
@@ -323,3 +313,4 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
     </>
   );
 };
+

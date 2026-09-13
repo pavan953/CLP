@@ -4,19 +4,16 @@ import { Stethoscope, User, Lock, Mail, Phone, HeartPulse, ArrowRight, ArrowLeft
 
 export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showToast, onBackToHome, onSuccess }) => {
   const { login, register } = useAuth();
-  
-  // Selected Portal Type: 'patient' or 'doctor'
+
   const [portalType, setPortalType] = useState(initialRole);
   const [isLogin, setIsLogin] = useState(initialMode !== 'signup');
 
-  // Sync state if navigation props change
   useEffect(() => {
     setPortalType(initialRole);
     setIsLogin(initialMode !== 'signup');
     setErrorMessage('');
   }, [initialRole, initialMode]);
 
-  // Form Fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +24,7 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
   const handlePortalSwitch = (type) => {
     setPortalType(type);
     setErrorMessage('');
-    // Doctor portal only allows login (doctors are added by hospital admin)
+
     if (type === 'doctor') {
       setIsLogin(true);
     }
@@ -96,7 +93,7 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
       )}
 
       <div className="max-w-xl w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-        {/* Top Header Banner */}
+
         <div className="p-6 sm:p-8 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2 text-medical-100 text-xs font-semibold">
@@ -117,7 +114,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
               : 'Sign in or create a patient account to schedule and manage your visits'}
           </p>
 
-          {/* Portal Switcher Tabs */}
           <div className="mt-6 grid grid-cols-2 gap-2 bg-white/10 p-1 rounded-2xl backdrop-blur-md border border-white/15">
             <button
               type="button"
@@ -147,9 +143,8 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
           </div>
         </div>
 
-        {/* Form Body */}
         <div className="p-6 sm:p-8">
-          {/* Patient Login vs Register Toggle */}
+
           {portalType === 'patient' && (
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
               <span className="text-xs font-bold text-slate-700">
@@ -168,7 +163,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
             </div>
           )}
 
-          {/* Doctor note regarding onboarding */}
           {portalType === 'doctor' && (
             <div className="mb-6 p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-800 flex items-start space-x-2">
               <Stethoscope className="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" />
@@ -179,7 +173,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
             </div>
           )}
 
-          {/* Inline Error Message */}
           {errorMessage && (
             <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2.5">
               <ShieldAlert className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
@@ -191,7 +184,7 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name & Phone for Patient Registration */}
+
             {portalType === 'patient' && !isLogin && (
               <>
                 <div>
@@ -230,7 +223,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
               </>
             )}
 
-            {/* Email Address */}
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Email Address <span className="text-rose-500">*</span>
@@ -248,7 +240,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Password <span className="text-rose-500">*</span>
@@ -266,7 +257,6 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
               </div>
             </div>
 
-            {/* Submit Button */}
             <div className="pt-3">
               <button
                 type="submit"
@@ -291,3 +281,4 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
     </div>
   );
 };
+

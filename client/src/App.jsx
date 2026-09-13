@@ -13,9 +13,9 @@ import { Loader2 } from 'lucide-react';
 export function App() {
   const { user, role, loading } = useAuth();
   const [toast, setToast] = useState({ message: '', type: 'info' });
-  const [currentView, setCurrentView] = useState('landing'); // Initial view: always show Landing Page first!
-  const [authRole, setAuthRole] = useState('patient'); // 'patient' or 'doctor'
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
+  const [currentView, setCurrentView] = useState('landing');
+  const [authRole, setAuthRole] = useState('patient');
+  const [authMode, setAuthMode] = useState('login');
   const [preselectedDoctor, setPreselectedDoctor] = useState('');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -59,15 +59,13 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-800 flex flex-col relative overflow-x-hidden">
-      {/* 3D Ambient Moving Particle Cloud in Background */}
+
       <ThreeDParticleBackground />
 
-      {/* Ambient Lighting Orbs */}
       <div className="pointer-events-none fixed top-0 left-1/4 -translate-y-1/2 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl z-0" />
       <div className="pointer-events-none fixed top-1/3 right-10 w-96 h-96 bg-teal-200/15 rounded-full blur-3xl z-0" />
       <div className="pointer-events-none fixed bottom-10 left-10 w-80 h-80 bg-sky-200/20 rounded-full blur-3xl z-0" />
 
-      {/* Top Header - Sticky with Glass Effect */}
       <div className="sticky top-0 z-50">
         <Navbar
           currentView={currentView}
@@ -76,7 +74,6 @@ export function App() {
         />
       </div>
 
-      {/* Main Content Area */}
       <main className="flex-1 relative z-10">
         {currentView === 'auth' ? (
           <AuthPage
@@ -113,7 +110,6 @@ export function App() {
         )}
       </main>
 
-      {/* Hospital Footer */}
       <footer className="border-t border-slate-200 bg-white py-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
@@ -131,14 +127,12 @@ export function App() {
         </div>
       </footer>
 
-      {/* User / Doctor Profile Settings Modal */}
       <ProfileModal
         isOpen={isProfileOpen}
         onClose={() => setIsProfileOpen(false)}
         showToast={showToast}
       />
 
-      {/* Toast Notification Container */}
       <Toast
         message={toast.message}
         type={toast.type}
@@ -149,3 +143,4 @@ export function App() {
 }
 
 export default App;
+

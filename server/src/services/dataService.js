@@ -3,7 +3,6 @@ const User = require('../models/User');
 const Appointment = require('../models/Appointment');
 const { getStatus, readData, writeData } = require('../config/db');
 
-// Helper to generate simple ObjectID-like hex string if MongoDB is offline
 const generateId = () => {
   return new mongoose.Types.ObjectId().toString();
 };
@@ -29,7 +28,7 @@ const sanitizePatientData = (data) => {
 };
 
 const DataService = {
-  // --- USER OPERATIONS ---
+
   async findUserByEmail(email) {
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
@@ -138,7 +137,6 @@ const DataService = {
       .map(({ password, ...p }) => sanitizePatientData(p));
   },
 
-  // --- APPOINTMENT OPERATIONS ---
   async createAppointment(appointmentData) {
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
@@ -188,7 +186,6 @@ const DataService = {
       list = list.filter(a => a.appointmentDate === filter.date);
     }
 
-    // Sort by date then time ascending
     list.sort((a, b) => {
       const dateA = new Date(`${a.appointmentDate} ${a.appointmentTime || '00:00'}`);
       const dateB = new Date(`${b.appointmentDate} ${b.appointmentTime || '00:00'}`);
@@ -241,3 +238,4 @@ const DataService = {
 };
 
 module.exports = DataService;
+

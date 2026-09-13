@@ -24,7 +24,7 @@ const request = async (endpoint, options = {}) => {
 };
 
 export const api = {
-  // Auth
+
   login: (credentials) => request('/auth/login', {
     method: 'POST',
     body: JSON.stringify(credentials)
@@ -51,7 +51,6 @@ export const api = {
     body: JSON.stringify(doctorData)
   }),
 
-  // Appointments
   getAppointments: (params = {}) => {
     const query = new URLSearchParams(params).toString();
     return request(`/appointments${query ? `?${query}` : ''}`);
@@ -71,9 +70,9 @@ export const api = {
     method: 'DELETE'
   }),
 
-  // AI Summary
   generateAiSummary: (payload) => request('/ai/summarize', {
     method: 'POST',
     body: JSON.stringify(payload)
   })
 };
+

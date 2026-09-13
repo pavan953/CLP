@@ -63,3 +63,4 @@ export const StatsOverview = ({ appointments = [] }) => {
     </div>
   );
 };
+

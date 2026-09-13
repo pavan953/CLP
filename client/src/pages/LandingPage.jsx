@@ -28,7 +28,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
   const [doctors, setDoctors] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(true);
 
-  // Fetch real verified doctors from backend
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
@@ -50,41 +49,41 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
       name: 'Cardiology & Vascular',
       desc: 'Comprehensive cardiovascular care, ECG, and preventative heart screening.',
       icon: <Activity className="w-6 h-6 text-rose-500" />,
-      bg: 'bg-rose-50 border-rose-100'
+      bg: 'bg-rose-50/75 backdrop-blur-xl border-rose-200/70 shadow-soft'
     },
     {
       name: 'Pediatrics & Child Care',
       desc: 'Gentle developmental care, immunizations, and pediatric health checkups.',
       icon: <HeartPulse className="w-6 h-6 text-teal-500" />,
-      bg: 'bg-teal-50 border-teal-100'
+      bg: 'bg-teal-50/75 backdrop-blur-xl border-teal-200/70 shadow-soft'
     },
     {
       name: 'General Medicine & OPD',
       desc: 'Day-to-day diagnostic consultations, routine evaluations, and preventative triage.',
       icon: <Stethoscope className="w-6 h-6 text-medical-600" />,
-      bg: 'bg-medical-50 border-medical-100'
+      bg: 'bg-medical-50/75 backdrop-blur-xl border-medical-200/70 shadow-soft'
     },
     {
       name: 'Orthopedics & Joint Care',
       desc: 'Bone health, musculoskeletal treatments, joint mobility, and rehabilitation.',
       icon: <ShieldCheck className="w-6 h-6 text-amber-600" />,
-      bg: 'bg-amber-50 border-amber-100'
+      bg: 'bg-amber-50/75 backdrop-blur-xl border-amber-200/70 shadow-soft'
     }
   ];
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-16 overflow-x-hidden">
-      {/* 1. Hero Section with Interactive WebGL Scene */}
+
       <section className="relative overflow-hidden bg-gradient-to-b from-medical-50/60 via-white/80 to-slate-50/60 pt-8 pb-16 sm:pb-24 border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          {/* Emergency Alert Banner with Glassmorphic Depth */}
+
           <div className="mb-6 inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-rose-50/90 backdrop-blur-md border border-rose-200 text-xs font-bold text-rose-800 shadow-soft badge-3d">
             <Ambulance className="w-4 h-4 text-rose-600 animate-pulse flex-shrink-0" />
             <span>24/7 Emergency & Trauma Hotline: <strong>+1 (800) 555-0199</strong></span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-            {/* Left Hero Content */}
+
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-xl bg-medical-100/90 text-medical-800 text-xs font-bold uppercase tracking-wider badge-3d border border-medical-200/60">
                 <Building2 className="w-4 h-4 text-medical-600" />
@@ -102,7 +101,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                 Connect directly with board-certified physicians, schedule clinic visits without waiting, and manage your health records in real-time.
               </p>
 
-              {/* Action Buttons with Tactile Extrusion */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   onClick={() => onNavigateToBooking ? onNavigateToBooking() : onNavigateToAuth('patient', 'login')}
@@ -141,22 +139,21 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                 </a>
               </div>
 
-              {/* Trust Indicators with 3D Depth */}
               <div className="pt-4 border-t border-slate-200/80 grid grid-cols-3 gap-3 sm:gap-4">
                 <ThreeDCard depth={10} maxRotation={8} className="rounded-2xl">
-                  <div className="p-3.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-soft h-full">
+                  <div className="p-3.5 rounded-2xl glass-card h-full">
                     <div className="text-xl sm:text-2xl font-extrabold text-slate-900 translate-z-10">24/7</div>
                     <div className="text-[11px] text-slate-500 mt-0.5 font-semibold">Emergency Care</div>
                   </div>
                 </ThreeDCard>
                 <ThreeDCard depth={10} maxRotation={8} className="rounded-2xl">
-                  <div className="p-3.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-soft h-full">
+                  <div className="p-3.5 rounded-2xl glass-card h-full">
                     <div className="text-xl sm:text-2xl font-extrabold text-slate-900 translate-z-10">100%</div>
                     <div className="text-[11px] text-slate-500 mt-0.5 font-semibold">Real-Time Sync</div>
                   </div>
                 </ThreeDCard>
                 <ThreeDCard depth={10} maxRotation={8} className="rounded-2xl">
-                  <div className="p-3.5 rounded-2xl bg-white/90 backdrop-blur-md border border-slate-200/80 shadow-soft h-full">
+                  <div className="p-3.5 rounded-2xl glass-card h-full">
                     <div className="text-xl sm:text-2xl font-extrabold text-slate-900 translate-z-10">Zero</div>
                     <div className="text-[11px] text-slate-500 mt-0.5 font-semibold">Paperwork Lag</div>
                   </div>
@@ -164,14 +161,13 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
               </div>
             </div>
 
-            {/* Right Hero: Clinical Care & Services Showcase (Clean Modern Visual) */}
             <div className="lg:col-span-6">
-              <div className="relative bg-gradient-to-tr from-medical-700 via-medical-600 to-teal-700 p-6 sm:p-8 rounded-3xl text-white shadow-2xl overflow-hidden border border-white/20 shadow-3d-cyan">
+              <div className="relative bg-gradient-to-tr from-medical-700/90 via-medical-600/85 to-teal-700/90 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl text-white shadow-2xl overflow-hidden border border-white/30 shadow-3d-cyan">
                 <div className="absolute top-0 right-0 -mr-10 -mt-10 w-52 h-52 bg-white/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-44 h-44 bg-teal-400/15 rounded-full blur-2xl pointer-events-none" />
 
                 <div className="relative z-10 space-y-6">
-                  {/* Top Status Banner */}
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-md">
@@ -189,7 +185,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                     </span>
                   </div>
 
-                  {/* Consultation Features Quick Glance */}
                   <div className="space-y-3 bg-white/10 backdrop-blur-md p-4 sm:p-5 rounded-2xl border border-white/15 shadow-inner text-xs">
                     <div className="flex items-center space-x-3">
                       <div className="w-6 h-6 rounded-lg bg-teal-400/20 flex items-center justify-center flex-shrink-0">
@@ -217,7 +212,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                     </div>
                   </div>
 
-                  {/* Quick Schedule Preview */}
                   <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 flex items-center justify-between text-xs text-medical-100">
                     <div className="flex items-center space-x-2">
                       <Clock className="w-4 h-4 text-teal-300" />
@@ -228,7 +222,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                     </span>
                   </div>
 
-                  {/* Visitor Action CTA */}
                   {!user && (
                     <div className="pt-2 border-t border-white/15 grid grid-cols-2 gap-3">
                       <button
@@ -252,7 +245,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         </div>
       </section>
 
-      {/* 2. About The Hospital Section with 3D Cards */}
       <section id="about" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-12">
           <span className="text-xs font-bold uppercase tracking-wider text-medical-600 bg-medical-50 px-3 py-1 rounded-full border border-medical-200 badge-3d">
@@ -268,8 +260,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <ThreeDCard depth={18} maxRotation={10} className="rounded-2xl">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 h-full preserve-3d">
-              <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shadow-sm translate-z-20">
+            <div className="glass-card glass-card-hover p-6 rounded-2xl space-y-3 h-full preserve-3d">
+              <div className="w-10 h-10 rounded-xl bg-teal-500/15 text-teal-600 flex items-center justify-center shadow-sm translate-z-20 border border-teal-200/50">
                 <Award className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-900 text-base translate-z-10">Certified Specialists</h3>
@@ -280,8 +272,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
           </ThreeDCard>
 
           <ThreeDCard depth={18} maxRotation={10} className="rounded-2xl">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 h-full preserve-3d">
-              <div className="w-10 h-10 rounded-xl bg-medical-50 text-medical-600 flex items-center justify-center shadow-sm translate-z-20">
+            <div className="glass-card glass-card-hover p-6 rounded-2xl space-y-3 h-full preserve-3d">
+              <div className="w-10 h-10 rounded-xl bg-medical-500/15 text-medical-600 flex items-center justify-center shadow-sm translate-z-20 border border-medical-200/50">
                 <Clock className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-900 text-base translate-z-10">Zero Waiting Queue</h3>
@@ -292,8 +284,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
           </ThreeDCard>
 
           <ThreeDCard depth={18} maxRotation={10} className="rounded-2xl">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 h-full preserve-3d">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-sm translate-z-20">
+            <div className="glass-card glass-card-hover p-6 rounded-2xl space-y-3 h-full preserve-3d">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-600 flex items-center justify-center shadow-sm translate-z-20 border border-purple-200/50">
                 <Activity className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-900 text-base translate-z-10">Smart AI Clinical Triage</h3>
@@ -304,8 +296,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
           </ThreeDCard>
 
           <ThreeDCard depth={18} maxRotation={10} className="rounded-2xl">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 h-full preserve-3d">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm translate-z-20">
+            <div className="glass-card glass-card-hover p-6 rounded-2xl space-y-3 h-full preserve-3d">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-sm translate-z-20 border border-emerald-200/50">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <h3 className="font-bold text-slate-900 text-base translate-z-10">Permanent Records</h3>
@@ -317,7 +309,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         </div>
       </section>
 
-      {/* 3. Hospital Departments with 3D Depth */}
       <section id="departments" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
@@ -343,7 +334,6 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         </div>
       </section>
 
-      {/* 4. Verified Doctors Showcase with 3D Cards */}
       <section id="doctors" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8">
           <div>
@@ -366,27 +356,27 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         {loadingDoctors ? (
           <div className="p-12 text-center text-xs text-slate-400">Loading verified doctors directory...</div>
         ) : doctors.length === 0 ? (
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 text-center">
+          <div className="glass-card p-8 rounded-2xl text-center">
             <p className="text-xs text-slate-500">No doctors on duty yet. Hospital administrator can add new verified doctors.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {doctors.map((doc) => (
               <ThreeDCard key={doc._id || doc.id} depth={14} maxRotation={8} className="rounded-2xl">
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 flex flex-col justify-between h-full preserve-3d hover:border-medical-300 transition">
+                <div className="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between h-full preserve-3d">
                   <div>
                     <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-medical-50 border border-medical-100 flex items-center justify-center text-medical-700 font-bold text-lg shadow-sm translate-z-20">
+                      <div className="w-12 h-12 rounded-2xl bg-medical-500/10 border border-medical-200/50 flex items-center justify-center text-medical-700 font-bold text-lg shadow-sm translate-z-20">
                         {doc.name.replace('Dr. ', '').charAt(0)}
                       </div>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 translate-z-10">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-200/60 backdrop-blur-sm translate-z-10">
                         ● Active Duty
                       </span>
                     </div>
 
                     <h3 className="text-base font-bold text-slate-900 translate-z-10">{doc.name}</h3>
                     {doc.qualification && (
-                      <div className="text-[11px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md inline-block mt-1">
+                      <div className="text-[11px] font-semibold text-teal-700 bg-teal-500/10 border border-teal-200/40 px-2 py-0.5 rounded-md inline-block mt-1">
                         {doc.qualification}
                       </div>
                     )}
@@ -403,7 +393,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                       </p>
                     )}
 
-                    <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
                       <span>Exp: {doc.experience || 'Experienced'}</span>
                       <span className="font-bold text-slate-800">Fee: {doc.consultationFee || '$50'}</span>
                     </div>
@@ -416,10 +406,10 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                     )}
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-slate-100 translate-z-20">
+                  <div className="mt-6 pt-4 border-t border-slate-200/60 translate-z-20">
                     <button
                       onClick={() => onNavigateToBooking ? onNavigateToBooking(doc.name) : onNavigateToAuth('patient', 'login')}
-                      className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-medical-700 bg-medical-50 hover:bg-medical-100 transition flex items-center justify-center space-x-1.5 shadow-sm badge-3d"
+                      className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-medical-700 bg-medical-50/80 hover:bg-medical-100 border border-medical-200/50 transition flex items-center justify-center space-x-1.5 shadow-sm badge-3d"
                     >
                       <Calendar className="w-3.5 h-3.5" />
                       <span>Book with {doc.name.split(' ')[0]}</span>
@@ -432,9 +422,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         )}
       </section>
 
-      {/* 5. Hospital Contact & Visiting Hours */}
       <section id="contact" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-900 text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-slate-800 shadow-3d-slate">
+        <div className="bg-slate-900/95 backdrop-blur-2xl text-white rounded-3xl p-8 sm:p-12 shadow-2xl border border-white/10 shadow-3d-slate">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="space-y-3">
               <div className="flex items-center space-x-2 text-teal-400">
@@ -475,11 +464,10 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
         </div>
       </section>
 
-      {/* 6. Patient Onboarding Banner (Only for Visitors) with 3D Depth */}
       {!user && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ThreeDCard depth={12} maxRotation={5} className="rounded-3xl">
-            <div className="bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 rounded-3xl p-8 sm:p-12 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 preserve-3d">
+            <div className="bg-gradient-to-r from-medical-700/90 via-medical-600/85 to-teal-700/90 backdrop-blur-2xl rounded-3xl p-8 sm:p-12 text-white shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 border border-white/20 preserve-3d">
               <div className="space-y-2 max-w-xl">
                 <span className="text-xs font-bold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full inline-block badge-3d">
                   Start Your Care Journey
@@ -512,3 +500,4 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
     </div>
   );
 };
+

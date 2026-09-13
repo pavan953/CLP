@@ -7,7 +7,6 @@ let isMongoConnected = false;
 const dataDir = path.join(__dirname, '../../data');
 const dataFilePath = path.join(dataDir, 'db.json');
 
-// Initialize data folder & file if not exists
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });
 }
@@ -21,7 +20,6 @@ if (!fs.existsSync(dataFilePath)) {
   fs.writeFileSync(dataFilePath, JSON.stringify(defaultData, null, 2));
 }
 
-// Persistent File Store Helpers
 const readData = () => {
   try {
     const raw = fs.readFileSync(dataFilePath, 'utf8');
@@ -68,3 +66,4 @@ module.exports = {
   readData,
   writeData
 };
+

@@ -26,14 +26,12 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [viewMode, setViewMode] = useState('list'); // 'list', 'calendar', 'staff'
+  const [viewMode, setViewMode] = useState('list');
   const [myOnly, setMyOnly] = useState(false);
 
-  // Doctors and Patients directory
   const [doctorsList, setDoctorsList] = useState([]);
   const [patientsList, setPatientsList] = useState([]);
 
-  // Add Doctor Form Modal
   const [showAddDoctorModal, setShowAddDoctorModal] = useState(false);
   const [newDocName, setNewDocName] = useState('');
   const [newDocEmail, setNewDocEmail] = useState('');
@@ -43,7 +41,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const [newDocPhone, setNewDocPhone] = useState('');
   const [addingDoc, setAddingDoc] = useState(false);
 
-  // Fetch appointments
   const fetchAppointments = async (silent = false) => {
     try {
       if (!silent) setLoading(true);
@@ -80,7 +77,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
     }
   };
 
-  // Real-time synchronization polling every 4 seconds
   useEffect(() => {
     fetchAppointments(false);
     fetchDoctors();
@@ -142,7 +138,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Doctor Header Banner with 3D Card Depth */}
+
       <ThreeDCard depth={12} maxRotation={4} className="rounded-3xl mb-8">
         <div className="bg-gradient-to-r from-medical-800 via-medical-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-medical-900/25 preserve-3d">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -160,13 +156,12 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 translate-z-20">
-              {/* Real-Time Status Indicator */}
+
               <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15 badge-3d">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>Live Sync Active</span>
               </div>
 
-              {/* Refresh Button */}
               <button
                 onClick={() => fetchAppointments(false)}
                 className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition shadow-sm badge-3d"
@@ -175,7 +170,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
               </button>
 
-              {/* Edit Clinical Profile Button */}
               <button
                 onClick={onOpenProfile}
                 className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5 badge-3d"
@@ -184,7 +178,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 <span>Edit My Profile</span>
               </button>
 
-              {/* Onboard Doctor Button */}
               <button
                 onClick={() => setShowAddDoctorModal(true)}
                 className="px-4 py-2.5 rounded-xl bg-teal-500 text-white font-bold text-xs btn-3d-teal flex items-center space-x-1.5"
@@ -193,7 +186,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 <span>Onboard Doctor</span>
               </button>
 
-              {/* Scope Filter Toggle */}
               <button
                 onClick={() => setMyOnly(!myOnly)}
                 className="px-4 py-2.5 rounded-xl bg-white text-medical-800 font-bold text-xs btn-3d-white flex items-center space-x-2"
@@ -206,7 +198,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </div>
       </ThreeDCard>
 
-      {/* Doctor Incomplete Profile Prompt */}
       {!user?.isProfileComplete && (
         <ThreeDCard depth={8} maxRotation={3} className="rounded-2xl mb-8">
           <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 preserve-3d">
@@ -231,10 +222,8 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </ThreeDCard>
       )}
 
-      {/* Analytics Overview */}
       <StatsOverview appointments={appointments} />
 
-      {/* View Switcher Tabs */}
       <div className="flex items-center justify-between border-b border-slate-200 mb-6 pb-2">
         <div className="flex items-center space-x-2">
           <button
@@ -291,7 +280,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </div>
       </div>
 
-      {/* Main Content Area */}
       {viewMode === 'list' && (
         <AppointmentTable
           appointments={appointments}
@@ -422,7 +410,6 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </div>
       )}
 
-      {/* Add Doctor Modal */}
       {showAddDoctorModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in">
@@ -552,3 +539,4 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
     </div>
   );
 };
+

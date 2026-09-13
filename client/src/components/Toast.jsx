@@ -41,3 +41,4 @@ export const Toast = ({ message, type = 'info', onClose, duration = 4000 }) => {
     </div>
   );
 };
+

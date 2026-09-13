@@ -12,3 +12,4 @@ router.get('/doctors', getDoctors);
 router.get('/patients', protect, authorizeRoles('doctor'), getPatients);
 
 module.exports = router;
+

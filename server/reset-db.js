@@ -7,11 +7,10 @@ const seedInitialData = require('./src/config/seed');
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const cleanDB = async () => {
-  // 1. Reset JSON file
+
   const dataPath = path.join(__dirname, 'data/db.json');
   fs.writeFileSync(dataPath, JSON.stringify({ users: [], appointments: [] }, null, 2));
 
-  // 2. Clear MongoDB
   const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/appointment_booking';
   try {
     const conn = await mongoose.connect(mongoURI, { serverSelectionTimeoutMS: 2000 });
@@ -24,10 +23,10 @@ const cleanDB = async () => {
     console.log('[Clean] MongoDB not active or already wiped:', err.message);
   }
 
-  // 3. Re-seed only Chief Admin
   await seedInitialData();
   console.log('[Clean] Clean state ready with ONLY Chief Hospital Administrator.');
   process.exit(0);
 };
 
 cleanDB();
+

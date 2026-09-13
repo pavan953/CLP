@@ -9,12 +9,28 @@
   }
 }
 
-/* Custom card and backdrop utilities */
 .glass-panel {
   background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.06), 0 4px 10px -2px rgba(15, 23, 42, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95);
+}
+
+.glass-card-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(14, 165, 233, 0.45);
+  box-shadow: 0 16px 36px -6px rgba(14, 165, 233, 0.15), inset 0 1px 1px rgba(255, 255, 255, 1);
 }
 
 .shadow-soft {
@@ -29,7 +45,6 @@
   box-shadow: 0 12px 28px -5px rgba(2, 132, 199, 0.15), 0 8px 10px -6px rgba(2, 132, 199, 0.1);
 }
 
-/* 3D Transform and Space Utilities */
 .perspective-container {
   perspective: 1200px;
 }
@@ -38,7 +53,6 @@
   transform-style: preserve-3d;
 }
 
-/* Multi-plane depth offsets */
 .translate-z-10 {
   transform: translateZ(10px);
 }
@@ -55,7 +69,6 @@
   transform: translateZ(50px);
 }
 
-/* Realistic 3D Tactile Buttons */
 .btn-3d {
   transition: all 0.15s cubic-bezier(0.2, 0.8, 0.2, 1);
   box-shadow: 0 4px 0 #0369a1, 0 8px 16px -2px rgba(2, 132, 199, 0.35);
@@ -98,7 +111,6 @@
   box-shadow: 0 1px 0 #94a3b8, 0 2px 4px -1px rgba(15, 23, 42, 0.08);
 }
 
-/* Realistic 3D Depth Shadows */
 .shadow-3d-cyan {
   box-shadow: 0 16px 36px -6px rgba(14, 165, 233, 0.22), 0 6px 16px -2px rgba(14, 165, 233, 0.12);
 }
@@ -111,7 +123,6 @@
   box-shadow: 0 18px 40px -8px rgba(15, 23, 42, 0.14), 0 8px 16px -4px rgba(15, 23, 42, 0.06);
 }
 
-/* 3D Card Hover Effect with Depth and Layered Shadow */
 .card-3d {
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
   transform-style: preserve-3d;
@@ -123,7 +134,6 @@
   box-shadow: 0 24px 40px -10px rgba(2, 132, 199, 0.18), 0 12px 20px -4px rgba(15, 23, 42, 0.08);
 }
 
-/* 3D Floating Animation for Hero Visuals */
 @keyframes float3d {
   0% {
     transform: perspective(1000px) translateY(0px) rotateX(2deg) rotateY(-3deg) translateZ(0);
@@ -141,7 +151,6 @@
   transform-style: preserve-3d;
 }
 
-/* 3D Subtle Floating for Holographic Badges */
 @keyframes hoverGentle {
   0%, 100% {
     transform: translateY(0px);
@@ -155,7 +164,6 @@
   animation: hoverGentle 4s ease-in-out infinite;
 }
 
-/* 3D Pulse Glow Effect */
 @keyframes pulseGlow3d {
   0%, 100% {
     box-shadow: 0 12px 35px -5px rgba(14, 165, 233, 0.35), 0 0 25px 2px rgba(20, 184, 166, 0.25);
@@ -169,7 +177,6 @@
   animation: pulseGlow3d 4s ease-in-out infinite;
 }
 
-/* 3D Depth Badge */
 .badge-3d {
   box-shadow: 0 4px 8px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.4);
   transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease;
@@ -179,7 +186,6 @@
   box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.12), 0 3px 6px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-/* 3D Grid Overlay Pattern */
 .bg-3d-grid {
   background-size: 32px 32px;
   background-image: 
