@@ -215,6 +215,66 @@ const runTests = async () => {
     }
     console.log('✔ Patient Role Schema Verified: Zero doctor-specific fields in patient profile.');
 
+    const fpNonExistent = await request('POST', '/auth/forgot-password', {
+      email: 'nonexistent_user_recovery@hospital.com',
+      newPassword: 'newpassword123',
+      confirmPassword: 'newpassword123'
+    });
+    if (fpNonExistent.status !== 404) {
+      throw new Error(`Expected 404 for non-existent email recovery, got ${fpNonExistent.status}`);
+    }
+    console.log('✔ Forgot Password Non-Existent Email (Expected 404):', fpNonExistent.status);
+
+    const fpWrongRole = await request('POST', '/auth/forgot-password', {
+      email: patientEmail,
+      newPassword: 'newpassword123',
+      confirmPassword: 'newpassword123',
+      role: 'doctor'
+    });
+    if (fpWrongRole.status !== 403) {
+      throw new Error(`Expected 403 for patient email on doctor portal recovery, got ${fpWrongRole.status}`);
+    }
+    console.log('✔ Forgot Password Portal Role Mismatch (Expected 403):', fpWrongRole.status);
+
+    const fpShortPass = await request('POST', '/auth/forgot-password', {
+      email: patientEmail,
+      newPassword: '123',
+      confirmPassword: '123',
+      role: 'patient'
+    });
+    if (fpShortPass.status !== 400) {
+      throw new Error(`Expected 400 for short password recovery, got ${fpShortPass.status}`);
+    }
+    console.log('✔ Forgot Password Short Password (Expected 400):', fpShortPass.status);
+
+    const fpSuccess = await request('POST', '/auth/forgot-password', {
+      email: patientEmail,
+      newPassword: 'UpdatedSecurePass123!',
+      confirmPassword: 'UpdatedSecurePass123!',
+      role: 'patient'
+    });
+    if (fpSuccess.status !== 200) {
+      throw new Error(`Expected 200 for successful forgot password, got ${fpSuccess.status}`);
+    }
+    console.log('✔ Forgot Password Reset Success:', fpSuccess.status, fpSuccess.body.message);
+
+    const loginWithNewPass = await request('POST', '/auth/login', {
+      email: patientEmail,
+      password: 'UpdatedSecurePass123!',
+      role: 'patient'
+    });
+    if (loginWithNewPass.status !== 200) {
+      throw new Error(`Expected 200 login with new password, got ${loginWithNewPass.status}`);
+    }
+    console.log('✔ Sign In with Reset Password Success:', loginWithNewPass.status, loginWithNewPass.body.user.name);
+
+    await request('POST', '/auth/forgot-password', {
+      email: patientEmail,
+      newPassword: 'patientpassword123',
+      confirmPassword: 'patientpassword123',
+      role: 'patient'
+    });
+
     console.log('\n🎉 ALL CLINIC LIVING PLUS AUTH, APPOINTMENT, ROLE ENFORCEMENT & SCHEMA TESTS PASSED CLEANLY!');
     process.exit(0);
   } catch (err) {

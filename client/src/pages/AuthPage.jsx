@@ -3,30 +3,84 @@ import { useAuth } from '../context/AuthContext';
 import { Stethoscope, User, Lock, Mail, Phone, HeartPulse, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
 export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showToast, onBackToHome, onSuccess }) => {
-  const { login, register } = useAuth();
+  const { login, register, forgotPassword } = useAuth();
 
   const [portalType, setPortalType] = useState(initialRole);
   const [isLogin, setIsLogin] = useState(initialMode !== 'signup');
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   useEffect(() => {
     setPortalType(initialRole);
     setIsLogin(initialMode !== 'signup');
+    setIsForgotPassword(false);
     setErrorMessage('');
+    setSuccessMessage('');
   }, [initialRole, initialMode]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handlePortalSwitch = (type) => {
     setPortalType(type);
     setErrorMessage('');
+    setSuccessMessage('');
+    setIsForgotPassword(false);
 
     if (type === 'doctor') {
       setIsLogin(true);
+    }
+  };
+
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    if (!email.trim()) {
+      setErrorMessage('Please enter your registered email address.');
+      return;
+    }
+
+    if (!newPassword) {
+      setErrorMessage('Please enter your new password.');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setErrorMessage('New password must be at least 6 characters long.');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setErrorMessage('New passwords do not match. Please re-enter.');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await forgotPassword({
+        email: email.trim(),
+        newPassword,
+        confirmPassword,
+        role: portalType
+      });
+      setSuccessMessage(res.message || 'Password reset successfully! You can now sign in with your new password.');
+      showToast('Password reset successfully! Please sign in with your new credentials.', 'success');
+      setPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (err) {
+      setErrorMessage(err.message);
+      showToast(err.message, 'error');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -101,15 +155,21 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
               <span>Clinic Living Plus Security Gate</span>
             </div>
             <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-white/15 backdrop-blur-md border border-white/20">
-              Sign In Required
+              {isForgotPassword ? 'Password Recovery' : 'Sign In Required'}
             </span>
           </div>
 
           <h2 className="text-2xl font-extrabold tracking-tight">
-            {portalType === 'doctor' ? 'Medical Staff & Doctor Portal' : 'Patient Health Portal'}
+            {isForgotPassword
+              ? 'Account Password Recovery'
+              : portalType === 'doctor'
+              ? 'Medical Staff & Doctor Portal'
+              : 'Patient Health Portal'}
           </h2>
           <p className="text-xs text-medical-100 mt-1">
-            {portalType === 'doctor'
+            {isForgotPassword
+              ? 'Recover and reset access credentials for your registered account'
+              : portalType === 'doctor'
               ? 'Enter your verified hospital credentials to manage patient consultations'
               : 'Sign in or create a patient account to schedule and manage your visits'}
           </p>
@@ -144,138 +204,289 @@ export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showT
         </div>
 
         <div className="p-6 sm:p-8">
-
-          {portalType === 'patient' && (
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
-              <span className="text-xs font-bold text-slate-700">
-                {isLogin ? 'Sign In to Your Account' : 'Register New Patient Profile'}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsLogin(!isLogin);
-                  setErrorMessage('');
-                }}
-                className="text-xs font-bold text-medical-600 hover:text-medical-800 underline"
-              >
-                {isLogin ? 'Need an account? Register here' : 'Already registered? Sign In'}
-              </button>
-            </div>
-          )}
-
-          {portalType === 'doctor' && (
-            <div className="mb-6 p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-800 flex items-start space-x-2">
-              <Stethoscope className="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Hospital Policy: </span>
-                <span>Doctors and clinical staff are onboarded exclusively by hospital administration. If you require credentials, please contact the Chief Medical Officer.</span>
-              </div>
-            </div>
-          )}
-
-          {errorMessage && (
-            <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2.5">
-              <ShieldAlert className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
-              <div>
-                <span className="font-bold">Authentication Notice: </span>
-                <span>{errorMessage}</span>
-              </div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-
-            {portalType === 'patient' && !isLogin && (
-              <>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Full Legal Name <span className="text-rose-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. John Doe"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Mobile Contact Number <span className="text-slate-400 font-normal">(10 Digits)</span>
-                  </label>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="tel"
-                      placeholder="10-digit number (e.g. 9876543210)"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                      maxLength={10}
-                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Email Address <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="email"
-                  required
-                  placeholder={portalType === 'doctor' ? 'doctor@hospital.com' : 'patient@example.com'}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                Password <span className="text-rose-500">*</span>
-              </label>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                />
-              </div>
-            </div>
-
-            <div className="pt-3">
-              <button
-                type="submit"
-                disabled={submitting}
-                className="w-full py-3 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center justify-center space-x-2 disabled:opacity-60"
-              >
-                <span>
-                  {submitting
-                    ? 'Verifying Credentials...'
-                    : portalType === 'doctor'
-                    ? 'Sign In to Doctor Portal'
-                    : isLogin
-                    ? 'Sign In'
-                    : 'Create Patient Profile'}
+          {isForgotPassword ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-2">
+                <span className="text-xs font-bold text-slate-700">
+                  Reset Account Password
                 </span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsForgotPassword(false);
+                    setErrorMessage('');
+                    setSuccessMessage('');
+                  }}
+                  className="text-xs font-bold text-medical-600 hover:text-medical-800 underline inline-flex items-center space-x-1"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Sign In</span>
+                </button>
+              </div>
+
+              {errorMessage && (
+                <div className="mb-4 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2.5">
+                  <ShieldAlert className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Reset Notice: </span>
+                    <span>{errorMessage}</span>
+                  </div>
+                </div>
+              )}
+
+              {successMessage ? (
+                <div className="space-y-4 pt-2">
+                  <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-start space-x-2.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold">Success: </span>
+                      <span>{successMessage}</span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setSuccessMessage('');
+                      setErrorMessage('');
+                    }}
+                    className="w-full py-3 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center justify-center space-x-2"
+                  >
+                    <span>Proceed to Sign In</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleForgotPasswordSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Registered Email Address <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="email"
+                        required
+                        placeholder={portalType === 'doctor' ? 'doctor@hospital.com' : 'patient@example.com'}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      New Password <span className="text-rose-500">*</span> (min 6 characters)
+                    </label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        minLength={6}
+                        className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Confirm New Password <span className="text-rose-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="password"
+                        required
+                        placeholder="••••••••"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        minLength={6}
+                        className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={submitting}
+                      className="w-full py-3 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center justify-center space-x-2 disabled:opacity-60"
+                    >
+                      <span>{submitting ? 'Resetting Password...' : 'Confirm & Reset Password'}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="text-center pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsForgotPassword(false);
+                        setErrorMessage('');
+                        setSuccessMessage('');
+                      }}
+                      className="text-xs font-medium text-slate-500 hover:text-slate-700"
+                    >
+                      Remembered your password? <span className="font-bold text-medical-600 underline">Sign In</span>
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
-          </form>
+          ) : (
+            <div>
+              {portalType === 'patient' && (
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+                  <span className="text-xs font-bold text-slate-700">
+                    {isLogin ? 'Sign In to Your Account' : 'Register New Patient Profile'}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsLogin(!isLogin);
+                      setErrorMessage('');
+                    }}
+                    className="text-xs font-bold text-medical-600 hover:text-medical-800 underline"
+                  >
+                    {isLogin ? 'Need an account? Register here' : 'Already registered? Sign In'}
+                  </button>
+                </div>
+              )}
+
+              {portalType === 'doctor' && (
+                <div className="mb-6 p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-800 flex items-start space-x-2">
+                  <Stethoscope className="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Hospital Policy: </span>
+                    <span>Doctors and clinical staff are onboarded exclusively by hospital administration. If you require credentials, please contact the Chief Medical Officer.</span>
+                  </div>
+                </div>
+              )}
+
+              {errorMessage && (
+                <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2.5">
+                  <ShieldAlert className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-bold">Authentication Notice: </span>
+                    <span>{errorMessage}</span>
+                  </div>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {portalType === 'patient' && !isLogin && (
+                  <>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Full Legal Name <span className="text-rose-500">*</span>
+                      </label>
+                      <div className="relative">
+                        <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="text"
+                          required
+                          placeholder="e.g. John Doe"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                        Mobile Contact Number <span className="text-slate-400 font-normal">(10 Digits)</span>
+                      </label>
+                      <div className="relative">
+                        <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                        <input
+                          type="tel"
+                          placeholder="10-digit number (e.g. 9876543210)"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                          maxLength={10}
+                          className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Email Address <span className="text-rose-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      required
+                      placeholder={portalType === 'doctor' ? 'doctor@hospital.com' : 'patient@example.com'}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Password <span className="text-rose-500">*</span>
+                    </label>
+                    {isLogin && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsForgotPassword(true);
+                          setErrorMessage('');
+                          setSuccessMessage('');
+                        }}
+                        className="text-xs font-semibold text-medical-600 hover:text-medical-800 hover:underline"
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="password"
+                      required
+                      placeholder="••••••••"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-3">
+                  <button
+                    type="submit"
+                    disabled={submitting}
+                    className="w-full py-3 px-6 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center justify-center space-x-2 disabled:opacity-60"
+                  >
+                    <span>
+                      {submitting
+                        ? 'Verifying Credentials...'
+                        : portalType === 'doctor'
+                        ? 'Sign In to Doctor Portal'
+                        : isLogin
+                        ? 'Sign In'
+                        : 'Create Patient Profile'}
+                    </span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </div>

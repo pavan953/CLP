@@ -30,6 +30,11 @@ export const api = {
     body: JSON.stringify(credentials)
   }),
 
+  forgotPassword: (data) => request('/auth/forgot-password', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  }),
+
   register: (userData) => request('/auth/register', {
     method: 'POST',
     body: JSON.stringify(userData)

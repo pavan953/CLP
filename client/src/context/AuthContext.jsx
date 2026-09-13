@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     login,
     register,
+    forgotPassword: (data) => api.forgotPassword(data),
     updateUser,
     logout
   };

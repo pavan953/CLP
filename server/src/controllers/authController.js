@@ -352,9 +352,77 @@ const getPatients = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email, newPassword, confirmPassword, role } = req.body;
+
+    if (!email || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide your registered email and new password.'
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'New password must be at least 6 characters long.'
+      });
+    }
+
+    if (confirmPassword && newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: 'New passwords do not match. Please re-enter.'
+      });
+    }
+
+    const user = await DataService.findUserByEmail(email.trim());
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No account exists with this email address. Please check your email or register a new account.'
+      });
+    }
+
+    if (role && role !== user.role) {
+      if (role === 'doctor' && user.role === 'patient') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access Denied: This email belongs to a Patient account. Please switch to the Patient Portal to reset your password.'
+        });
+      }
+      if (role === 'patient' && user.role === 'doctor') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access Denied: This email belongs to a Doctor/Staff account. Please switch to the Doctor Portal to reset your password.'
+        });
+      }
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const userId = user._id || user.id;
+    await DataService.updateUser(userId, { password: hashedPassword });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Your password has been reset successfully. You can now sign in with your new credentials.'
+    });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error during password reset. ' + err.message
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
+  forgotPassword,
   addDoctor,
   updateProfile,
   getMe,
