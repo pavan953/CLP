@@ -1,0 +1,112 @@
+{
+  "users": [
+    {
+      "_id": "6aa6be864820de3126f05a8d",
+      "name": "Dr. Sarah Jenkins",
+      "email": "doctor.sarah@clinic.com",
+      "password": "$2a$10$0jMwbKZZ7zORYEzmoIGlK.Z/Hf2.wtfbV1y8ex3glVVphXkuRBxuy",
+      "role": "doctor",
+      "phone": "9876500001",
+      "specialty": "Cardiologist",
+      "department": "Cardiology",
+      "createdAt": "2026-09-13T15:17:26.052Z",
+      "updatedAt": "2026-09-13T15:17:26.053Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a8e",
+      "name": "Dr. Marcus Chen",
+      "email": "doctor.marcus@clinic.com",
+      "password": "$2a$10$0jMwbKZZ7zORYEzmoIGlK.Z/Hf2.wtfbV1y8ex3glVVphXkuRBxuy",
+      "role": "doctor",
+      "phone": "9876500002",
+      "specialty": "General Physician",
+      "department": "Internal Medicine",
+      "createdAt": "2026-09-13T15:17:26.054Z",
+      "updatedAt": "2026-09-13T15:17:26.054Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a8f",
+      "name": "Dr. Emily Taylor",
+      "email": "doctor.emily@clinic.com",
+      "password": "$2a$10$0jMwbKZZ7zORYEzmoIGlK.Z/Hf2.wtfbV1y8ex3glVVphXkuRBxuy",
+      "role": "doctor",
+      "phone": "9876500003",
+      "specialty": "Pediatrician",
+      "department": "Pediatrics",
+      "createdAt": "2026-09-13T15:17:26.054Z",
+      "updatedAt": "2026-09-13T15:17:26.054Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a90",
+      "name": "Alex Morgan",
+      "email": "patient@demo.com",
+      "password": "$2a$10$0jMwbKZZ7zORYEzmoIGlK.Z/Hf2.wtfbV1y8ex3glVVphXkuRBxuy",
+      "role": "patient",
+      "phone": "9876543210",
+      "createdAt": "2026-09-13T15:17:26.054Z",
+      "updatedAt": "2026-09-13T15:17:26.054Z"
+    }
+  ],
+  "appointments": [
+    {
+      "_id": "6aa6be864820de3126f05a91",
+      "status": "Pending",
+      "reason": "Chest tightness and occasional palpitations during exercise",
+      "aiSummary": "Clinical Summary: Patient reports exertional chest tightness and episodic palpitations. Recommended triage: Baseline ECG and cardiovascular assessment.",
+      "patientName": "Alex Morgan",
+      "mobileNumber": "9876543210",
+      "doctorName": "Dr. Sarah Jenkins",
+      "appointmentDate": "2026-09-13",
+      "appointmentTime": "10:00 AM",
+      "patientId": "6aa6be864820de3126f05a90",
+      "doctorId": "6aa6be864820de3126f05a8d",
+      "createdAt": "2026-09-13T15:17:26.054Z",
+      "updatedAt": "2026-09-13T15:17:26.054Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a92",
+      "status": "Pending",
+      "reason": "Seasonal allergy flare-up and persistent dry cough",
+      "aiSummary": "Clinical Summary: Upper respiratory symptoms consistent with allergic rhinitis. Recommended triage: Symptomatic antihistamine evaluation and chest auscultation.",
+      "patientName": "Emma Watson",
+      "mobileNumber": "9822334455",
+      "doctorName": "Dr. Marcus Chen",
+      "appointmentDate": "2026-09-14",
+      "appointmentTime": "02:30 PM",
+      "patientId": null,
+      "doctorId": "6aa6be864820de3126f05a8e",
+      "createdAt": "2026-09-13T15:17:26.054Z",
+      "updatedAt": "2026-09-13T15:17:26.054Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a93",
+      "status": "Completed",
+      "reason": "Routine annual pediatric developmental checkup",
+      "aiSummary": "Clinical Summary: Wellness checkup for child milestone progression.",
+      "patientName": "John Doe",
+      "mobileNumber": "9811223344",
+      "doctorName": "Dr. Emily Taylor",
+      "appointmentDate": "2026-09-11",
+      "appointmentTime": "11:15 AM",
+      "patientId": null,
+      "doctorId": "6aa6be864820de3126f05a8f",
+      "createdAt": "2026-09-13T15:17:26.055Z",
+      "updatedAt": "2026-09-13T15:17:26.055Z"
+    },
+    {
+      "_id": "6aa6be864820de3126f05a94",
+      "status": "Cancelled",
+      "reason": "Rescheduling requested due to emergency travel",
+      "aiSummary": "Administrative: Patient requested cancellation due to personal scheduling conflict.",
+      "patientName": "Robert Langdon",
+      "mobileNumber": "9899887766",
+      "doctorName": "Dr. Marcus Chen",
+      "appointmentDate": "2026-09-12",
+      "appointmentTime": "04:00 PM",
+      "patientId": null,
+      "doctorId": "6aa6be864820de3126f05a8e",
+      "createdAt": "2026-09-13T15:17:26.055Z",
+      "updatedAt": "2026-09-13T15:17:26.055Z"
+    }
+  ]
+}
