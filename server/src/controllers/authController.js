@@ -316,11 +316,30 @@ const getDoctors = async (req, res) => {
   }
 };
 
+// @desc    Get all registered patients in the hospital system (Doctor / Admin only)
+// @route   GET /api/auth/patients
+const getPatients = async (req, res) => {
+  try {
+    const patients = await DataService.getPatients();
+    return res.status(200).json({
+      success: true,
+      count: patients.length,
+      patients: patients.map(formatSafeUser)
+    });
+  } catch (err) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to fetch patients list.'
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   addDoctor,
   updateProfile,
   getMe,
-  getDoctors
+  getDoctors,
+  getPatients
 };

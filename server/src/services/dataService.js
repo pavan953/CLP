@@ -83,6 +83,17 @@ const DataService = {
       .map(({ password, ...doc }) => doc);
   },
 
+  async getPatients() {
+    const { isMongoConnected } = getStatus();
+    if (isMongoConnected) {
+      return await User.find({ role: 'patient' }).select('-password').sort({ createdAt: -1 });
+    }
+    const data = readData();
+    return data.users
+      .filter(u => u.role === 'patient')
+      .map(({ password, ...p }) => p);
+  },
+
   // --- APPOINTMENT OPERATIONS ---
   async createAppointment(appointmentData) {
     const { isMongoConnected } = getStatus();

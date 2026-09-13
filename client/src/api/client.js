@@ -44,6 +44,8 @@ export const api = {
 
   getDoctors: () => request('/auth/doctors'),
 
+  getPatients: () => request('/auth/patients'),
+
   addDoctor: (doctorData) => request('/auth/add-doctor', {
     method: 'POST',
     body: JSON.stringify(doctorData)

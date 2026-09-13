@@ -28,8 +28,9 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const [viewMode, setViewMode] = useState('list'); // 'list', 'calendar', 'staff'
   const [myOnly, setMyOnly] = useState(false);
 
-  // Doctors list for staff tab
+  // Doctors and Patients directory
   const [doctorsList, setDoctorsList] = useState([]);
+  const [patientsList, setPatientsList] = useState([]);
 
   // Add Doctor Form Modal
   const [showAddDoctorModal, setShowAddDoctorModal] = useState(false);
@@ -67,13 +68,26 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
     }
   };
 
+  const fetchPatients = async () => {
+    try {
+      const res = await api.getPatients();
+      if (res.success) {
+        setPatientsList(res.patients);
+      }
+    } catch (err) {
+      console.error('Failed to load patients list:', err);
+    }
+  };
+
   // Real-time synchronization polling every 4 seconds
   useEffect(() => {
     fetchAppointments(false);
     fetchDoctors();
+    fetchPatients();
 
     const interval = setInterval(() => {
       fetchAppointments(true);
+      fetchPatients();
     }, 4000);
 
     return () => clearInterval(interval);
@@ -243,6 +257,18 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
           </button>
 
           <button
+            onClick={() => setViewMode('patients')}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+              viewMode === 'patients'
+                ? 'bg-medical-50 text-medical-700 border border-medical-200'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            <span>Registered Patients ({patientsList.length})</span>
+          </button>
+
+          <button
             onClick={() => setViewMode('staff')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
               viewMode === 'staff'
@@ -251,7 +277,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
             }`}
           >
             <Stethoscope className="w-4 h-4" />
-            <span>Hospital Doctors Roster ({doctorsList.length})</span>
+            <span>Doctors Roster ({doctorsList.length})</span>
           </button>
         </div>
 
@@ -274,6 +300,84 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         <CalendarView
           appointments={appointments}
         />
+      )}
+
+      {viewMode === 'patients' && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
+          <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
+            <div>
+              <h3 className="text-lg font-bold text-slate-900">Registered Patients Directory</h3>
+              <p className="text-xs text-slate-500">Live verified user profiles registered with the hospital</p>
+            </div>
+            <div className="text-xs font-bold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl">
+              Total Patients: {patientsList.length}
+            </div>
+          </div>
+
+          {patientsList.length === 0 ? (
+            <div className="p-12 text-center">
+              <Users className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+              <p className="text-xs text-slate-500">No registered patients in the database yet. When users sign up, their profiles will appear here.</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 border-b border-slate-200 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                    <th className="py-3 px-6">Patient Name</th>
+                    <th className="py-3 px-6">Email & Phone</th>
+                    <th className="py-3 px-6">Blood Group / Gender</th>
+                    <th className="py-3 px-6">Emergency Contact</th>
+                    <th className="py-3 px-6">Medical Notes / Allergies</th>
+                    <th className="py-3 px-6">Appointments Booked</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-xs">
+                  {patientsList.map(p => {
+                    const patientAppts = appointments.filter(a => a.patientId === (p._id || p.id) || (a.patientName && a.patientName.toLowerCase() === p.name.toLowerCase()));
+                    return (
+                      <tr key={p._id || p.id} className="hover:bg-slate-50/70 transition">
+                        <td className="py-4 px-6 font-semibold text-slate-900">
+                          <div className="flex items-center space-x-2.5">
+                            <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                              {p.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span>{p.name}</span>
+                          </div>
+                        </td>
+                        <td className="py-4 px-6 text-slate-600">
+                          <div>{p.email}</div>
+                          <div className="text-[11px] text-slate-400">{p.phone || 'No phone'}</div>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="font-semibold text-slate-800">{p.bloodGroup || 'Not specified'}</span>
+                          {p.gender && <span className="text-slate-400 ml-1">({p.gender})</span>}
+                        </td>
+                        <td className="py-4 px-6 text-slate-600">
+                          {p.emergencyContact || 'None provided'}
+                        </td>
+                        <td className="py-4 px-6 text-slate-600 max-w-xs truncate">
+                          {p.allergies ? (
+                            <span className="text-rose-700 bg-rose-50 px-2 py-0.5 rounded text-[11px]">
+                              {p.allergies}
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 italic">No recorded allergies</span>
+                          )}
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full text-xs">
+                            {patientAppts.length} visits
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       )}
 
       {viewMode === 'staff' && (
