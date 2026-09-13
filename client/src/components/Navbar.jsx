@@ -47,7 +47,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   Hospital
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Premier 3D Clinical Care</p>
+              <p className="text-[11px] text-slate-400 hidden sm:block">Premier Clinical Center</p>
             </div>
           </div>
 

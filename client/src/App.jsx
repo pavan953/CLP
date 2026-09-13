@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Toast } from './components/Toast';
 import { ProfileModal } from './components/ProfileModal';
+import { ThreeDParticleBackground } from './components/ThreeDParticleBackground';
 import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { PatientDashboard } from './pages/PatientDashboard';
@@ -57,16 +58,26 @@ export function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col">
-      {/* Top Header */}
-      <Navbar
-        currentView={currentView}
-        onNavigate={handleNavigate}
-        onOpenProfile={() => setIsProfileOpen(true)}
-      />
+    <div className="min-h-screen bg-slate-50/50 text-slate-800 flex flex-col relative overflow-x-hidden">
+      {/* 3D Ambient Moving Particle Cloud in Background */}
+      <ThreeDParticleBackground />
 
-      {/* Main Content Area: Landing Page on initial entry with dynamic Auth & Dashboard routing */}
-      <main className="flex-1">
+      {/* Ambient Lighting Orbs */}
+      <div className="pointer-events-none fixed top-0 left-1/4 -translate-y-1/2 w-96 h-96 bg-cyan-200/20 rounded-full blur-3xl z-0" />
+      <div className="pointer-events-none fixed top-1/3 right-10 w-96 h-96 bg-teal-200/15 rounded-full blur-3xl z-0" />
+      <div className="pointer-events-none fixed bottom-10 left-10 w-80 h-80 bg-sky-200/20 rounded-full blur-3xl z-0" />
+
+      {/* Top Header */}
+      <div className="relative z-30">
+        <Navbar
+          currentView={currentView}
+          onNavigate={handleNavigate}
+          onOpenProfile={() => setIsProfileOpen(true)}
+        />
+      </div>
+
+      {/* Main Content Area */}
+      <main className="flex-1 relative z-10">
         {currentView === 'auth' ? (
           <AuthPage
             initialRole={authRole}
