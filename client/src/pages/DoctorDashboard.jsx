@@ -4,6 +4,7 @@ import { api } from '../api/client';
 import { AppointmentTable } from '../components/AppointmentTable';
 import { CalendarView } from '../components/CalendarView';
 import { StatsOverview } from '../components/StatsOverview';
+import { ThreeDCard } from '../components/ThreeDCard';
 import {
   Stethoscope,
   Calendar,
@@ -141,89 +142,93 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Doctor Header Banner */}
-      <div className="bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-medical-700/10 mb-8">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-md mb-2">
-              <Activity className="w-3.5 h-3.5" />
-              <span>Hospital Clinical Staff Portal • Live Real-Time Queue</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              {user?.name || 'Doctor'}
-            </h1>
-            <p className="text-sm text-medical-100 mt-1 max-w-xl">
-              Specialty: <span className="font-semibold text-white">{user?.specialty || 'Medical Specialist'}</span> • Department: <span className="font-semibold text-white">{user?.department || 'OPD'}</span>
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2.5">
-            {/* Real-Time Status Indicator */}
-            <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Live Sync Active</span>
+      {/* Doctor Header Banner with 3D Card Depth */}
+      <ThreeDCard depth={12} maxRotation={4} className="rounded-3xl mb-8">
+        <div className="bg-gradient-to-r from-medical-800 via-medical-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-medical-900/25 preserve-3d">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-md badge-3d">
+                <Activity className="w-3.5 h-3.5" />
+                <span>Hospital Clinical Staff Portal • Live Real-Time Queue</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight translate-z-10">
+                {user?.name || 'Doctor'}
+              </h1>
+              <p className="text-sm text-medical-100 max-w-xl">
+                Specialty: <span className="font-semibold text-white">{user?.specialty || 'Medical Specialist'}</span> • Department: <span className="font-semibold text-white">{user?.department || 'OPD'}</span>
+              </p>
             </div>
 
-            {/* Refresh Button */}
-            <button
-              onClick={() => fetchAppointments(false)}
-              className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition shadow-sm"
-              title="Force Refresh Data"
-            >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex flex-wrap items-center gap-2.5 translate-z-20">
+              {/* Real-Time Status Indicator */}
+              <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15 badge-3d">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>Live Sync Active</span>
+              </div>
 
-            {/* Edit Clinical Profile Button */}
-            <button
-              onClick={onOpenProfile}
-              className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5"
-            >
-              <Stethoscope className="w-4 h-4 text-teal-300" />
-              <span>Edit My Profile</span>
-            </button>
+              {/* Refresh Button */}
+              <button
+                onClick={() => fetchAppointments(false)}
+                className="p-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white border border-white/20 transition shadow-sm badge-3d"
+                title="Force Refresh Data"
+              >
+                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              </button>
 
-            {/* Onboard Doctor Button */}
-            <button
-              onClick={() => setShowAddDoctorModal(true)}
-              className="px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-white font-bold text-xs shadow-md transition flex items-center space-x-1.5"
-            >
-              <UserPlus className="w-4 h-4" />
-              <span>Onboard Doctor</span>
-            </button>
+              {/* Edit Clinical Profile Button */}
+              <button
+                onClick={onOpenProfile}
+                className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5 badge-3d"
+              >
+                <Stethoscope className="w-4 h-4 text-teal-300" />
+                <span>Edit My Profile</span>
+              </button>
 
-            {/* Scope Filter Toggle */}
-            <button
-              onClick={() => setMyOnly(!myOnly)}
-              className="px-4 py-2.5 rounded-xl bg-white text-medical-800 hover:bg-medical-50 font-bold text-xs shadow-md transition flex items-center space-x-2"
-            >
-              <Users className="w-4 h-4 text-medical-600" />
-              <span>{myOnly ? 'Showing My Patients' : 'Showing All Patients'}</span>
-            </button>
+              {/* Onboard Doctor Button */}
+              <button
+                onClick={() => setShowAddDoctorModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-teal-500 text-white font-bold text-xs btn-3d-teal flex items-center space-x-1.5"
+              >
+                <UserPlus className="w-4 h-4" />
+                <span>Onboard Doctor</span>
+              </button>
+
+              {/* Scope Filter Toggle */}
+              <button
+                onClick={() => setMyOnly(!myOnly)}
+                className="px-4 py-2.5 rounded-xl bg-white text-medical-800 font-bold text-xs btn-3d-white flex items-center space-x-2"
+              >
+                <Users className="w-4 h-4 text-medical-600" />
+                <span>{myOnly ? 'Showing My Patients' : 'Showing All Patients'}</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </ThreeDCard>
 
       {/* Doctor Incomplete Profile Prompt */}
       {!user?.isProfileComplete && (
-        <div className="mb-8 p-5 rounded-2xl bg-amber-50 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start space-x-3">
-            <div className="p-2.5 rounded-xl bg-amber-100 text-amber-800 flex-shrink-0 mt-0.5">
-              <Stethoscope className="w-5 h-5 text-amber-600" />
+        <ThreeDCard depth={8} maxRotation={3} className="rounded-2xl mb-8">
+          <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 preserve-3d">
+            <div className="flex items-start space-x-3">
+              <div className="p-2.5 rounded-xl bg-amber-100 text-amber-800 flex-shrink-0 mt-0.5 badge-3d translate-z-10">
+                <Stethoscope className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h4 className="font-bold text-sm text-slate-900 translate-z-10">Please Complete Your Clinical Profile</h4>
+                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Add your medical qualifications, years of experience, consultation fee, cabin room, and clinical bio so patients can view your profile on the hospital directory.
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-bold text-sm text-slate-900">Please Complete Your Clinical Profile</h4>
-              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
-                Add your medical qualifications, years of experience, consultation fee, cabin room, and clinical bio so patients can view your profile on the hospital directory.
-              </p>
-            </div>
+            <button
+              onClick={onOpenProfile}
+              className="self-start sm:self-center px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition whitespace-nowrap btn-3d translate-z-20"
+            >
+              Complete Profile Now →
+            </button>
           </div>
-          <button
-            onClick={onOpenProfile}
-            className="self-start sm:self-center px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition whitespace-nowrap"
-          >
-            Complete Profile Now →
-          </button>
-        </div>
+        </ThreeDCard>
       )}
 
       {/* Analytics Overview */}

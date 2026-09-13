@@ -5,7 +5,8 @@ import { AppointmentForm } from '../components/AppointmentForm';
 import { AppointmentTable } from '../components/AppointmentTable';
 import { CalendarView } from '../components/CalendarView';
 import { StatsOverview } from '../components/StatsOverview';
-import { PlusCircle, List, Calendar, UserCheck, RefreshCw, Radio } from 'lucide-react';
+import { ThreeDCard } from '../components/ThreeDCard';
+import { PlusCircle, List, Calendar, UserCheck, RefreshCw, Radio, Sparkles } from 'lucide-react';
 
 export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }) => {
   const { user } = useAuth();
@@ -57,50 +58,52 @@ export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Patient Welcome Banner */}
-      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-medical-600 rounded-3xl p-6 sm:p-8 text-white shadow-lg shadow-teal-700/10 mb-8">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-md mb-2">
-              <UserCheck className="w-3.5 h-3.5" />
-              <span>Verified Patient Portal</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Welcome, {user?.name || 'Patient'}
-            </h1>
-            <p className="text-sm text-emerald-100 mt-1 max-w-xl">
-              Schedule your next doctor consultation, view interactive calendars, and track your appointment statuses in real-time.
-            </p>
-          </div>
-
-          <div className="flex items-center space-x-2">
-            {/* Live Sync Indicator */}
-            <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15">
-              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-              <span>Live Sync Active</span>
+      {/* Patient Welcome Banner with 3D Card Depth */}
+      <ThreeDCard depth={12} maxRotation={5} className="rounded-3xl mb-8">
+        <div className="bg-gradient-to-r from-emerald-700 via-teal-700 to-medical-700 rounded-3xl p-6 sm:p-8 text-white shadow-2xl shadow-teal-900/20 preserve-3d">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-md badge-3d">
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Verified Patient Portal</span>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight translate-z-10">
+                Welcome, {user?.name || 'Patient'}
+              </h1>
+              <p className="text-xs sm:text-sm text-emerald-100 max-w-xl">
+                Schedule your next doctor consultation, view interactive calendars, and track your appointment statuses in real-time.
+              </p>
             </div>
 
-            {/* Health Profile & Settings Button */}
-            <button
-              onClick={onOpenProfile}
-              className="px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5"
-            >
-              <UserCheck className="w-4 h-4 text-emerald-200" />
-              <span>Health Profile</span>
-            </button>
+            <div className="flex flex-wrap items-center gap-2.5 translate-z-20">
+              {/* Live Sync Indicator */}
+              <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15 badge-3d">
+                <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                <span>Live Sync Active</span>
+              </div>
 
-            <button
-              onClick={() => setActiveTab('book')}
-              className="px-4 py-2.5 rounded-xl bg-white text-teal-800 hover:bg-emerald-50 font-bold text-xs shadow-md transition flex items-center space-x-2"
-            >
-              <PlusCircle className="w-4 h-4 text-emerald-600" />
-              <span>Book Appointment</span>
-            </button>
+              {/* Health Profile & Settings Button */}
+              <button
+                onClick={onOpenProfile}
+                className="px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5 badge-3d"
+              >
+                <UserCheck className="w-4 h-4 text-emerald-200" />
+                <span>Health Profile</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('book')}
+                className="px-4 py-2.5 rounded-xl bg-white text-teal-800 font-bold text-xs btn-3d-white flex items-center space-x-2"
+              >
+                <PlusCircle className="w-4 h-4 text-emerald-600" />
+                <span>Book Appointment</span>
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </ThreeDCard>
 
-      {/* Patient Stats Overview */}
+      {/* Patient Stats Overview with 3D Sheen */}
       <StatsOverview appointments={appointments} />
 
       {/* Navigation Tabs */}
