@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from './context/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Toast } from './components/Toast';
+import { ProfileModal } from './components/ProfileModal';
 import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { PatientDashboard } from './pages/PatientDashboard';
@@ -14,6 +15,7 @@ export function App() {
   const [currentView, setCurrentView] = useState('landing'); // 'landing', 'auth', 'dashboard'
   const [authRole, setAuthRole] = useState('patient'); // 'patient' or 'doctor'
   const [preselectedDoctor, setPreselectedDoctor] = useState('');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const showToast = (message, type = 'info') => {
     setToast({ message, type });
@@ -55,6 +57,7 @@ export function App() {
       <Navbar
         currentView={currentView}
         onNavigate={handleNavigate}
+        onOpenProfile={() => setIsProfileOpen(true)}
       />
 
       {/* Main Content Area based on active view */}
@@ -83,11 +86,15 @@ export function App() {
                 onBackToHome={() => setCurrentView('landing')}
               />
             ) : role === 'doctor' ? (
-              <DoctorDashboard showToast={showToast} />
+              <DoctorDashboard
+                showToast={showToast}
+                onOpenProfile={() => setIsProfileOpen(true)}
+              />
             ) : (
               <PatientDashboard
                 showToast={showToast}
                 preselectedDoctor={preselectedDoctor}
+                onOpenProfile={() => setIsProfileOpen(true)}
               />
             )}
           </>
@@ -111,6 +118,13 @@ export function App() {
           </div>
         </div>
       </footer>
+
+      {/* User / Doctor Profile Settings Modal */}
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        showToast={showToast}
+      />
 
       {/* Toast Notification Container */}
       <Toast

@@ -49,6 +49,29 @@ const DataService = {
     return newUser;
   },
 
+  async updateUser(id, updateData) {
+    const { isMongoConnected } = getStatus();
+    if (isMongoConnected) {
+      return await User.findByIdAndUpdate(
+        id,
+        { ...updateData, updatedAt: new Date() },
+        { new: true, runValidators: true }
+      ).select('-password');
+    }
+    const data = readData();
+    const index = data.users.findIndex(u => u._id === id.toString() || u.id === id.toString());
+    if (index === -1) return null;
+
+    data.users[index] = {
+      ...data.users[index],
+      ...updateData,
+      updatedAt: new Date().toISOString()
+    };
+    writeData(data);
+    const { password, ...safeUser } = data.users[index];
+    return safeUser;
+  },
+
   async getDoctors() {
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {

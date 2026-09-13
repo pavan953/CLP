@@ -1,16 +1,16 @@
 {
   "users": [
     {
-      "_id": "6aa6c35518b5e88bb695bbf2",
+      "_id": "6aa6c66c03030196952abfa9",
       "name": "Dr. Sarah Jenkins",
       "email": "admin@hospital.com",
-      "password": "$2a$10$N0RpmLSKet6o9PX0Nd75..bYMuxDkRGwqzUj7.HtzyluF31dtBvya",
+      "password": "$2a$10$iYbAeWJGbiuIa.GobEodBe6AhrpllExu9of8/3j6WwQaVoZiGjF2y",
       "role": "doctor",
       "phone": "+1 (555) 019-2834",
       "specialty": "Chief Medical Officer / Cardiologist",
       "department": "Cardiology & Executive Medicine",
-      "createdAt": "2026-09-13T15:37:57.110Z",
-      "updatedAt": "2026-09-13T15:37:57.112Z"
+      "createdAt": "2026-09-13T15:51:08.799Z",
+      "updatedAt": "2026-09-13T15:51:08.808Z"
     }
   ],
   "appointments": []

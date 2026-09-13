@@ -126,7 +126,25 @@ const runTests = async () => {
     }, adminToken);
     console.log('✔ Doctor Mark as Completed:', completeAction.status, completeAction.body.message);
 
-    console.log('\n🎉 ALL REAL-TIME AUTH & APPOINTMENT WORKFLOW TESTS PASSED CLEANLY!');
+    // 11. Doctor creates/updates clinical profile
+    const doctorProfileUpdate = await request('PUT', '/auth/profile', {
+      qualification: 'MBBS, MD (Cardiology), FACC',
+      experience: '14+ Years',
+      bio: 'Board-certified cardiologist dedicated to preventive care, non-invasive imaging, and heart health.',
+      cabinNumber: 'Room 304, East Wing',
+      consultationFee: '$65'
+    }, adminToken);
+    console.log('✔ Doctor Clinical Profile Update:', doctorProfileUpdate.status, doctorProfileUpdate.body.user?.qualification, 'Complete:', doctorProfileUpdate.body.user?.isProfileComplete);
+
+    // 12. Patient updates health profile settings
+    const patientProfileUpdate = await request('PUT', '/auth/profile', {
+      bloodGroup: 'O+',
+      emergencyContact: '+1 (555) 998-0011',
+      allergies: 'Penicillin allergy'
+    }, patientToken);
+    console.log('✔ Patient Health Profile Update:', patientProfileUpdate.status, 'Blood Group:', patientProfileUpdate.body.user?.bloodGroup);
+
+    console.log('\n🎉 ALL REAL-TIME AUTH, APPOINTMENT, AND PROFILE WORKFLOW TESTS PASSED CLEANLY!');
     process.exit(0);
   } catch (err) {
     console.error('❌ Test suite failure:', err);

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Stethoscope, User, LogOut, HeartPulse, Calendar, AlertTriangle, X } from 'lucide-react';
 
-export const Navbar = ({ currentView, onNavigate }) => {
+export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
   const { user, role, logout } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
 
@@ -93,20 +93,33 @@ export const Navbar = ({ currentView, onNavigate }) => {
                   <span>{role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}</span>
                 </button>
 
-                {/* Verified Role Badge (No switch allowed!) */}
-                <div className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                {/* Verified Role Badge (Clickable to open profile settings) */}
+                <button
+                  onClick={onOpenProfile}
+                  title="Click to view & edit profile settings"
+                  className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left"
+                >
                   {role === 'doctor' ? (
-                    <Stethoscope className="w-4 h-4 text-medical-600" />
+                    <Stethoscope className="w-4 h-4 text-medical-600 flex-shrink-0" />
                   ) : (
-                    <User className="w-4 h-4 text-emerald-600" />
+                    <User className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                   )}
                   <div>
                     <span className="font-bold text-slate-900 block leading-none">{user.name}</span>
                     <span className="text-[10px] text-slate-500 capitalize">
-                      {role === 'doctor' ? 'Medical Staff' : 'Verified Patient'}
+                      {role === 'doctor' ? 'Edit Doctor Profile' : 'Profile Settings'}
                     </span>
                   </div>
-                </div>
+                </button>
+
+                {/* Mobile Profile button */}
+                <button
+                  onClick={onOpenProfile}
+                  title="Profile Settings"
+                  className="sm:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+                >
+                  <User className="w-4 h-4" />
+                </button>
 
                 {/* Logout Button (Triggers Confirmation Modal) */}
                 <button

@@ -303,15 +303,31 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                   </div>
 
                   <h3 className="text-base font-bold text-slate-900">{doc.name}</h3>
-                  <div className="text-xs font-semibold text-medical-600 mt-0.5">
+                  {doc.qualification && (
+                    <div className="text-[11px] font-semibold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md inline-block mt-1">
+                      {doc.qualification}
+                    </div>
+                  )}
+                  <div className="text-xs font-semibold text-medical-600 mt-1">
                     {doc.specialty || 'General Physician'}
                   </div>
                   <div className="text-[11px] text-slate-400 mt-0.5">
                     Department: {doc.department || 'Outpatient Department'}
                   </div>
 
+                  {doc.bio && (
+                    <p className="text-xs text-slate-600 mt-2 line-clamp-2 italic">
+                      "{doc.bio}"
+                    </p>
+                  )}
+
+                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                    <span>Exp: {doc.experience || 'Experienced'}</span>
+                    <span className="font-bold text-slate-800">Fee: {doc.consultationFee || '$50'}</span>
+                  </div>
+
                   {doc.phone && (
-                    <div className="flex items-center space-x-1.5 text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100">
+                    <div className="flex items-center space-x-1.5 text-xs text-slate-500 mt-2">
                       <PhoneCall className="w-3.5 h-3.5 text-slate-400" />
                       <span>{doc.phone}</span>
                     </div>

@@ -30,6 +30,7 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
+  // --- Doctor Professional Profile ---
   specialty: {
     type: String,
     trim: true,
@@ -39,6 +40,66 @@ const UserSchema = new mongoose.Schema({
     type: String,
     trim: true,
     default: 'OPD'
+  },
+  qualification: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  experience: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  bio: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  consultationFee: {
+    type: String,
+    trim: true,
+    default: '$50'
+  },
+  availableDays: {
+    type: String,
+    trim: true,
+    default: 'Mon - Fri'
+  },
+  cabinNumber: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  isProfileComplete: {
+    type: Boolean,
+    default: false
+  },
+  // --- Patient Medical Profile ---
+  bloodGroup: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  dateOfBirth: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  gender: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  emergencyContact: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  allergies: {
+    type: String,
+    trim: true,
+    default: ''
   }
 }, {
   timestamps: true

@@ -57,6 +57,12 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
+  const updateUser = (updatedUserData) => {
+    const merged = { ...user, ...updatedUserData };
+    setUser(merged);
+    localStorage.setItem('medibook_user', JSON.stringify(merged));
+  };
+
   const logout = () => {
     setUser(null);
     setToken(null);
@@ -72,6 +78,7 @@ export const AuthProvider = ({ children }) => {
     isAuthenticated: !!user,
     login,
     register,
+    updateUser,
     logout
   };
 

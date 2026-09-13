@@ -21,7 +21,7 @@ import {
   Building
 } from 'lucide-react';
 
-export const DoctorDashboard = ({ showToast }) => {
+export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -159,6 +159,15 @@ export const DoctorDashboard = ({ showToast }) => {
               <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
 
+            {/* Edit Clinical Profile Button */}
+            <button
+              onClick={onOpenProfile}
+              className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5"
+            >
+              <Stethoscope className="w-4 h-4 text-teal-300" />
+              <span>Edit My Profile</span>
+            </button>
+
             {/* Onboard Doctor Button */}
             <button
               onClick={() => setShowAddDoctorModal(true)}
@@ -179,6 +188,29 @@ export const DoctorDashboard = ({ showToast }) => {
           </div>
         </div>
       </div>
+
+      {/* Doctor Incomplete Profile Prompt */}
+      {!user?.isProfileComplete && (
+        <div className="mb-8 p-5 rounded-2xl bg-amber-50 border border-amber-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start space-x-3">
+            <div className="p-2.5 rounded-xl bg-amber-100 text-amber-800 flex-shrink-0 mt-0.5">
+              <Stethoscope className="w-5 h-5 text-amber-600" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-slate-900">Please Complete Your Clinical Profile</h4>
+              <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                Add your medical qualifications, years of experience, consultation fee, cabin room, and clinical bio so patients can view your profile on the hospital directory.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onOpenProfile}
+            className="self-start sm:self-center px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-md shadow-amber-600/20 transition whitespace-nowrap"
+          >
+            Complete Profile Now →
+          </button>
+        </div>
+      )}
 
       {/* Analytics Overview */}
       <StatsOverview appointments={appointments} />

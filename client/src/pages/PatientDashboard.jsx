@@ -7,7 +7,7 @@ import { CalendarView } from '../components/CalendarView';
 import { StatsOverview } from '../components/StatsOverview';
 import { PlusCircle, List, Calendar, UserCheck, RefreshCw, Radio } from 'lucide-react';
 
-export const PatientDashboard = ({ showToast, preselectedDoctor }) => {
+export const PatientDashboard = ({ showToast, preselectedDoctor, onOpenProfile }) => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -79,6 +79,15 @@ export const PatientDashboard = ({ showToast, preselectedDoctor }) => {
               <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
               <span>Live Sync Active</span>
             </div>
+
+            {/* Health Profile & Settings Button */}
+            <button
+              onClick={onOpenProfile}
+              className="px-4 py-2.5 rounded-xl bg-white/20 hover:bg-white/30 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5"
+            >
+              <UserCheck className="w-4 h-4 text-emerald-200" />
+              <span>Health Profile</span>
+            </button>
 
             <button
               onClick={() => setActiveTab('book')}

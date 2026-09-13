@@ -7,6 +7,32 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 
+// Helper to format safe user object without password
+const formatSafeUser = (user) => ({
+  id: user._id || user.id,
+  _id: user._id || user.id,
+  name: user.name,
+  email: user.email,
+  role: user.role,
+  phone: user.phone || '',
+  // Doctor fields
+  specialty: user.specialty || '',
+  department: user.department || '',
+  qualification: user.qualification || '',
+  experience: user.experience || '',
+  bio: user.bio || '',
+  consultationFee: user.consultationFee || '$50',
+  availableDays: user.availableDays || 'Mon - Fri',
+  cabinNumber: user.cabinNumber || '',
+  isProfileComplete: !!user.isProfileComplete,
+  // Patient fields
+  bloodGroup: user.bloodGroup || '',
+  dateOfBirth: user.dateOfBirth || '',
+  gender: user.gender || '',
+  emergencyContact: user.emergencyContact || '',
+  allergies: user.allergies || ''
+});
+
 // @desc    Register a new Patient (Public registration is strictly for Patients)
 // @route   POST /api/auth/register
 const register = async (req, res) => {
@@ -38,7 +64,6 @@ const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Public registration is locked to patient role
     const newUser = await DataService.createUser({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -53,13 +78,7 @@ const register = async (req, res) => {
       success: true,
       message: 'Patient account created successfully!',
       token,
-      user: {
-        id: newUser._id,
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-        phone: newUser.phone
-      }
+      user: formatSafeUser(newUser)
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -105,15 +124,7 @@ const login = async (req, res) => {
       success: true,
       message: `Welcome back, ${user.name}!`,
       token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        phone: user.phone,
-        specialty: user.specialty,
-        department: user.department
-      }
+      user: formatSafeUser(user)
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -128,7 +139,7 @@ const login = async (req, res) => {
 // @route   POST /api/auth/add-doctor
 const addDoctor = async (req, res) => {
   try {
-    const { name, email, password, specialty, department, phone } = req.body;
+    const { name, email, password, specialty, department, phone, qualification, experience, bio, consultationFee, cabinNumber } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -155,21 +166,19 @@ const addDoctor = async (req, res) => {
       role: 'doctor',
       phone: phone ? phone.trim() : '',
       specialty: (specialty && specialty.trim()) || 'General Physician',
-      department: (department && department.trim()) || 'General OPD'
+      department: (department && department.trim()) || 'General OPD',
+      qualification: qualification ? qualification.trim() : '',
+      experience: experience ? experience.trim() : '',
+      bio: bio ? bio.trim() : '',
+      consultationFee: consultationFee ? consultationFee.trim() : '$50',
+      cabinNumber: cabinNumber ? cabinNumber.trim() : '',
+      isProfileComplete: !!(qualification && bio)
     });
 
     return res.status(201).json({
       success: true,
       message: `Doctor ${newDoctor.name} onboarded to hospital directory successfully!`,
-      doctor: {
-        id: newDoctor._id,
-        name: newDoctor.name,
-        email: newDoctor.email,
-        role: newDoctor.role,
-        phone: newDoctor.phone,
-        specialty: newDoctor.specialty,
-        department: newDoctor.department
-      }
+      doctor: formatSafeUser(newDoctor)
     });
   } catch (err) {
     console.error('Add doctor error:', err);
@@ -180,12 +189,112 @@ const addDoctor = async (req, res) => {
   }
 };
 
+// @desc    Update User / Doctor Profile Settings
+// @route   PUT /api/auth/profile
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.id;
+    const {
+      name,
+      phone,
+      // Doctor fields
+      specialty,
+      department,
+      qualification,
+      experience,
+      bio,
+      consultationFee,
+      availableDays,
+      cabinNumber,
+      // Patient fields
+      bloodGroup,
+      dateOfBirth,
+      gender,
+      emergencyContact,
+      allergies,
+      // Password change
+      currentPassword,
+      newPassword
+    } = req.body;
+
+    const updateFields = {};
+
+    if (name && name.trim()) updateFields.name = name.trim();
+    if (phone !== undefined) updateFields.phone = phone.trim();
+
+    if (req.user.role === 'doctor') {
+      if (specialty !== undefined) updateFields.specialty = specialty.trim();
+      if (department !== undefined) updateFields.department = department.trim();
+      if (qualification !== undefined) updateFields.qualification = qualification.trim();
+      if (experience !== undefined) updateFields.experience = experience.trim();
+      if (bio !== undefined) updateFields.bio = bio.trim();
+      if (consultationFee !== undefined) updateFields.consultationFee = consultationFee.trim();
+      if (availableDays !== undefined) updateFields.availableDays = availableDays.trim();
+      if (cabinNumber !== undefined) updateFields.cabinNumber = cabinNumber.trim();
+      
+      // Mark profile complete if key fields are provided
+      if (qualification || bio || updateFields.qualification || updateFields.bio) {
+        updateFields.isProfileComplete = true;
+      }
+    } else if (req.user.role === 'patient') {
+      if (bloodGroup !== undefined) updateFields.bloodGroup = bloodGroup.trim();
+      if (dateOfBirth !== undefined) updateFields.dateOfBirth = dateOfBirth.trim();
+      if (gender !== undefined) updateFields.gender = gender.trim();
+      if (emergencyContact !== undefined) updateFields.emergencyContact = emergencyContact.trim();
+      if (allergies !== undefined) updateFields.allergies = allergies.trim();
+    }
+
+    // Handle password change if requested
+    if (currentPassword && newPassword) {
+      if (newPassword.length < 6) {
+        return res.status(400).json({
+          success: false,
+          message: 'New password must be at least 6 characters long.'
+        });
+      }
+
+      const rawUser = await DataService.findUserByEmail(req.user.email);
+      if (!rawUser) {
+        return res.status(404).json({ success: false, message: 'User not found.' });
+      }
+
+      const isMatch = await bcrypt.compare(currentPassword, rawUser.password);
+      if (!isMatch) {
+        return res.status(400).json({
+          success: false,
+          message: 'Current password is incorrect. Please verify your current password.'
+        });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      updateFields.password = await bcrypt.hash(newPassword, salt);
+    }
+
+    const updated = await DataService.updateUser(userId, updateFields);
+    if (!updated) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully!',
+      user: formatSafeUser(updated)
+    });
+  } catch (err) {
+    console.error('Update profile error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to update profile. ' + err.message
+    });
+  }
+};
+
 // @desc    Get current user profile
 // @route   GET /api/auth/me
 const getMe = async (req, res) => {
   return res.status(200).json({
     success: true,
-    user: req.user
+    user: formatSafeUser(req.user)
   });
 };
 
@@ -197,7 +306,7 @@ const getDoctors = async (req, res) => {
     return res.status(200).json({
       success: true,
       count: doctors.length,
-      doctors
+      doctors: doctors.map(formatSafeUser)
     });
   } catch (err) {
     return res.status(500).json({
@@ -211,6 +320,7 @@ module.exports = {
   register,
   login,
   addDoctor,
+  updateProfile,
   getMe,
   getDoctors
 };
