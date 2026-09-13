@@ -16,7 +16,7 @@ const TIME_SLOTS = [
   '05:00 PM'
 ];
 
-export const AppointmentForm = ({ onAppointmentCreated, showToast }) => {
+export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDoctor = '' }) => {
   const { user } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(true);
@@ -24,7 +24,7 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast }) => {
   // Form Fields strictly required by assignment
   const [patientName, setPatientName] = useState(user?.role === 'patient' ? user.name : '');
   const [mobileNumber, setMobileNumber] = useState(user?.phone || '');
-  const [doctorName, setDoctorName] = useState('');
+  const [doctorName, setDoctorName] = useState(preselectedDoctor || '');
   const [doctorId, setDoctorId] = useState('');
   const [appointmentDate, setAppointmentDate] = useState('');
   const [appointmentTime, setAppointmentTime] = useState('');
@@ -45,8 +45,16 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast }) => {
         const res = await api.getDoctors();
         if (res.success && res.doctors.length > 0) {
           setDoctors(res.doctors);
-          setDoctorName(res.doctors[0].name);
-          setDoctorId(res.doctors[0]._id || res.doctors[0].id);
+          if (!preselectedDoctor) {
+            setDoctorName(res.doctors[0].name);
+            setDoctorId(res.doctors[0]._id || res.doctors[0].id);
+          } else {
+            const matched = res.doctors.find(d => d.name === preselectedDoctor);
+            if (matched) {
+              setDoctorName(matched.name);
+              setDoctorId(matched._id || matched.id);
+            }
+          }
         }
       } catch (err) {
         console.error('Error fetching doctors:', err);

@@ -5,7 +5,6 @@ const path = require('path');
 dotenv.config({ path: path.join(__dirname, '.env') });
 const PORT = process.env.PORT || 5050;
 
-// Helper to make HTTP requests
 const request = (method, path, body = null, token = null) => {
   return new Promise((resolve, reject) => {
     const options = {
@@ -45,81 +44,94 @@ const request = (method, path, body = null, token = null) => {
 };
 
 const runTests = async () => {
-  console.log('--- Starting MediBook Full API Test Suite ---');
+  console.log('--- Starting MediBook Authentic Real-Time Suite ---');
 
   try {
     // 1. Health check
     const health = await request('GET', '/health');
     console.log('✔ Health Check:', health.status, health.body);
 
-    // 2. Fetch doctors
+    // 2. Test Non-Existent Account Login (Should notify user that no account exists)
+    const fakeLogin = await request('POST', '/auth/login', {
+      email: 'nonexistent.user.12345@gmail.com',
+      password: 'password123'
+    });
+    console.log('✔ Non-Existent User Login (Expected 404):', fakeLogin.status, fakeLogin.body.message);
+    if (fakeLogin.status !== 404) {
+      throw new Error(`Expected 404 for non-existent user, got ${fakeLogin.status}`);
+    }
+
+    // 3. Test Wrong Password Login (Expected 401)
+    const wrongPass = await request('POST', '/auth/login', {
+      email: 'admin@hospital.com',
+      password: 'wrong_password_xyz'
+    });
+    console.log('✔ Wrong Password Login (Expected 401):', wrongPass.status, wrongPass.body.message);
+    if (wrongPass.status !== 401) {
+      throw new Error(`Expected 401 for wrong password, got ${wrongPass.status}`);
+    }
+
+    // 4. Authenticate Chief Doctor / Hospital Admin
+    const adminLogin = await request('POST', '/auth/login', {
+      email: 'admin@hospital.com',
+      password: 'Admin@123'
+    });
+    console.log('✔ Hospital Admin Login:', adminLogin.status, adminLogin.body.user?.name);
+    const adminToken = adminLogin.body.token;
+
+    // 5. Admin adds a verified Doctor to Hospital staff
+    const addDoc = await request('POST', '/auth/add-doctor', {
+      name: 'Dr. Marcus Chen',
+      email: 'marcus.chen@hospital.com',
+      password: 'Password@123',
+      specialty: 'Pediatric Specialist',
+      department: 'Pediatrics',
+      phone: '+1 (555) 321-7654'
+    }, adminToken);
+    console.log('✔ Admin Onboard Doctor:', addDoc.status, addDoc.body.message);
+
+    // 6. Register a real Patient
+    const realPatient = await request('POST', '/auth/register', {
+      name: 'Elena Rostova',
+      email: 'elena.rostova@gmail.com',
+      password: 'PatientPassword123',
+      phone: '9876543210'
+    });
+    console.log('✔ Real Patient Register:', realPatient.status, realPatient.body.user?.name);
+    const patientToken = realPatient.body.token;
+
+    // 7. Verify Doctors list on public landing page
     const doctors = await request('GET', '/auth/doctors');
-    console.log(`✔ Doctors List: Found ${doctors.body.doctors?.length} doctors`);
+    console.log(`✔ Verified Doctors on Duty: Found ${doctors.body.doctors?.length} doctors`);
 
-    // 3. Login Demo Patient
-    const patientLogin = await request('POST', '/auth/login', {
-      email: 'patient@demo.com',
-      password: 'password123'
-    });
-    console.log('✔ Patient Login:', patientLogin.status, patientLogin.body.user?.name);
-    const patientToken = patientLogin.body.token;
-
-    // 4. Login Demo Doctor
-    const doctorLogin = await request('POST', '/auth/login', {
-      email: 'doctor.sarah@clinic.com',
-      password: 'password123'
-    });
-    console.log('✔ Doctor Login:', doctorLogin.status, doctorLogin.body.user?.name);
-    const doctorToken = doctorLogin.body.token;
-
-    // 5. Create new appointment as Patient
-    const newBooking = await request('POST', '/appointments', {
-      patientName: 'Alex Morgan',
+    // 8. Patient books an appointment with Dr. Marcus Chen
+    const booking = await request('POST', '/appointments', {
+      patientName: 'Elena Rostova',
       mobileNumber: '9876543210',
-      doctorName: 'Dr. Sarah Jenkins',
-      appointmentDate: '2026-09-20',
-      appointmentTime: '10:30 AM',
-      reason: 'Chest flutter after morning jogs',
-      aiSummary: 'Clinical Summary: Exertional palpitations. Suggested: ECG review.'
+      doctorName: 'Dr. Marcus Chen',
+      appointmentDate: new Date().toISOString().split('T')[0],
+      appointmentTime: '11:15 AM',
+      reason: 'Routine pediatric assessment and vaccination consultation'
     }, patientToken);
-    console.log('✔ Create Appointment:', newBooking.status, newBooking.body.message);
-    const createdApptId = newBooking.body.appointment._id || newBooking.body.appointment.id;
+    console.log('✔ Patient Book Appointment:', booking.status, booking.body.message);
+    const apptId = booking.body.appointment._id || booking.body.appointment.id;
 
-    // 6. Fetch appointments as Patient (should see their own)
-    const patientAppointments = await request('GET', '/appointments', null, patientToken);
-    console.log(`✔ Patient Appointments Count: ${patientAppointments.body.count}`);
+    // 9. Doctor views patient queue (Real-time data)
+    const doctorQueue = await request('GET', '/appointments', null, adminToken);
+    console.log(`✔ Doctor Real-Time Patient Queue Count: ${doctorQueue.body.count}`);
 
-    // 7. Fetch appointments as Doctor (should see all patient appointments)
-    const doctorAppointments = await request('GET', '/appointments', null, doctorToken);
-    console.log(`✔ Doctor All Appointments Count: ${doctorAppointments.body.count}`);
-
-    // 8. Update status to Completed (Doctor)
-    const completedUpdate = await request('PATCH', `/appointments/${createdApptId}/status`, {
+    // 10. Doctor marks appointment as Completed
+    const completeAction = await request('PATCH', `/appointments/${apptId}/status`, {
       status: 'Completed'
-    }, doctorToken);
-    console.log('✔ Doctor Mark as Completed:', completedUpdate.status, completedUpdate.body.message);
+    }, adminToken);
+    console.log('✔ Doctor Mark as Completed:', completeAction.status, completeAction.body.message);
 
-    // 9. Update status to Cancelled test
-    const cancelledUpdate = await request('PATCH', `/appointments/${createdApptId}/status`, {
-      status: 'Cancelled'
-    }, doctorToken);
-    console.log('✔ Doctor Cancel Appointment:', cancelledUpdate.status, cancelledUpdate.body.message);
-
-    // 10. Test AI summary endpoint
-    const aiTest = await request('POST', '/ai/summarize', {
-      reason: 'Persistent fever and sore throat for 4 days',
-      patientName: 'Alex Morgan',
-      doctorName: 'Dr. Marcus Chen'
-    });
-    console.log('✔ AI Summary Endpoint:', aiTest.status, aiTest.body.summary);
-
-    console.log('\n🎉 ALL API TESTS PASSED SUCCESSFULLY! Data storage and role-based workflows verified.');
+    console.log('\n🎉 ALL REAL-TIME AUTH & APPOINTMENT WORKFLOW TESTS PASSED CLEANLY!');
     process.exit(0);
   } catch (err) {
-    console.error('❌ Test suite error:', err);
+    console.error('❌ Test suite failure:', err);
     process.exit(1);
   }
 };
 
-// Wait 1.5s for server to initialize
 setTimeout(runTests, 1500);

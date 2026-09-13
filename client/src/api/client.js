@@ -39,6 +39,11 @@ export const api = {
 
   getDoctors: () => request('/auth/doctors'),
 
+  addDoctor: (doctorData) => request('/auth/add-doctor', {
+    method: 'POST',
+    body: JSON.stringify(doctorData)
+  }),
+
   // Appointments
   getAppointments: (params = {}) => {
     const query = new URLSearchParams(params).toString();

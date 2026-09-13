@@ -1,59 +1,55 @@
-# MediBook — Mini Appointment Booking Application
+# MediBook — Hospital Appointment Booking & Clinical Management Portal
 
-A full-stack healthcare appointment booking application built with **React (Vite + Tailwind CSS)**, **Node.js (Express)**, and **MongoDB (Mongoose)** with role-based access for **Patients** and **Doctors / Administrators**.
+A full-stack medical appointment booking and clinical coordination portal built with **React (Vite + Tailwind CSS)**, **Node.js (Express)**, and **MongoDB (Mongoose)** with authentic role-based access for **Patients** and **Doctors / Administrators**, real-time data synchronization, and a public Hospital Landing Page.
 
 ---
 
-## 🌟 Features Overview
+## 🌟 Key Features
 
-### 1. Appointment Form (Patient Portal)
-- **Patient Name**: Full validation (minimum 2 characters).
-- **Mobile Number**: 10-digit telephone formatting & validation.
-- **Doctor Name**: Dynamic doctor selection populated directly from the medical database.
-- **Appointment Date**: Native date selection with validation ensuring dates cannot be in the past.
-- **Appointment Time**: Convenient time-slot selector (`09:00 AM`, `10:30 AM`, `02:00 PM`, etc.).
-- **Submit Button**: Instant feedback with loading indicators, field validation errors, and confirmation toast notifications.
-- **Optional Bonus ⭐ AI Visit Summary**: Automatically generates a concise clinical brief and triage recommendation from the patient's symptoms using integrated AI.
+### 1. Hospital Public Landing Page
+- **Hero & Emergency Hub**: 24/7 emergency care hotline, direct booking call-to-actions, and live status badges.
+- **About Our Hospital**: Hospital heritage, clinical philosophy, accredited medical experts, and zero-waiting scheduling.
+- **Medical Departments**: Cardiology, Pediatrics, General Medicine (OPD), and Orthopedics.
+- **Verified Doctors Directory**: Live cards displaying active doctors, their department, specialty, and a direct "Book Consultation" trigger.
+- **Contact & Visiting Hours**: Hospital location, outpatient timings, emergency room desk, and direct telephone lines.
 
-### 2. Appointment List & Table
-- Displays all appointment records showing:
-  - **Patient Name**
-  - **Mobile Number**
-  - **Doctor Name**
-  - **Date**
-  - **Time**
-  - **Status** (`Pending`, `Completed`, `Cancelled`)
-- **Interactive Search**: Search appointments in real-time by patient name, phone number, or doctor.
-- **Status Filter**: Instant filtering by `All`, `Pending`, `Completed`, or `Cancelled`.
+### 2. Authentic Role-Based Access Control
+- **Public Patient Registration**: Patients register with their legal name, email, password, and phone number.
+- **Strict Doctor Onboarding**: Normal users cannot self-register as doctors. Doctors and clinical staff are onboarded exclusively by authenticated hospital administration through the **Doctor & Staff Portal**.
+- **No Dummy Data**: Clean real-time database with zero fake appointments or mock users.
+- **No Role Switcher**: Unrealistic role-switching buttons in the navigation bar have been removed; patients remain securely in the patient portal, and medical staff in the doctor portal.
+- **Clear Credential Feedback**:
+  - Unregistered email: *"No account exists with this email address. Please create a new account or verify your email."*
+  - Incorrect password: *"Incorrect password. Please verify your credentials and try again."*
 
-### 3. Appointment Actions
-- **Mark as Completed**: Doctors / Admins can mark finished consultations with a single click.
-- **Cancel Appointment**: Both patients and doctors can cancel appointments.
-- **Action Guards**: Safe state updates with instantaneous UI feedback and toast alerts.
+### 3. Real-Time Patient Portal
+- **Appointment Booking Form**:
+  - Patient Name, 10-digit Mobile Number, Doctor Selection, Date (validated against past dates), and Time Slots.
+  - **AI Visit Summary ⭐**: Analyzes entered symptoms to generate an intake clinical brief and triage recommendation.
+- **My Bookings Table**: Real-time list of all booked consultations with statuses (`Pending`, `Completed`, `Cancelled`) and cancellation action.
+- **Schedule Calendar**: Interactive monthly view showing booked consultation days and times.
+- **Live Sync**: Automatically checks and reflects status updates made by doctors without requiring page reloads.
 
-### 4. Interactive Schedule Calendar
-- Monthly calendar grid highlighting days with scheduled appointments.
-- Status badges and appointment previews on each date cell.
-- Click any day to inspect all bookings scheduled for that specific date.
-
-### 5. Role-Based Authentication & Navigation
-- **Role Selection on Login/Signup**: Choose between **Patient** and **Doctor / Admin**.
-- **Patient Dashboard**: Focused on booking appointments, viewing personal schedules, and checking statuses.
-- **Doctor / Admin Dashboard**: Focused on reviewing all patient bookings, tracking clinic metrics, and updating consultation statuses.
-- **Persistent Data Storage**: All users, doctors, and appointment records are saved to the database and **never disappear** when logging out or refreshing the page.
+### 4. Real-Time Doctor & Clinical Administrator Portal
+- **Live Patient Queue**: Real-time list of incoming appointments booked by patients across hospital departments.
+- **Instant Actions**:
+  - **Mark as Completed**: Mark finished patient visits.
+  - **Cancel Appointment**: Cancel consultations with immediate status propagation.
+- **Staff Onboarding**: Add verified doctors to the hospital directory with their name, specialty, department, and credentials.
+- **Clinic Metrics**: Real-time counters for Total Bookings, Pending Consultations, Completed Visits, and Cancelled appointments.
 
 ---
 
 ## 🛠️ Technology Stack
 
-| Layer | Technology | Details |
+| Component | Technology | Role |
 | :--- | :--- | :--- |
-| **Frontend** | **React 18** + **Vite** | Lightning fast SPA with hot module reloading |
-| **Styling** | **Tailwind CSS** + **Lucide Icons** | Clean, responsive healthcare design system with mobile adaptability |
-| **Backend** | **Node.js** + **Express** | RESTful API with structured controllers, routes, and middleware |
-| **Database** | **MongoDB** + **Mongoose** | Schema-driven document storage with fallback persistent store |
-| **Auth & Security** | **JWT** + **Bcrypt.js** | Token-based authentication, password hashing, and role guards |
-| **AI Feature** | **Generative AI / Clinical Engine** | Intake symptoms summarizer and recommended triage prep |
+| **Frontend** | **React 18 (Vite)** + **Tailwind CSS** | Responsive healthcare interface with mobile adaptability and glassmorphic styling |
+| **Icons & UI** | **Lucide Icons** | Clean clinical iconography |
+| **Backend** | **Node.js (Express)** | REST API with JWT security and role verification middleware |
+| **Database** | **MongoDB (Mongoose)** | Permanent document storage with auto-resilient persistent disk fallback |
+| **Authentication** | **JWT** + **Bcrypt.js** | Salted password hashing and token-based sessions |
+| **Real-Time** | **Auto-Polling Engine** | Live synchronization between patient submissions and doctor queues |
 
 ---
 
@@ -79,80 +75,48 @@ A full-stack healthcare appointment booking application built with **React (Vite
 
 ### Running the Application
 
-1. **Start the Backend Server**:
+1. **Start the Backend Server (Port 5050)**:
    ```bash
    cd server
    npm start
    ```
-   > The API server will run on `http://localhost:5001`.
 
-2. **Start the Frontend Client**:
+2. **Start the Frontend Client (Port 3000)**:
    ```bash
    cd client
    npm run dev
    ```
-   > The React app will run on `http://localhost:3000`.
+
+Open your browser at **`http://localhost:3000`**.
 
 ---
 
-## 🔑 Quick Demo Credentials (1-Click Login)
+## 🔑 Initial Hospital Administrator Credentials
 
-The login screen includes **1-Click Quick Demo Login** buttons for instant reviewer evaluation:
+To onboard new doctors and manage clinic appointments, log in via the **Doctor / Staff Portal**:
 
-| Role | Email | Password | Pre-seeded Features |
-| :--- | :--- | :--- | :--- |
-| **Patient** | `patient@demo.com` | `password123` | Booking form, calendar view, personal appointment list |
-| **Doctor / Admin** | `doctor.sarah@clinic.com` | `password123` | Cardiologist portal, full patient appointment table, complete/cancel actions |
-| **Doctor / Admin** | `doctor.marcus@clinic.com` | `password123` | General Physician portal, department schedule |
+- **Email**: `admin@hospital.com`
+- **Password**: `Admin@123`
+- **Role**: Chief Medical Officer & Hospital Administrator
 
-*(You can also register a new Patient or Doctor account directly through the Sign Up tab).*
+*(Patients can register their own accounts directly through the **Patient Sign In / Register** portal).*
 
 ---
 
 ## 📡 API Endpoints Reference
 
-### Authentication (`/api/auth`)
-- `POST /api/auth/register` — Create patient or doctor account.
-- `POST /api/auth/login` — Sign in with email and password.
-- `GET /api/auth/me` — Retrieve current authenticated session.
-- `GET /api/auth/doctors` — List available clinic doctors for appointment booking.
+### Authentication & Staff (`/api/auth`)
+- `POST /api/auth/register` — Register a new patient account.
+- `POST /api/auth/login` — Authenticate patient or doctor with verified feedback.
+- `POST /api/auth/add-doctor` — Admin-only: Onboard a verified doctor into hospital staff.
+- `GET /api/auth/me` — Retrieve active user session.
+- `GET /api/auth/doctors` — Public directory of doctors on duty.
 
 ### Appointments (`/api/appointments`)
-- `POST /api/appointments` — Book a new appointment (validates name, phone, doctor, date, time).
+- `POST /api/appointments` — Book a consultation (patient name, mobile, doctor, date, time).
 - `GET /api/appointments` — Fetch appointments (scoped by role with search & status filters).
-- `PATCH /api/appointments/:id/status` — Mark appointment as `Completed` or `Cancelled`.
-- `DELETE /api/appointments/:id` — Remove an appointment.
+- `PATCH /api/appointments/:id/status` — Update consultation status to `Completed` or `Cancelled`.
+- `DELETE /api/appointments/:id` — Delete an appointment record.
 
 ### AI Intake Assistant (`/api/ai`)
-- `POST /api/ai/summarize` — Generate concise clinical brief from patient's visit reason.
-
----
-
-## 📁 Project Structure
-
-```
-CLP/
-├── server/
-│   ├── src/
-│   │   ├── config/          # Database connection and demo seeder
-│   │   ├── controllers/     # Auth, Appointment, and AI controllers
-│   │   ├── middleware/      # JWT auth and role verification
-│   │   ├── models/          # User and Appointment schemas
-│   │   ├── routes/          # Express route definitions
-│   │   └── server.js        # Server entry point
-│   ├── .env.example         # Environment template
-│   └── package.json
-├── client/
-│   ├── src/
-│   │   ├── api/             # Frontend HTTP client
-│   │   ├── components/      # Form, Table, Calendar, Stats, Navbar, Toast
-│   │   ├── context/         # AuthContext (JWT session management)
-│   │   ├── pages/           # AuthPage, PatientDashboard, DoctorDashboard
-│   │   ├── App.jsx          # App root & role router
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── vite.config.js
-│   ├── tailwind.config.js
-│   └── package.json
-└── README.md
-```
+- `POST /api/ai/summarize` — Generate concise clinical brief from patient symptoms.

@@ -1,64 +1,61 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Stethoscope, User, Lock, Mail, Phone, HeartPulse, Sparkles, ArrowRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Stethoscope, User, Lock, Mail, Phone, HeartPulse, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
-export const AuthPage = ({ showToast }) => {
+export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) => {
   const { login, register } = useAuth();
-  const [isLogin, setIsLogin] = useState(true);
   
-  // Role selector: 'patient' or 'doctor'
-  const [selectedRole, setSelectedRole] = useState('patient');
+  // Selected Portal Type: 'patient' or 'doctor'
+  const [portalType, setPortalType] = useState(initialRole);
+  const [isLogin, setIsLogin] = useState(true);
 
   // Form Fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
-  const [specialty, setSpecialty] = useState('General Physician');
   const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  // Quick Demo Logins
-  const handleQuickLogin = async (demoEmail, demoRole) => {
-    setSubmitting(true);
-    try {
-      await login(demoEmail, 'password123');
-      showToast(`Logged in successfully as ${demoRole}!`, 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setSubmitting(false);
+  const handlePortalSwitch = (type) => {
+    setPortalType(type);
+    setErrorMessage('');
+    // Doctor portal only allows login (doctors are added by hospital admin)
+    if (type === 'doctor') {
+      setIsLogin(true);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email || !password) {
-      showToast('Please enter both email and password.', 'warning');
+    setErrorMessage('');
+
+    if (!email.trim() || !password.trim()) {
+      setErrorMessage('Please enter both your email and password.');
       return;
     }
 
-    if (!isLogin && (!name || name.trim().length < 2)) {
-      showToast('Please enter your full name.', 'warning');
+    if (!isLogin && (!name.trim() || name.trim().length < 2)) {
+      setErrorMessage('Please enter your full name (minimum 2 characters).');
       return;
     }
 
     setSubmitting(true);
     try {
       if (isLogin) {
-        await login(email, password);
-        showToast('Welcome back! You have successfully logged in.', 'success');
+        const res = await login(email.trim(), password);
+        showToast(`Welcome back, ${res.user.name}!`, 'success');
       } else {
-        await register({
-          name,
-          email,
+        const res = await register({
+          name: name.trim(),
+          email: email.trim(),
           password,
-          role: selectedRole,
-          phone,
-          specialty: selectedRole === 'doctor' ? specialty : ''
+          phone: phone.trim()
         });
-        showToast(`Account created as ${selectedRole === 'doctor' ? 'Doctor' : 'Patient'}!`, 'success');
+        showToast('Your patient account has been created successfully!', 'success');
       }
     } catch (err) {
+      setErrorMessage(err.message);
       showToast(err.message, 'error');
     } finally {
       setSubmitting(false);
@@ -66,152 +63,119 @@ export const AuthPage = ({ showToast }) => {
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      <div className="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-12 bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-        {/* Left Side: Medical Branding & Highlights */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-medical-700 via-medical-600 to-teal-700 p-8 text-white flex flex-col justify-between">
-          <div>
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold mb-6 border border-white/20">
-              <HeartPulse className="w-4 h-4 text-medical-200" />
-              <span>Smart Medical Scheduling</span>
-            </div>
-
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-              Clinical Care, <br />
-              <span className="text-teal-200">Simplified Booking.</span>
-            </h1>
-
-            <p className="text-sm text-medical-100 mt-4 leading-relaxed">
-              Seamless role-based portal for patients to schedule appointments and doctors to coordinate daily clinic visits.
-            </p>
-
-            {/* Feature List */}
-            <div className="mt-8 space-y-3 text-xs text-medical-100">
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
-                <span>Instant Patient & Doctor Dashboard Access</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
-                <span>Permanent Data Storage (Never disappears on reload)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
-                <span>Interactive Calendar & Real-Time Status Actions</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
-                <span>Optional AI Visit Reason Synthesizer ⭐</span>
-              </div>
-            </div>
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
+      <div className="max-w-xl w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+        {/* Top Header Banner */}
+        <div className="p-6 sm:p-8 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={onBackToHome}
+              className="inline-flex items-center space-x-1.5 text-xs text-medical-100 hover:text-white transition"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Back to Hospital Home</span>
+            </button>
+            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-white/15 backdrop-blur-md border border-white/20">
+              Secure Auth
+            </span>
           </div>
 
-          {/* Evaluator 1-Click Fast Logins */}
-          <div className="mt-8 pt-6 border-t border-white/20">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-medical-200 block mb-2.5">
-              ⚡ Quick Demo Logins (1-Click)
-            </span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('patient@demo.com', 'Patient')}
-                disabled={submitting}
-                className="w-full text-left px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/15 text-xs flex items-center justify-between"
-              >
-                <div>
-                  <span className="font-bold block text-white">Alex Morgan</span>
-                  <span className="text-[10px] text-teal-200">Patient Dashboard</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-medical-200" />
-              </button>
+          <h2 className="text-2xl font-extrabold tracking-tight">
+            {portalType === 'doctor' ? 'Medical Staff & Doctor Portal' : 'Patient Health Portal'}
+          </h2>
+          <p className="text-xs text-medical-100 mt-1">
+            {portalType === 'doctor'
+              ? 'Enter your verified hospital credentials to manage patient consultations'
+              : 'Sign in or create a patient account to schedule and manage your visits'}
+          </p>
 
-              <button
-                type="button"
-                onClick={() => handleQuickLogin('doctor.sarah@clinic.com', 'Doctor')}
-                disabled={submitting}
-                className="w-full text-left px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition border border-white/15 text-xs flex items-center justify-between"
-              >
-                <div>
-                  <span className="font-bold block text-white">Dr. Sarah Jenkins</span>
-                  <span className="text-[10px] text-teal-200">Doctor / Admin Portal</span>
-                </div>
-                <ArrowRight className="w-3.5 h-3.5 text-medical-200" />
-              </button>
-            </div>
+          {/* Portal Switcher Tabs */}
+          <div className="mt-6 grid grid-cols-2 gap-2 bg-white/10 p-1 rounded-2xl backdrop-blur-md border border-white/15">
+            <button
+              type="button"
+              onClick={() => handlePortalSwitch('patient')}
+              className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition ${
+                portalType === 'patient'
+                  ? 'bg-white text-medical-800 shadow-sm'
+                  : 'text-white/80 hover:text-white'
+              }`}
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Patient</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handlePortalSwitch('doctor')}
+              className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition ${
+                portalType === 'doctor'
+                  ? 'bg-white text-medical-800 shadow-sm'
+                  : 'text-white/80 hover:text-white'
+              }`}
+            >
+              <Stethoscope className="w-3.5 h-3.5" />
+              <span>Doctor / Staff</span>
+            </button>
           </div>
         </div>
 
-        {/* Right Side: Auth Form with Role Selection */}
-        <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center">
-          {/* Form Title & Mode Switcher */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
-                {isLogin ? 'Sign in to your account' : 'Create a new account'}
-              </h2>
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-xs font-bold text-medical-600 hover:text-medical-700 underline"
-              >
-                {isLogin ? 'Need an account?' : 'Already registered?'}
-              </button>
-            </div>
-            <p className="text-xs text-slate-500">
-              {isLogin
-                ? 'Select your role and enter your credentials to access your dashboard'
-                : 'Select whether you are registering as a Patient or Doctor'}
-            </p>
-          </div>
-
-          {/* Role Selector Tabs */}
-          <div className="mb-6">
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              I am accessing as:
-            </label>
-            <div className="grid grid-cols-2 gap-3 p-1 bg-slate-100 rounded-2xl border border-slate-200">
+        {/* Form Body */}
+        <div className="p-6 sm:p-8">
+          {/* Patient Login vs Register Toggle */}
+          {portalType === 'patient' && (
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-6">
+              <span className="text-xs font-bold text-slate-700">
+                {isLogin ? 'Sign In to Your Account' : 'Register New Patient Profile'}
+              </span>
               <button
                 type="button"
-                onClick={() => setSelectedRole('patient')}
-                className={`py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition ${
-                  selectedRole === 'patient'
-                    ? 'bg-white text-emerald-700 shadow-sm border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setErrorMessage('');
+                }}
+                className="text-xs font-bold text-medical-600 hover:text-medical-800 underline"
               >
-                <User className="w-4 h-4" />
-                <span>Patient</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSelectedRole('doctor')}
-                className={`py-2.5 px-4 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition ${
-                  selectedRole === 'doctor'
-                    ? 'bg-white text-medical-700 shadow-sm border border-slate-200'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Stethoscope className="w-4 h-4" />
-                <span>Doctor / Admin</span>
+                {isLogin ? 'Need an account? Register here' : 'Already registered? Sign In'}
               </button>
             </div>
-          </div>
+          )}
 
-          {/* Form */}
+          {/* Doctor note regarding onboarding */}
+          {portalType === 'doctor' && (
+            <div className="mb-6 p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-800 flex items-start space-x-2">
+              <Stethoscope className="w-4 h-4 text-sky-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold">Hospital Policy: </span>
+                <span>Doctors and clinical staff are onboarded exclusively by hospital administration. If you require credentials, please contact the Chief Medical Officer.</span>
+              </div>
+            </div>
+          )}
+
+          {/* Inline Error Message */}
+          {errorMessage && (
+            <div className="mb-5 p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-start space-x-2.5">
+              <ShieldAlert className="w-4 h-4 text-rose-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold">Authentication Notice: </span>
+                <span>{errorMessage}</span>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Name & Phone if Registering */}
-            {!isLogin && (
+            {/* Full Name & Phone for Patient Registration */}
+            {portalType === 'patient' && !isLogin && (
               <>
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Full Name <span className="text-rose-500">*</span>
+                    Full Legal Name <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
                     <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       required
-                      placeholder={selectedRole === 'doctor' ? 'Dr. John Doe' : 'Alex Morgan'}
+                      placeholder="e.g. John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
@@ -219,42 +183,25 @@ export const AuthPage = ({ showToast }) => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                      Mobile Number
-                    </label>
-                    <div className="relative">
-                      <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                      <input
-                        type="tel"
-                        placeholder="9876543210"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                      />
-                    </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Mobile Contact Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="tel"
+                      placeholder="e.g. 9876543210"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
+                    />
                   </div>
-
-                  {selectedRole === 'doctor' && (
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                        Specialty
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Cardiologist"
-                        value={specialty}
-                        onChange={(e) => setSpecialty(e.target.value)}
-                        className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
-                      />
-                    </div>
-                  )}
                 </div>
               </>
             )}
 
-            {/* Email */}
+            {/* Email Address */}
             <div>
               <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                 Email Address <span className="text-rose-500">*</span>
@@ -264,7 +211,7 @@ export const AuthPage = ({ showToast }) => {
                 <input
                   type="email"
                   required
-                  placeholder={selectedRole === 'doctor' ? 'doctor@clinic.com' : 'patient@example.com'}
+                  placeholder={portalType === 'doctor' ? 'doctor@hospital.com' : 'patient@example.com'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
@@ -291,7 +238,7 @@ export const AuthPage = ({ showToast }) => {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-2">
+            <div className="pt-3">
               <button
                 type="submit"
                 disabled={submitting}
@@ -299,10 +246,12 @@ export const AuthPage = ({ showToast }) => {
               >
                 <span>
                   {submitting
-                    ? 'Processing...'
+                    ? 'Verifying Credentials...'
+                    : portalType === 'doctor'
+                    ? 'Sign In to Doctor Portal'
                     : isLogin
-                    ? `Sign in as ${selectedRole === 'doctor' ? 'Doctor' : 'Patient'}`
-                    : `Create ${selectedRole === 'doctor' ? 'Doctor' : 'Patient'} Account`}
+                    ? 'Sign In as Patient'
+                    : 'Create Patient Profile'}
                 </span>
                 <ArrowRight className="w-4 h-4" />
               </button>
