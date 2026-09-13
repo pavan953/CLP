@@ -1,7 +1,7 @@
 const API_BASE = '/api';
 
 const request = async (endpoint, options = {}) => {
-  const token = localStorage.getItem('medibook_token');
+  const token = localStorage.getItem('clp_token') || localStorage.getItem('medibook_token');
   const headers = {
     'Content-Type': 'application/json',
     ...(token ? { 'Authorization': `Bearer ${token}` } : {}),

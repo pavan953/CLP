@@ -41,7 +41,7 @@ export function App() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex flex-col items-center space-y-3">
           <Loader2 className="w-8 h-8 text-medical-600 animate-spin" />
-          <p className="text-xs font-semibold text-slate-500">Loading MediBook Healthcare Center...</p>
+          <p className="text-xs font-semibold text-slate-500">Loading Clinic Living Plus...</p>
         </div>
       </div>
     );
@@ -86,16 +86,16 @@ export function App() {
       <footer className="border-t border-slate-200 bg-white py-8 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
-            <span className="font-bold text-slate-800">MediBook Medical Center</span> • 24/7 Outpatient & Critical Care Facility
+            <span className="font-bold text-slate-800">Clinic Living Plus</span> • 24/7 Outpatient & Clinical Care Facility
           </div>
           <div className="flex items-center space-x-4 text-slate-400">
-            <span>ReactJS</span>
+            <span>Quality Care</span>
             <span>•</span>
-            <span>Node.js Express</span>
+            <span>Compassion</span>
             <span>•</span>
-            <span>MongoDB Database</span>
+            <span>Clinical Excellence</span>
             <span>•</span>
-            <span>Real-Time Sync</span>
+            <span>Real-Time Live Sync</span>
           </div>
         </div>
       </footer>

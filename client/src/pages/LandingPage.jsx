@@ -80,9 +80,9 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-7 space-y-6">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-medical-100/80 text-medical-800 text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-medical-100/80 text-medical-800 text-xs font-bold uppercase tracking-wider badge-3d">
                 <Building2 className="w-4 h-4 text-medical-600" />
-                <span>MediBook Medical Center</span>
+                <span>Clinic Living Plus</span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1]">
@@ -100,7 +100,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <button
                   onClick={() => onNavigateToBooking ? onNavigateToBooking() : onNavigateToAuth('patient')}
-                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center space-x-2"
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-medical-600 to-teal-600 hover:from-medical-700 hover:to-teal-700 shadow-md shadow-medical-500/20 active:scale-[0.99] transition flex items-center space-x-2 badge-3d"
                 >
                   <Calendar className="w-4 h-4" />
                   <span>{user && role === 'patient' ? 'Go to My Booking Dashboard' : 'Book an Appointment'}</span>
@@ -108,37 +108,37 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
 
                 <a
                   href="#doctors"
-                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition flex items-center space-x-2"
+                  className="px-6 py-3.5 rounded-xl font-bold text-sm text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-sm transition flex items-center space-x-2 badge-3d"
                 >
                   <Users className="w-4 h-4 text-slate-500" />
                   <span>View Our Doctors</span>
                 </a>
               </div>
 
-              {/* Trust Indicators */}
+              {/* Trust Indicators with 3D Depth */}
               <div className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-4">
-                <div>
+                <div className="p-3.5 rounded-2xl bg-white/80 border border-slate-200/70 shadow-soft badge-3d">
                   <div className="text-2xl font-extrabold text-slate-900">24/7</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Emergency Care</div>
+                  <div className="text-xs text-slate-500 mt-0.5 font-medium">Emergency Care</div>
                 </div>
-                <div>
+                <div className="p-3.5 rounded-2xl bg-white/80 border border-slate-200/70 shadow-soft badge-3d">
                   <div className="text-2xl font-extrabold text-slate-900">100%</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Real-Time Sync</div>
+                  <div className="text-xs text-slate-500 mt-0.5 font-medium">Real-Time Sync</div>
                 </div>
-                <div>
+                <div className="p-3.5 rounded-2xl bg-white/80 border border-slate-200/70 shadow-soft badge-3d">
                   <div className="text-2xl font-extrabold text-slate-900">Zero</div>
-                  <div className="text-xs text-slate-500 mt-0.5">Paperwork Lag</div>
+                  <div className="text-xs text-slate-500 mt-0.5 font-medium">Paperwork Lag</div>
                 </div>
               </div>
             </div>
 
-            {/* Hero Right Visual Card */}
-            <div className="lg:col-span-5">
-              <div className="relative bg-gradient-to-tr from-medical-700 to-teal-700 p-8 rounded-3xl text-white shadow-2xl overflow-hidden">
+            {/* Hero Right Visual Card with 3D Float & Depth */}
+            <div className="lg:col-span-5 perspective-container">
+              <div className="relative bg-gradient-to-tr from-medical-700 via-medical-600 to-teal-700 p-8 rounded-3xl text-white shadow-2xl overflow-hidden animate-float-3d preserve-3d glow-3d">
                 <div className="absolute top-0 right-0 -mr-8 -mt-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
 
-                <div className="space-y-6 relative z-10">
-                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20">
+                <div className="space-y-6 relative z-10 preserve-3d">
+                  <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center text-white border border-white/20 shadow-md">
                     <HeartPulse className="w-7 h-7 text-teal-200" />
                   </div>
 
@@ -149,7 +149,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                     </p>
                   </div>
 
-                  <div className="space-y-3 text-xs bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15">
+                  <div className="space-y-3 text-xs bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/15 shadow-inner">
                     <div className="flex items-center space-x-2.5">
                       <CheckCircle2 className="w-4 h-4 text-teal-300 flex-shrink-0" />
                       <span>Direct physician calendar reservation</span>
@@ -166,7 +166,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
 
                   <div className="pt-2 text-xs text-medical-200 flex items-center justify-between">
                     <span>Mon - Sat: 8:00 AM - 8:00 PM</span>
-                    <span className="font-bold text-white">OPD Open</span>
+                    <span className="font-bold text-white bg-white/20 px-2 py-0.5 rounded-full">OPD Open</span>
                   </div>
                 </div>
               </div>
@@ -185,13 +185,13 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             Committed to Compassionate Clinical Excellence
           </h2>
           <p className="text-sm text-slate-600 mt-3 leading-relaxed">
-            Founded with the belief that exceptional healthcare begins with attentive, timely consultations, MediBook Medical Center integrates experienced medical specialists with modern digital patient management.
+            Founded with the belief that exceptional healthcare begins with attentive, timely consultations, Clinic Living Plus integrates experienced medical specialists with modern digital patient management.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 card-3d">
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shadow-sm">
               <Award className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-slate-900 text-base">Certified Specialists</h3>
@@ -200,8 +200,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-medical-50 text-medical-600 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 card-3d">
+            <div className="w-10 h-10 rounded-xl bg-medical-50 text-medical-600 flex items-center justify-center shadow-sm">
               <Clock className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-slate-900 text-base">Zero Waiting Queue</h3>
@@ -210,8 +210,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 card-3d">
+            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-sm">
               <Activity className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-slate-900 text-base">Smart AI Clinical Triage</h3>
@@ -220,8 +220,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft space-y-3 card-3d">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <h3 className="font-bold text-slate-900 text-base">Permanent Records</h3>
@@ -247,7 +247,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
           {departments.map((dept, idx) => (
             <div
               key={idx}
-              className={`p-6 rounded-2xl border transition hover:shadow-md ${dept.bg}`}
+              className={`p-6 rounded-2xl border transition card-3d ${dept.bg}`}
             >
               <div className="p-2.5 rounded-xl bg-white shadow-sm inline-block mb-4">
                 {dept.icon}
@@ -270,7 +270,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
               Meet Our Verified Doctors
             </h2>
             <p className="text-xs text-slate-500 mt-1">
-              Active medical staff currently accepting appointments at MediBook Center
+              Active medical staff currently accepting appointments at Clinic Living Plus
             </p>
           </div>
 
@@ -290,11 +290,11 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             {doctors.map((doc) => (
               <div
                 key={doc._id || doc.id}
-                className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 flex flex-col justify-between hover:border-medical-300 transition"
+                className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 flex flex-col justify-between card-3d hover:border-medical-300 transition"
               >
                 <div>
                   <div className="flex items-start justify-between mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-medical-50 border border-medical-100 flex items-center justify-center text-medical-700 font-bold text-lg">
+                    <div className="w-12 h-12 rounded-2xl bg-medical-50 border border-medical-100 flex items-center justify-center text-medical-700 font-bold text-lg shadow-sm">
                       {doc.name.replace('Dr. ', '').charAt(0)}
                     </div>
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -337,7 +337,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <button
                     onClick={() => onNavigateToBooking ? onNavigateToBooking(doc.name) : onNavigateToAuth('patient')}
-                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-medical-700 bg-medical-50 hover:bg-medical-100 transition flex items-center justify-center space-x-1.5"
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-medical-700 bg-medical-50 hover:bg-medical-100 transition flex items-center justify-center space-x-1.5 shadow-sm"
                   >
                     <Calendar className="w-3.5 h-3.5" />
                     <span>Book with {doc.name.split(' ')[0]}</span>
@@ -358,7 +358,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                 <MapPin className="w-5 h-5" />
                 <span className="text-xs font-bold uppercase tracking-wider">Hospital Location</span>
               </div>
-              <h3 className="text-lg font-bold">MediBook Medical Pavilion</h3>
+              <h3 className="text-lg font-bold">Clinic Living Plus Medical Pavilion</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 450 Healthcare Boulevard, Suite 100<br />
                 Central Medical District, NY 10001
@@ -385,7 +385,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
               <p className="text-xs text-slate-300">
                 Appointment Desk: +1 (800) 555-0144<br />
                 Emergency Line: +1 (800) 555-0199<br />
-                Email: support@medibook.health
+                Email: support@cliniclivingplus.com
               </p>
             </div>
           </div>

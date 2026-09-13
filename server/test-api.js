@@ -44,7 +44,7 @@ const request = (method, path, body = null, token = null) => {
 };
 
 const runTests = async () => {
-  console.log('--- Starting MediBook Authentic Real-Time Suite ---');
+  console.log('--- Starting Clinic Living Plus Real-Time Test Suite ---');
 
   try {
     // 1. Health check
@@ -79,30 +79,40 @@ const runTests = async () => {
     console.log('✔ Hospital Admin Login:', adminLogin.status, adminLogin.body.user?.name);
     const adminToken = adminLogin.body.token;
 
+    const runId = Date.now();
+    const docEmail = `marcus.${runId}@hospital.com`;
+    const patientEmail = `elena.${runId}@gmail.com`;
+
     // 5. Admin adds a verified Doctor to Hospital staff
     const addDoc = await request('POST', '/auth/add-doctor', {
       name: 'Dr. Marcus Chen',
-      email: 'marcus.chen@hospital.com',
+      email: docEmail,
       password: 'Password@123',
       specialty: 'Pediatric Specialist',
       department: 'Pediatrics',
       phone: '+1 (555) 321-7654'
     }, adminToken);
     console.log('✔ Admin Onboard Doctor:', addDoc.status, addDoc.body.message);
+    if (addDoc.status !== 201) {
+      throw new Error(`Expected 201 for doctor onboarding, got ${addDoc.status}`);
+    }
 
     // 6. Register a real Patient
     const realPatient = await request('POST', '/auth/register', {
       name: 'Elena Rostova',
-      email: 'elena.rostova@gmail.com',
+      email: patientEmail,
       password: 'PatientPassword123',
       phone: '9876543210'
     });
     console.log('✔ Real Patient Register:', realPatient.status, realPatient.body.user?.name);
+    if (realPatient.status !== 201) {
+      throw new Error(`Expected 201 for patient register, got ${realPatient.status}`);
+    }
     const patientToken = realPatient.body.token;
 
     // 6b. Test: Patient tries to login through Doctor Portal (Should be rejected with 403)
     const patientAsDoctor = await request('POST', '/auth/login', {
-      email: 'elena.rostova@gmail.com',
+      email: patientEmail,
       password: 'PatientPassword123',
       role: 'doctor'
     });
@@ -125,7 +135,7 @@ const runTests = async () => {
     // 6d. Test: Duplicate registration with existing email (Expected 409)
     const duplicateRegister = await request('POST', '/auth/register', {
       name: 'Duplicate Elena',
-      email: 'elena.rostova@gmail.com',
+      email: patientEmail,
       password: 'SomePassword123'
     });
     console.log('✔ Duplicate Email Registration (Expected 409):', duplicateRegister.status, duplicateRegister.body.message);
@@ -169,15 +179,31 @@ const runTests = async () => {
     }, adminToken);
     console.log('✔ Doctor Clinical Profile Update:', doctorProfileUpdate.status, doctorProfileUpdate.body.user?.qualification, 'Complete:', doctorProfileUpdate.body.user?.isProfileComplete);
 
-    // 12. Patient updates health profile settings
+    // 12. Patient updates health profile settings (and attempt to inject doctor fields, which must be rejected/ignored)
     const patientProfileUpdate = await request('PUT', '/auth/profile', {
       bloodGroup: 'O+',
       emergencyContact: '+1 (555) 998-0011',
-      allergies: 'Penicillin allergy'
+      allergies: 'Penicillin allergy',
+      // Malicious attempt to inject doctor fields:
+      specialty: 'Fake Surgeon',
+      department: 'Surgery',
+      qualification: 'Fake Degree',
+      consultationFee: '$500'
     }, patientToken);
     console.log('✔ Patient Health Profile Update:', patientProfileUpdate.status, 'Blood Group:', patientProfileUpdate.body.user?.bloodGroup);
 
-    console.log('\n🎉 ALL REAL-TIME AUTH, APPOINTMENT, AND PROFILE WORKFLOW TESTS PASSED CLEANLY!');
+    // 13. Strict Role-Specific Schema Verification: Ensure patient object has ZERO doctor fields
+    const patientMe = await request('GET', '/auth/me', null, patientToken);
+    const pUser = patientMe.body.user;
+    const forbiddenDoctorKeys = ['specialty', 'department', 'qualification', 'experience', 'bio', 'consultationFee', 'availableDays', 'cabinNumber', 'isProfileComplete'];
+    for (const key of forbiddenDoctorKeys) {
+      if (pUser[key] !== undefined) {
+        throw new Error(`Security Violation: Doctor-only field "${key}" is present in patient profile! Value: ${pUser[key]}`);
+      }
+    }
+    console.log('✔ Patient Role Schema Verified: Zero doctor-specific fields in patient profile.');
+
+    console.log('\n🎉 ALL CLINIC LIVING PLUS AUTH, APPOINTMENT, ROLE ENFORCEMENT & SCHEMA TESTS PASSED CLEANLY!');
     process.exit(0);
   } catch (err) {
     console.error('❌ Test suite failure:', err);

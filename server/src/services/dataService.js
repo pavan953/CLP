@@ -8,6 +8,26 @@ const generateId = () => {
   return new mongoose.Types.ObjectId().toString();
 };
 
+const DOCTOR_ONLY_FIELDS = [
+  'specialty',
+  'department',
+  'qualification',
+  'experience',
+  'bio',
+  'consultationFee',
+  'availableDays',
+  'cabinNumber',
+  'isProfileComplete'
+];
+
+const sanitizePatientData = (data) => {
+  const clean = { ...data };
+  for (const field of DOCTOR_ONLY_FIELDS) {
+    delete clean[field];
+  }
+  return clean;
+};
+
 const DataService = {
   // --- USER OPERATIONS ---
   async findUserByEmail(email) {
@@ -28,19 +48,27 @@ const DataService = {
     const user = data.users.find(u => u._id === id.toString() || u.id === id.toString());
     if (!user) return null;
     const { password, ...safeUser } = user;
+    if (safeUser.role === 'patient') {
+      return sanitizePatientData(safeUser);
+    }
     return safeUser;
   },
 
   async createUser(userData) {
+    let cleanData = { ...userData };
+    if (cleanData.role === 'patient') {
+      cleanData = sanitizePatientData(cleanData);
+    }
+
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
-      const user = new User(userData);
+      const user = new User(cleanData);
       return await user.save();
     }
     const data = readData();
     const newUser = {
       _id: generateId(),
-      ...userData,
+      ...cleanData,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -50,11 +78,17 @@ const DataService = {
   },
 
   async updateUser(id, updateData) {
+    let cleanUpdate = { ...updateData };
+    const existingUser = await this.findUserById(id);
+    if (existingUser && existingUser.role === 'patient') {
+      cleanUpdate = sanitizePatientData(cleanUpdate);
+    }
+
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
       return await User.findByIdAndUpdate(
         id,
-        { ...updateData, updatedAt: new Date() },
+        { ...cleanUpdate, updatedAt: new Date() },
         { new: true, runValidators: true }
       ).select('-password');
     }
@@ -62,11 +96,20 @@ const DataService = {
     const index = data.users.findIndex(u => u._id === id.toString() || u.id === id.toString());
     if (index === -1) return null;
 
+    if (data.users[index].role === 'patient') {
+      cleanUpdate = sanitizePatientData(cleanUpdate);
+    }
+
     data.users[index] = {
       ...data.users[index],
-      ...updateData,
+      ...cleanUpdate,
       updatedAt: new Date().toISOString()
     };
+
+    if (data.users[index].role === 'patient') {
+      data.users[index] = sanitizePatientData(data.users[index]);
+    }
+
     writeData(data);
     const { password, ...safeUser } = data.users[index];
     return safeUser;
@@ -86,12 +129,13 @@ const DataService = {
   async getPatients() {
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
-      return await User.find({ role: 'patient' }).select('-password').sort({ createdAt: -1 });
+      const patients = await User.find({ role: 'patient' }).select('-password').sort({ createdAt: -1 });
+      return patients.map(p => sanitizePatientData(p.toObject ? p.toObject() : p));
     }
     const data = readData();
     return data.users
       .filter(u => u.role === 'patient')
-      .map(({ password, ...p }) => p);
+      .map(({ password, ...p }) => sanitizePatientData(p));
   },
 
   // --- APPOINTMENT OPERATIONS ---

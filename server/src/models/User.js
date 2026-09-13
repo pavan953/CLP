@@ -30,50 +30,41 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     default: ''
   },
-  // --- Doctor Professional Profile ---
+  // --- Doctor Professional Profile (Strictly for Doctors only) ---
   specialty: {
     type: String,
-    trim: true,
-    default: 'General Physician'
+    trim: true
   },
   department: {
     type: String,
-    trim: true,
-    default: 'OPD'
+    trim: true
   },
   qualification: {
     type: String,
-    trim: true,
-    default: ''
+    trim: true
   },
   experience: {
     type: String,
-    trim: true,
-    default: ''
+    trim: true
   },
   bio: {
     type: String,
-    trim: true,
-    default: ''
+    trim: true
   },
   consultationFee: {
     type: String,
-    trim: true,
-    default: '$50'
+    trim: true
   },
   availableDays: {
     type: String,
-    trim: true,
-    default: 'Mon - Fri'
+    trim: true
   },
   cabinNumber: {
     type: String,
-    trim: true,
-    default: ''
+    trim: true
   },
   isProfileComplete: {
-    type: Boolean,
-    default: false
+    type: Boolean
   },
   // --- Patient Medical Profile ---
   bloodGroup: {
@@ -103,6 +94,22 @@ const UserSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+// Enforce role separation: If user is a patient, strictly remove doctor fields
+UserSchema.pre('save', function(next) {
+  if (this.role === 'patient') {
+    this.specialty = undefined;
+    this.department = undefined;
+    this.qualification = undefined;
+    this.experience = undefined;
+    this.bio = undefined;
+    this.consultationFee = undefined;
+    this.availableDays = undefined;
+    this.cabinNumber = undefined;
+    this.isProfileComplete = undefined;
+  }
+  next();
 });
 
 module.exports = mongoose.model('User', UserSchema);

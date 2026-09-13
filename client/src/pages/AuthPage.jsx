@@ -70,7 +70,7 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2 text-medical-100 text-xs font-semibold">
               <HeartPulse className="w-4 h-4 text-teal-300" />
-              <span>MediBook Healthcare Security Gate</span>
+              <span>Clinic Living Plus Security Gate</span>
             </div>
             <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-white/15 backdrop-blur-md border border-white/20">
               Sign In Required
@@ -247,7 +247,7 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
                     : portalType === 'doctor'
                     ? 'Sign In to Doctor Portal'
                     : isLogin
-                    ? 'Sign In as Patient'
+                    ? 'Sign In'
                     : 'Create Patient Profile'}
                 </span>
                 <ArrowRight className="w-4 h-4" />

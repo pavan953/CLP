@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Stethoscope, User, LogOut, HeartPulse, Calendar, AlertTriangle, X } from 'lucide-react';
+import { Stethoscope, User, LogOut, HeartPulse, Calendar, AlertTriangle, X, ShieldCheck } from 'lucide-react';
 
 export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
   const { user, role, logout } = useAuth();
@@ -39,7 +39,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-bold text-xl tracking-tight text-slate-900">MediBook</span>
+                <span className="font-bold text-xl tracking-tight text-slate-900">Clinic Living Plus</span>
                 <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-medical-50 text-medical-700 border border-medical-200">
                   Hospital
                 </span>
@@ -150,7 +150,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   onClick={() => onNavigate('auth', 'patient')}
                   className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
                 >
-                  Patient Sign In
+                  Sign In
                 </button>
 
                 <button

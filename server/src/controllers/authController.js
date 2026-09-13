@@ -7,31 +7,42 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 
-// Helper to format safe user object without password
-const formatSafeUser = (user) => ({
-  id: user._id || user.id,
-  _id: user._id || user.id,
-  name: user.name,
-  email: user.email,
-  role: user.role,
-  phone: user.phone || '',
-  // Doctor fields
-  specialty: user.specialty || '',
-  department: user.department || '',
-  qualification: user.qualification || '',
-  experience: user.experience || '',
-  bio: user.bio || '',
-  consultationFee: user.consultationFee || '$50',
-  availableDays: user.availableDays || 'Mon - Fri',
-  cabinNumber: user.cabinNumber || '',
-  isProfileComplete: !!user.isProfileComplete,
-  // Patient fields
-  bloodGroup: user.bloodGroup || '',
-  dateOfBirth: user.dateOfBirth || '',
-  gender: user.gender || '',
-  emergencyContact: user.emergencyContact || '',
-  allergies: user.allergies || ''
-});
+// Helper to format safe user object without password and strictly enforce role-specific fields
+const formatSafeUser = (user) => {
+  const base = {
+    id: user._id || user.id,
+    _id: user._id || user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    phone: user.phone || ''
+  };
+
+  if (user.role === 'doctor') {
+    return {
+      ...base,
+      specialty: user.specialty || 'General Physician',
+      department: user.department || 'General OPD',
+      qualification: user.qualification || '',
+      experience: user.experience || '',
+      bio: user.bio || '',
+      consultationFee: user.consultationFee || '$50',
+      availableDays: user.availableDays || 'Mon - Fri',
+      cabinNumber: user.cabinNumber || '',
+      isProfileComplete: !!user.isProfileComplete
+    };
+  }
+
+  // Patient role: strictly omit specialty, department, qualification, experience, bio, consultationFee, availableDays, cabinNumber, isProfileComplete
+  return {
+    ...base,
+    bloodGroup: user.bloodGroup || '',
+    dateOfBirth: user.dateOfBirth || '',
+    gender: user.gender || '',
+    emergencyContact: user.emergencyContact || '',
+    allergies: user.allergies || ''
+  };
+};
 
 // @desc    Register a new Patient (Public registration is strictly for Patients)
 // @route   POST /api/auth/register

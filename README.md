@@ -1,6 +1,6 @@
-# MediBook — Hospital Appointment Booking & Clinical Management Portal
+# Clinic Living Plus — Hospital Appointment Booking & Clinical Management Portal
 
-A full-stack medical appointment booking and clinical coordination portal built with **React (Vite + Tailwind CSS)**, **Node.js (Express)**, and **MongoDB (Mongoose)** with authentic role-based access for **Patients** and **Doctors / Administrators**, real-time data synchronization, and a public Hospital Landing Page.
+A full-stack medical appointment booking and clinical coordination portal built with responsive frontend and authenticated backend with authentic role-based access for **Patients** and **Doctors / Administrators**, real-time data synchronization, 3D animated landing page, and a public Hospital portal.
 
 ---
 
