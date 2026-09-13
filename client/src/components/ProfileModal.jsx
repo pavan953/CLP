@@ -217,13 +217,14 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">
-                      Phone Number
+                      Phone Number (10 Digits)
                     </label>
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                       placeholder="e.g. 9876543210"
+                      maxLength={10}
                       className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
                     />
                   </div>
@@ -417,13 +418,14 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
 
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Emergency Contact Phone
+                        Emergency Contact Phone (10 Digits)
                       </label>
                       <input
                         type="tel"
                         value={emergencyContact}
-                        onChange={(e) => setEmergencyContact(e.target.value)}
-                        placeholder="e.g. +1 (555) 998-0011"
+                        onChange={(e) => setEmergencyContact(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                        placeholder="e.g. 9876543210"
+                        maxLength={10}
                         className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
                       />
                     </div>

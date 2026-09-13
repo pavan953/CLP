@@ -147,7 +147,33 @@ const runTests = async () => {
     const doctors = await request('GET', '/auth/doctors');
     console.log(`✔ Verified Doctors on Duty: Found ${doctors.body.doctors?.length} doctors`);
 
-    // 8. Patient books an appointment with Dr. Marcus Chen
+    // 7b. Test: Attempt booking with 11-digit mobile number (Should be rejected with 400)
+    const invalidPhoneLong = await request('POST', '/appointments', {
+      patientName: 'Elena Rostova',
+      mobileNumber: '98765432101',
+      doctorName: 'Dr. Marcus Chen',
+      appointmentDate: new Date().toISOString().split('T')[0],
+      appointmentTime: '11:15 AM'
+    }, patientToken);
+    console.log('✔ Reject 11-Digit Mobile Number (Expected 400):', invalidPhoneLong.status, invalidPhoneLong.body.message);
+    if (invalidPhoneLong.status !== 400) {
+      throw new Error(`Expected 400 for 11-digit phone number, got ${invalidPhoneLong.status}`);
+    }
+
+    // 7c. Test: Attempt booking with 9-digit mobile number (Should be rejected with 400)
+    const invalidPhoneShort = await request('POST', '/appointments', {
+      patientName: 'Elena Rostova',
+      mobileNumber: '987654321',
+      doctorName: 'Dr. Marcus Chen',
+      appointmentDate: new Date().toISOString().split('T')[0],
+      appointmentTime: '11:15 AM'
+    }, patientToken);
+    console.log('✔ Reject 9-Digit Mobile Number (Expected 400):', invalidPhoneShort.status, invalidPhoneShort.body.message);
+    if (invalidPhoneShort.status !== 400) {
+      throw new Error(`Expected 400 for 9-digit phone number, got ${invalidPhoneShort.status}`);
+    }
+
+    // 8. Patient books an appointment with Dr. Marcus Chen (Valid 10 digits)
     const booking = await request('POST', '/appointments', {
       patientName: 'Elena Rostova',
       mobileNumber: '9876543210',
@@ -156,7 +182,10 @@ const runTests = async () => {
       appointmentTime: '11:15 AM',
       reason: 'Routine pediatric assessment and vaccination consultation'
     }, patientToken);
-    console.log('✔ Patient Book Appointment:', booking.status, booking.body.message);
+    console.log('✔ Patient Book Appointment with Valid 10-Digit Mobile:', booking.status, booking.body.message);
+    if (booking.status !== 201) {
+      throw new Error(`Expected 201 for valid booking, got ${booking.status}`);
+    }
     const apptId = booking.body.appointment._id || booking.body.appointment.id;
 
     // 9. Doctor views patient queue (Real-time data)

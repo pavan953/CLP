@@ -84,8 +84,8 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
     const digitsOnly = mobileNumber.replace(/\D/g, '');
     if (!mobileNumber.trim()) {
       newErrors.mobileNumber = 'Mobile number is required.';
-    } else if (digitsOnly.length < 10) {
-      newErrors.mobileNumber = 'Please enter a valid 10-digit mobile number.';
+    } else if (digitsOnly.length !== 10) {
+      newErrors.mobileNumber = 'Please enter exactly a 10-digit mobile number.';
     }
 
     if (!doctorName.trim()) {
@@ -236,11 +236,12 @@ export const AppointmentForm = ({ onAppointmentCreated, showToast, preselectedDo
                 type="tel"
                 value={mobileNumber}
                 onChange={(e) => {
-                  setMobileNumber(e.target.value);
+                  const cleaned = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setMobileNumber(cleaned);
                   if (errors.mobileNumber) setErrors(prev => ({ ...prev, mobileNumber: null }));
                 }}
-                placeholder="e.g. 9876543210"
-                maxLength={14}
+                placeholder="10-digit number (e.g. 9876543210)"
+                maxLength={10}
                 className={`w-full pl-10 pr-3 py-2.5 bg-slate-50 border rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 transition ${
                   errors.mobileNumber ? 'border-rose-400 focus:ring-rose-200' : 'border-slate-200 focus:ring-medical-200 focus:border-medical-500'
                 }`}

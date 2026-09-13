@@ -64,6 +64,16 @@ const register = async (req, res) => {
       });
     }
 
+    if (phone && phone.trim()) {
+      const cleanPhone = phone.replace(/\D/g, '');
+      if (cleanPhone.length !== 10) {
+        return res.status(400).json({
+          success: false,
+          message: 'Mobile number must be exactly 10 digits.'
+        });
+      }
+    }
+
     const existingUser = await DataService.findUserByEmail(email);
     if (existingUser) {
       return res.status(409).json({
@@ -81,7 +91,7 @@ const register = async (req, res) => {
       email: email.toLowerCase().trim(),
       password: hashedPassword,
       role: 'patient',
-      phone: phone ? phone.trim() : ''
+      phone: phone ? phone.replace(/\D/g, '').slice(0, 10) : ''
     });
 
     const token = generateToken(newUser._id, newUser.role);
@@ -248,7 +258,7 @@ const updateProfile = async (req, res) => {
     const updateFields = {};
 
     if (name && name.trim()) updateFields.name = name.trim();
-    if (phone !== undefined) updateFields.phone = phone.trim();
+    if (phone !== undefined) updateFields.phone = phone.replace(/\D/g, '').slice(0, 10);
 
     if (req.user.role === 'doctor') {
       if (specialty !== undefined) updateFields.specialty = specialty.trim();
@@ -268,7 +278,7 @@ const updateProfile = async (req, res) => {
       if (bloodGroup !== undefined) updateFields.bloodGroup = bloodGroup.trim();
       if (dateOfBirth !== undefined) updateFields.dateOfBirth = dateOfBirth.trim();
       if (gender !== undefined) updateFields.gender = gender.trim();
-      if (emergencyContact !== undefined) updateFields.emergencyContact = emergencyContact.trim();
+      if (emergencyContact !== undefined) updateFields.emergencyContact = emergencyContact.replace(/\D/g, '').slice(0, 10);
       if (allergies !== undefined) updateFields.allergies = allergies.trim();
     }
 

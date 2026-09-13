@@ -1,9 +1,9 @@
 const DataService = require('../services/dataService');
 
-// Helper to validate phone number (e.g. 10 digits)
+// Helper to validate phone number (strictly 10 digits)
 const isValidPhone = (phone) => {
   const cleaned = (phone || '').replace(/\D/g, '');
-  return cleaned.length >= 10;
+  return cleaned.length === 10;
 };
 
 // @desc    Create new appointment
@@ -18,7 +18,7 @@ const createAppointment = async (req, res) => {
       errors.push('Patient name must be at least 2 characters.');
     }
     if (!mobileNumber || !isValidPhone(mobileNumber)) {
-      errors.push('Please provide a valid 10-digit mobile number.');
+      errors.push('Please provide a valid 10-digit mobile number (exactly 10 digits).');
     }
     if (!doctorName || doctorName.trim().length === 0) {
       errors.push('Please select a doctor.');
@@ -37,9 +37,11 @@ const createAppointment = async (req, res) => {
       });
     }
 
+    const cleanedMobile = (mobileNumber || '').replace(/\D/g, '').slice(0, 10);
+
     const appointmentPayload = {
       patientName: patientName.trim(),
-      mobileNumber: mobileNumber.trim(),
+      mobileNumber: cleanedMobile,
       doctorName: doctorName.trim(),
       appointmentDate: appointmentDate.trim(),
       appointmentTime: appointmentTime.trim(),

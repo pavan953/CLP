@@ -12,8 +12,9 @@ import { Loader2 } from 'lucide-react';
 export function App() {
   const { user, role, loading } = useAuth();
   const [toast, setToast] = useState({ message: '', type: 'info' });
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'landing'
+  const [currentView, setCurrentView] = useState('landing'); // Initial view: always show Landing Page first!
   const [authRole, setAuthRole] = useState('patient'); // 'patient' or 'doctor'
+  const [authMode, setAuthMode] = useState('login'); // 'login' or 'signup'
   const [preselectedDoctor, setPreselectedDoctor] = useState('');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -21,17 +22,25 @@ export function App() {
     setToast({ message, type });
   };
 
-  const handleNavigate = (view, roleParam = 'patient') => {
-    if (!user) {
-      setAuthRole(roleParam);
-      return;
-    }
+  const handleNavigate = (view, roleParam = 'patient', modeParam = 'login') => {
+    setAuthRole(roleParam);
+    setAuthMode(modeParam);
     setCurrentView(view);
   };
 
   const handleNavigateToBooking = (docName = '') => {
     if (docName) {
       setPreselectedDoctor(docName);
+    }
+    if (!user) {
+      showToast(
+        docName
+          ? `Please sign in to schedule your consultation with ${docName}.`
+          : 'Please sign in or create an account to book an appointment.',
+        'info'
+      );
+      handleNavigate('auth', 'patient', 'login');
+      return;
     }
     setCurrentView('dashboard');
   };
@@ -56,17 +65,28 @@ export function App() {
         onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      {/* Main Content Area - Strictly Requires Login Before Access */}
+      {/* Main Content Area: Landing Page on initial entry with dynamic Auth & Dashboard routing */}
       <main className="flex-1">
-        {!user ? (
+        {currentView === 'auth' ? (
           <AuthPage
             initialRole={authRole}
+            initialMode={authMode}
             showToast={showToast}
+            onBackToHome={() => setCurrentView('landing')}
+            onSuccess={() => setCurrentView('dashboard')}
           />
         ) : currentView === 'landing' ? (
           <LandingPage
-            onNavigateToAuth={(preferredRole) => handleNavigate('auth', preferredRole)}
+            onNavigateToAuth={(preferredRole = 'patient', preferredMode = 'login') => handleNavigate('auth', preferredRole, preferredMode)}
             onNavigateToBooking={handleNavigateToBooking}
+          />
+        ) : !user ? (
+          <AuthPage
+            initialRole={authRole}
+            initialMode={authMode}
+            showToast={showToast}
+            onBackToHome={() => setCurrentView('landing')}
+            onSuccess={() => setCurrentView('dashboard')}
           />
         ) : role === 'doctor' ? (
           <DoctorDashboard

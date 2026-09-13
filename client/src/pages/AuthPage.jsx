@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Stethoscope, User, Lock, Mail, Phone, HeartPulse, ArrowRight, ArrowLeft, ShieldAlert, CheckCircle2 } from 'lucide-react';
 
-export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) => {
+export const AuthPage = ({ initialRole = 'patient', initialMode = 'login', showToast, onBackToHome, onSuccess }) => {
   const { login, register } = useAuth();
   
   // Selected Portal Type: 'patient' or 'doctor'
   const [portalType, setPortalType] = useState(initialRole);
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(initialMode !== 'signup');
+
+  // Sync state if navigation props change
+  useEffect(() => {
+    setPortalType(initialRole);
+    setIsLogin(initialMode !== 'signup');
+    setErrorMessage('');
+  }, [initialRole, initialMode]);
 
   // Form Fields
   const [name, setName] = useState('');
@@ -40,6 +47,14 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
       return;
     }
 
+    if (!isLogin && phone.trim()) {
+      const cleanPhone = phone.replace(/\D/g, '');
+      if (cleanPhone.length !== 10) {
+        setErrorMessage('Mobile number must be exactly 10 digits.');
+        return;
+      }
+    }
+
     setSubmitting(true);
     try {
       if (isLogin) {
@@ -50,9 +65,12 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
           name: name.trim(),
           email: email.trim(),
           password,
-          phone: phone.trim()
+          phone: phone.replace(/\D/g, '').slice(0, 10)
         });
         showToast('Your patient account has been created successfully!', 'success');
+      }
+      if (onSuccess) {
+        onSuccess();
       }
     } catch (err) {
       setErrorMessage(err.message);
@@ -63,7 +81,20 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
   };
 
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
+    <div className="min-h-[calc(100vh-4rem)] flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 bg-slate-50">
+      {onBackToHome && (
+        <div className="max-w-xl w-full mb-3 flex items-center justify-between">
+          <button
+            type="button"
+            onClick={onBackToHome}
+            className="inline-flex items-center space-x-1.5 text-xs font-bold text-slate-600 hover:text-medical-700 transition bg-white px-3.5 py-2 rounded-xl border border-slate-200 shadow-sm hover:shadow"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Hospital Home</span>
+          </button>
+        </div>
+      )}
+
       <div className="max-w-xl w-full bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
         {/* Top Header Banner */}
         <div className="p-6 sm:p-8 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white">
@@ -182,15 +213,16 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Mobile Contact Number
+                    Mobile Contact Number <span className="text-slate-400 font-normal">(10 Digits)</span>
                   </label>
                   <div className="relative">
                     <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="tel"
-                      placeholder="e.g. 9876543210"
+                      placeholder="10-digit number (e.g. 9876543210)"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                      maxLength={10}
                       className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-medical-200 focus:border-medical-500 transition"
                     />
                   </div>
