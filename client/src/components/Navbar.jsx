@@ -48,33 +48,46 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
             </div>
           </div>
 
-          {/* Public Navigation Links */}
-          <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-600">
-            <button
-              onClick={() => onNavigate('landing')}
-              className={`hover:text-medical-600 transition ${currentView === 'landing' ? 'text-medical-600 font-bold' : ''}`}
-            >
-              Home
-            </button>
-            <button
-              onClick={() => handleScrollTo('about')}
-              className="hover:text-medical-600 transition"
-            >
-              About Hospital
-            </button>
-            <button
-              onClick={() => handleScrollTo('doctors')}
-              className="hover:text-medical-600 transition"
-            >
-              Our Doctors
-            </button>
-            <button
-              onClick={() => handleScrollTo('contact')}
-              className="hover:text-medical-600 transition"
-            >
-              Contact & Hours
-            </button>
-          </nav>
+          {/* Navigation Links — ONLY shown when user is logged in! */}
+          {user ? (
+            <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-600">
+              <button
+                onClick={() => onNavigate('dashboard')}
+                className={`hover:text-medical-600 transition ${currentView === 'dashboard' ? 'text-medical-600 font-bold' : ''}`}
+              >
+                {role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}
+              </button>
+              <button
+                onClick={() => onNavigate('landing')}
+                className={`hover:text-medical-600 transition ${currentView === 'landing' ? 'text-medical-600 font-bold' : ''}`}
+              >
+                Hospital Home
+              </button>
+              <button
+                onClick={() => handleScrollTo('about')}
+                className="hover:text-medical-600 transition"
+              >
+                About Hospital
+              </button>
+              <button
+                onClick={() => handleScrollTo('doctors')}
+                className="hover:text-medical-600 transition"
+              >
+                Our Doctors
+              </button>
+              <button
+                onClick={() => handleScrollTo('contact')}
+                className="hover:text-medical-600 transition"
+              >
+                Contact & Hours
+              </button>
+            </nav>
+          ) : (
+            <div className="hidden sm:flex items-center space-x-2 text-xs font-semibold text-slate-500 bg-slate-100 px-3.5 py-1.5 rounded-xl border border-slate-200">
+              <ShieldCheck className="w-4 h-4 text-medical-600" />
+              <span>Sign in required to access hospital records</span>
+            </div>
+          )}
 
           {/* Auth / Dashboard Controls */}
           <div className="flex items-center space-x-3">

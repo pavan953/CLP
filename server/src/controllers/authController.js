@@ -57,13 +57,14 @@ const register = async (req, res) => {
     if (existingUser) {
       return res.status(409).json({
         success: false,
-        message: 'An account with this email address already exists. Please log in instead.'
+        message: 'This email address is already registered in our database. Please use another email address or sign in.'
       });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
+    // Public registration is locked to patient role
     const newUser = await DataService.createUser({
       name: name.trim(),
       email: email.toLowerCase().trim(),
@@ -89,11 +90,11 @@ const register = async (req, res) => {
   }
 };
 
-// @desc    Login user (Patient or Doctor) with strict verification
+// @desc    Login user (Patient or Doctor) with strict verification and role enforcement
 // @route   POST /api/auth/login
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -116,6 +117,22 @@ const login = async (req, res) => {
         success: false,
         message: 'Incorrect password. Please verify your credentials and try again.'
       });
+    }
+
+    // Strict Role Enforcement: Prevent patients logging in via doctor portal and vice versa
+    if (role && role !== user.role) {
+      if (role === 'doctor' && user.role === 'patient') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access Denied: This email is registered as a Patient account, not a Doctor. Please switch to the Patient Portal or log in with your authorized Doctor/Staff email.'
+        });
+      }
+      if (role === 'patient' && user.role === 'doctor') {
+        return res.status(403).json({
+          success: false,
+          message: 'Access Denied: This email is registered as a Doctor/Staff account. Please switch to the Staff Portal or use your Patient email.'
+        });
+      }
     }
 
     const token = generateToken(user._id, user.role);

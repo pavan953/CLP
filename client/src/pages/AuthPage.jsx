@@ -43,7 +43,7 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
     setSubmitting(true);
     try {
       if (isLogin) {
-        const res = await login(email.trim(), password);
+        const res = await login(email.trim(), password, portalType);
         showToast(`Welcome back, ${res.user.name}!`, 'success');
       } else {
         const res = await register({
@@ -68,15 +68,12 @@ export const AuthPage = ({ initialRole = 'patient', showToast, onBackToHome }) =
         {/* Top Header Banner */}
         <div className="p-6 sm:p-8 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white">
           <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={onBackToHome}
-              className="inline-flex items-center space-x-1.5 text-xs text-medical-100 hover:text-white transition"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back to Hospital Home</span>
-            </button>
+            <div className="flex items-center space-x-2 text-medical-100 text-xs font-semibold">
+              <HeartPulse className="w-4 h-4 text-teal-300" />
+              <span>MediBook Healthcare Security Gate</span>
+            </div>
             <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-white/15 backdrop-blur-md border border-white/20">
-              Secure Auth
+              Sign In Required
             </span>
           </div>
 

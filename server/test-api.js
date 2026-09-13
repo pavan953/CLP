@@ -100,6 +100,39 @@ const runTests = async () => {
     console.log('✔ Real Patient Register:', realPatient.status, realPatient.body.user?.name);
     const patientToken = realPatient.body.token;
 
+    // 6b. Test: Patient tries to login through Doctor Portal (Should be rejected with 403)
+    const patientAsDoctor = await request('POST', '/auth/login', {
+      email: 'elena.rostova@gmail.com',
+      password: 'PatientPassword123',
+      role: 'doctor'
+    });
+    console.log('✔ Patient Email in Doctor Portal (Expected 403):', patientAsDoctor.status, patientAsDoctor.body.message);
+    if (patientAsDoctor.status !== 403) {
+      throw new Error(`Expected 403 for patient logging in as doctor, got ${patientAsDoctor.status}`);
+    }
+
+    // 6c. Test: Doctor tries to login through Patient Portal (Should be rejected with 403)
+    const doctorAsPatient = await request('POST', '/auth/login', {
+      email: 'admin@hospital.com',
+      password: 'Admin@123',
+      role: 'patient'
+    });
+    console.log('✔ Doctor Email in Patient Portal (Expected 403):', doctorAsPatient.status, doctorAsPatient.body.message);
+    if (doctorAsPatient.status !== 403) {
+      throw new Error(`Expected 403 for doctor logging in as patient, got ${doctorAsPatient.status}`);
+    }
+
+    // 6d. Test: Duplicate registration with existing email (Expected 409)
+    const duplicateRegister = await request('POST', '/auth/register', {
+      name: 'Duplicate Elena',
+      email: 'elena.rostova@gmail.com',
+      password: 'SomePassword123'
+    });
+    console.log('✔ Duplicate Email Registration (Expected 409):', duplicateRegister.status, duplicateRegister.body.message);
+    if (duplicateRegister.status !== 409) {
+      throw new Error(`Expected 409 for duplicate registration, got ${duplicateRegister.status}`);
+    }
+
     // 7. Verify Doctors list on public landing page
     const doctors = await request('GET', '/auth/doctors');
     console.log(`✔ Verified Doctors on Duty: Found ${doctors.body.doctors?.length} doctors`);

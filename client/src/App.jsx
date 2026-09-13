@@ -12,7 +12,7 @@ import { Loader2 } from 'lucide-react';
 export function App() {
   const { user, role, loading } = useAuth();
   const [toast, setToast] = useState({ message: '', type: 'info' });
-  const [currentView, setCurrentView] = useState('landing'); // 'landing', 'auth', 'dashboard'
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'landing'
   const [authRole, setAuthRole] = useState('patient'); // 'patient' or 'doctor'
   const [preselectedDoctor, setPreselectedDoctor] = useState('');
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -22,8 +22,9 @@ export function App() {
   };
 
   const handleNavigate = (view, roleParam = 'patient') => {
-    if (view === 'auth') {
+    if (!user) {
       setAuthRole(roleParam);
+      return;
     }
     setCurrentView(view);
   };
@@ -32,12 +33,7 @@ export function App() {
     if (docName) {
       setPreselectedDoctor(docName);
     }
-    if (!user) {
-      setAuthRole('patient');
-      setCurrentView('auth');
-    } else {
-      setCurrentView('dashboard');
-    }
+    setCurrentView('dashboard');
   };
 
   if (loading) {
@@ -60,44 +56,29 @@ export function App() {
         onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      {/* Main Content Area based on active view */}
+      {/* Main Content Area - Strictly Requires Login Before Access */}
       <main className="flex-1">
-        {currentView === 'landing' && (
+        {!user ? (
+          <AuthPage
+            initialRole={authRole}
+            showToast={showToast}
+          />
+        ) : currentView === 'landing' ? (
           <LandingPage
             onNavigateToAuth={(preferredRole) => handleNavigate('auth', preferredRole)}
             onNavigateToBooking={handleNavigateToBooking}
           />
-        )}
-
-        {currentView === 'auth' && (
-          <AuthPage
-            initialRole={authRole}
+        ) : role === 'doctor' ? (
+          <DoctorDashboard
             showToast={showToast}
-            onBackToHome={() => setCurrentView('landing')}
+            onOpenProfile={() => setIsProfileOpen(true)}
           />
-        )}
-
-        {currentView === 'dashboard' && (
-          <>
-            {!user ? (
-              <AuthPage
-                initialRole={authRole}
-                showToast={showToast}
-                onBackToHome={() => setCurrentView('landing')}
-              />
-            ) : role === 'doctor' ? (
-              <DoctorDashboard
-                showToast={showToast}
-                onOpenProfile={() => setIsProfileOpen(true)}
-              />
-            ) : (
-              <PatientDashboard
-                showToast={showToast}
-                preselectedDoctor={preselectedDoctor}
-                onOpenProfile={() => setIsProfileOpen(true)}
-              />
-            )}
-          </>
+        ) : (
+          <PatientDashboard
+            showToast={showToast}
+            preselectedDoctor={preselectedDoctor}
+            onOpenProfile={() => setIsProfileOpen(true)}
+          />
         )}
       </main>
 
