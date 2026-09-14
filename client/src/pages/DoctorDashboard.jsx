@@ -116,16 +116,26 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
 
   useEffect(() => {
     fetchAppointments(false);
-    fetchDoctors();
-    fetchPatients();
+    if (isAdmin) {
+      fetchDoctors();
+      fetchPatients();
+    }
 
     const interval = setInterval(() => {
       fetchAppointments(true);
-      fetchPatients();
+      if (isAdmin) {
+        fetchPatients();
+      }
     }, 4000);
 
     return () => clearInterval(interval);
   }, [myOnly, isAdmin]);
+
+  useEffect(() => {
+    if (!isAdmin && (viewMode === 'patients' || viewMode === 'staff')) {
+      setViewMode('list');
+    }
+  }, [isAdmin, viewMode]);
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -223,16 +233,18 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 ) : (
                   <Stethoscope className="w-4 h-4 text-teal-300" />
                 )}
-                <span>{isAdmin ? 'Admin Profile' : 'Edit My Profile'}</span>
+                <span>{isAdmin ? 'Hospital Administrator' : user?.name}</span>
               </button>
 
-              <button
-                onClick={() => setShowAddDoctorModal(true)}
-                className="px-4 py-2.5 rounded-xl bg-teal-500 text-white font-bold text-xs btn-3d-teal flex items-center space-x-1.5"
-              >
-                <UserPlus className="w-4 h-4" />
-                <span>Onboard Doctor</span>
-              </button>
+              {isAdmin && (
+                <button
+                  onClick={() => setShowAddDoctorModal(true)}
+                  className="px-4 py-2.5 rounded-xl bg-teal-500 text-white font-bold text-xs btn-3d-teal flex items-center space-x-1.5"
+                >
+                  <UserPlus className="w-4 h-4" />
+                  <span>Onboard Doctor</span>
+                </button>
+              )}
 
               {isAdmin ? (
                 <button
@@ -305,29 +317,33 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
             <span>Schedule Calendar</span>
           </button>
 
-          <button
-            onClick={() => setViewMode('patients')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-              viewMode === 'patients'
-                ? 'bg-medical-50 text-medical-700 border border-medical-200'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Users className="w-4 h-4" />
-            <span>Registered Patients ({patientsList.length})</span>
-          </button>
+          {isAdmin && (
+            <>
+              <button
+                onClick={() => setViewMode('patients')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+                  viewMode === 'patients'
+                    ? 'bg-medical-50 text-medical-700 border border-medical-200'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Users className="w-4 h-4" />
+                <span>Registered Patients ({patientsList.length})</span>
+              </button>
 
-          <button
-            onClick={() => setViewMode('staff')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
-              viewMode === 'staff'
-                ? 'bg-medical-50 text-medical-700 border border-medical-200'
-                : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            <Stethoscope className="w-4 h-4" />
-            <span>Doctors Roster ({doctorsList.length})</span>
-          </button>
+              <button
+                onClick={() => setViewMode('staff')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition ${
+                  viewMode === 'staff'
+                    ? 'bg-medical-50 text-medical-700 border border-medical-200'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Stethoscope className="w-4 h-4" />
+                <span>Doctors Roster ({doctorsList.length})</span>
+              </button>
+            </>
+          )}
         </div>
 
         <div className="text-xs text-slate-500 hidden sm:block">
@@ -350,7 +366,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         />
       )}
 
-      {viewMode === 'patients' && (
+      {isAdmin && viewMode === 'patients' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-soft overflow-hidden">
           <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between">
             <div>
@@ -428,7 +444,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </div>
       )}
 
-      {viewMode === 'staff' && (
+      {isAdmin && viewMode === 'staff' && (
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-soft flex items-center justify-between">
             <div>
@@ -465,7 +481,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
         </div>
       )}
 
-      {showAddDoctorModal && (
+      {isAdmin && showAddDoctorModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl max-w-lg w-full overflow-hidden animate-fade-in">
             <div className="p-5 border-b border-slate-100 bg-slate-50 flex items-center justify-between">

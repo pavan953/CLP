@@ -113,7 +113,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                 <button
                   onClick={onOpenProfile}
                   title="Click to view & edit profile settings"
-                  className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left badge-3d"
+                  className="hidden sm:flex items-center space-x-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left badge-3d"
                 >
                   {isAdmin ? (
                     <ShieldCheck className="w-4 h-4 text-teal-600 flex-shrink-0" />
@@ -122,14 +122,9 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   ) : (
                     <User className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                   )}
-                  <div>
-                    <span className="font-bold text-slate-900 block leading-none">
-                      {isAdmin ? 'Hospital Administrator' : user.name}
-                    </span>
-                    <span className="text-[10px] text-slate-500 capitalize">
-                      {isAdmin ? 'Chief Administrator' : role === 'doctor' ? 'Edit Doctor Profile' : 'Profile Settings'}
-                    </span>
-                  </div>
+                  <span className="font-bold text-slate-900 leading-none">
+                    {isAdmin ? 'Hospital Administrator' : user.name}
+                  </span>
                 </button>
 
                 <button
@@ -249,7 +244,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
               >
                 <div className="flex items-center space-x-2">
                   <User className="w-4 h-4 text-emerald-600" />
-                  <span>Profile Settings ({user.name})</span>
+                  <span className="font-bold">{isAdmin ? 'Hospital Administrator' : user.name}</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </button>

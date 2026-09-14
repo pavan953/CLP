@@ -44,12 +44,10 @@ const startServer = async () => {
   await seedInitialData();
 
   app.listen(PORT, () => {
-    console.log(`====================================================`);
     console.log(`🚀 Clinic Living Plus API Server running on port ${PORT}`);
     console.log(`📍 Health Check: http://localhost:${PORT}/api/health`);
     console.log(`📍 Auth Routes: http://localhost:${PORT}/api/auth`);
     console.log(`📍 Appointment Routes: http://localhost:${PORT}/api/appointments`);
-    console.log(`====================================================`);
   });
 };
 

@@ -140,6 +140,11 @@ const runTests = async () => {
 
     const doctors = await request('GET', '/auth/doctors');
     console.log(`✔ Verified Doctors on Duty: Found ${doctors.body.doctors?.length} doctors`);
+    const uniqueSpecialties = new Set(doctors.body.doctors?.map(d => d.specialty));
+    console.log(`✔ Verified Distinct Specialties: Found ${uniqueSpecialties.size} unique specialties`);
+    if (uniqueSpecialties.size < 8) {
+      throw new Error(`Expected at least 8 unique specialties, got ${uniqueSpecialties.size}`);
+    }
 
     const invalidPhoneLong = await request('POST', '/appointments', {
       patientName: 'Elena Rostova',
@@ -296,6 +301,11 @@ const runTests = async () => {
       confirmPassword: 'patientpassword123',
       role: 'patient'
     });
+
+    const { connectDB } = require('./src/config/db');
+    const seedInitialData = require('./src/config/seed');
+    await connectDB();
+    await seedInitialData();
 
     console.log('\n🎉 ALL CLINIC LIVING PLUS AUTH, APPOINTMENT, ROLE ENFORCEMENT & SCHEMA TESTS PASSED CLEANLY!');
     process.exit(0);

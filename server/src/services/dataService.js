@@ -117,11 +117,11 @@ const DataService = {
   async getDoctors() {
     const { isMongoConnected } = getStatus();
     if (isMongoConnected) {
-      return await User.find({ role: 'doctor' }).select('-password');
+      return await User.find({ role: 'doctor', email: { $ne: 'admin@hospital.com' } }).select('-password');
     }
     const data = readData();
     return data.users
-      .filter(u => u.role === 'doctor')
+      .filter(u => u.role === 'doctor' && u.email !== 'admin@hospital.com')
       .map(({ password, ...doc }) => doc);
   },
 
