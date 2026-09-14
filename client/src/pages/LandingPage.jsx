@@ -348,8 +348,8 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             </p>
           </div>
 
-          <div className="mt-4 md:mt-0 text-xs font-semibold text-slate-500">
-            Total Staff on Roster: <span className="text-slate-900 font-bold">{doctors.length}</span>
+          <div className="mt-4 md:mt-0 flex items-center space-x-2 text-xs font-semibold text-slate-500 bg-white/70 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-slate-200/70 shadow-xs">
+            <span>Scroll vertically to view all <strong className="text-slate-900">{doctors.length}</strong> doctors</span>
           </div>
         </div>
 
@@ -360,64 +360,66 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
             <p className="text-xs text-slate-500">No doctors on duty yet. Hospital administrator can add new verified doctors.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {doctors.map((doc) => (
-              <ThreeDCard key={doc._id || doc.id} depth={14} maxRotation={8} className="rounded-2xl">
-                <div className="glass-card glass-card-hover rounded-2xl p-6 flex flex-col justify-between h-full preserve-3d">
-                  <div>
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="w-12 h-12 rounded-2xl bg-medical-500/10 border border-medical-200/50 flex items-center justify-center text-medical-700 font-bold text-lg shadow-sm translate-z-20">
-                        {doc.name.replace('Dr. ', '').charAt(0)}
+          <div className="max-h-[580px] overflow-y-auto pr-2 sm:pr-3 rounded-3xl border border-slate-200/80 bg-white/40 backdrop-blur-xl p-4 sm:p-5 shadow-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {doctors.map((doc) => (
+                <ThreeDCard key={doc._id || doc.id} depth={10} maxRotation={6} className="rounded-2xl">
+                  <div className="glass-card glass-card-hover rounded-2xl p-4 flex flex-col justify-between h-full preserve-3d">
+                    <div>
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="w-9 h-9 rounded-xl bg-medical-500/10 border border-medical-200/50 flex items-center justify-center text-medical-700 font-bold text-sm shadow-xs translate-z-20">
+                          {doc.name.replace('Dr. ', '').charAt(0)}
+                        </div>
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-200/60 backdrop-blur-sm translate-z-10">
+                          ● Active Duty
+                        </span>
                       </div>
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-200/60 backdrop-blur-sm translate-z-10">
-                        ● Active Duty
-                      </span>
-                    </div>
 
-                    <h3 className="text-base font-bold text-slate-900 translate-z-10">{doc.name}</h3>
-                    {doc.qualification && (
-                      <div className="text-[11px] font-semibold text-teal-700 bg-teal-500/10 border border-teal-200/40 px-2 py-0.5 rounded-md inline-block mt-1">
-                        {doc.qualification}
+                      <h3 className="text-sm font-bold text-slate-900 translate-z-10 truncate">{doc.name}</h3>
+                      {doc.qualification && (
+                        <div className="text-[10px] font-semibold text-teal-700 bg-teal-500/10 border border-teal-200/40 px-1.5 py-0.5 rounded-md inline-block mt-1 truncate max-w-full">
+                          {doc.qualification}
+                        </div>
+                      )}
+                      <div className="text-xs font-semibold text-medical-600 mt-1 truncate">
+                        {doc.specialty || 'General Physician'}
                       </div>
-                    )}
-                    <div className="text-xs font-semibold text-medical-600 mt-1">
-                      {doc.specialty || 'General Physician'}
-                    </div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">
-                      Department: {doc.department || 'Outpatient Department'}
-                    </div>
-
-                    {doc.bio && (
-                      <p className="text-xs text-slate-600 mt-2 line-clamp-2 italic">
-                        "{doc.bio}"
-                      </p>
-                    )}
-
-                    <div className="mt-3 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500">
-                      <span>Exp: {doc.experience || 'Experienced'}</span>
-                      <span className="font-bold text-slate-800">Fee: {doc.consultationFee || '$50'}</span>
-                    </div>
-
-                    {doc.phone && (
-                      <div className="flex items-center space-x-1.5 text-xs text-slate-500 mt-2">
-                        <PhoneCall className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{doc.phone}</span>
+                      <div className="text-[10px] text-slate-400 mt-0.5 truncate">
+                        Department: {doc.department || 'Outpatient Department'}
                       </div>
-                    )}
+
+                      {doc.bio && (
+                        <p className="text-[11px] text-slate-600 mt-2 line-clamp-2 italic leading-relaxed">
+                          "{doc.bio}"
+                        </p>
+                      )}
+
+                      <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500">
+                        <span>Exp: {doc.experience || 'Experienced'}</span>
+                        <span className="font-bold text-slate-800">Fee: {doc.consultationFee || '$50'}</span>
+                      </div>
+
+                      {doc.phone && (
+                        <div className="flex items-center space-x-1 text-[11px] text-slate-500 mt-1.5">
+                          <PhoneCall className="w-3 h-3 text-slate-400" />
+                          <span className="truncate">{doc.phone}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-3.5 pt-2.5 border-t border-slate-200/60 translate-z-20">
+                      <button
+                        onClick={() => onNavigateToBooking ? onNavigateToBooking(doc.name) : onNavigateToAuth('patient', 'login')}
+                        className="w-full py-2 px-3 rounded-xl text-xs font-bold text-medical-700 bg-medical-50/80 hover:bg-medical-100 border border-medical-200/50 transition flex items-center justify-center space-x-1.5 shadow-xs badge-3d"
+                      >
+                        <Calendar className="w-3.5 h-3.5" />
+                        <span>Book Visit</span>
+                      </button>
+                    </div>
                   </div>
-
-                  <div className="mt-6 pt-4 border-t border-slate-200/60 translate-z-20">
-                    <button
-                      onClick={() => onNavigateToBooking ? onNavigateToBooking(doc.name) : onNavigateToAuth('patient', 'login')}
-                      className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-medical-700 bg-medical-50/80 hover:bg-medical-100 border border-medical-200/50 transition flex items-center justify-center space-x-1.5 shadow-sm badge-3d"
-                    >
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>Book with {doc.name.split(' ')[0]}</span>
-                    </button>
-                  </div>
-                </div>
-              </ThreeDCard>
-            ))}
+                </ThreeDCard>
+              ))}
+            </div>
           </div>
         )}
       </section>
