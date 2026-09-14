@@ -32,88 +32,95 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
   return (
     <>
-      <header className="w-full bg-white/75 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/70 shadow-sm shadow-slate-900/5 transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <header className="w-full bg-white/85 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/80 shadow-xs transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-4">
 
           <div
             onClick={() => { setMobileMenuOpen(false); onNavigate('landing'); }}
-            className="flex items-center space-x-3 cursor-pointer group"
+            className="flex items-center space-x-3.5 cursor-pointer group py-1"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-medical-600 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-medical-500/25 badge-3d">
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-medical-600 via-teal-500 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-medical-500/25 badge-3d flex-shrink-0">
               <HeartPulse className="w-6 h-6" />
             </div>
-            <div>
+            <div className="py-0.5">
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900">Clinic Living Plus</span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-medical-50 text-medical-700 border border-medical-200 shadow-sm">
+                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-tight">Clinic Living Plus</span>
+                <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-medical-50 text-medical-700 border border-medical-200 shadow-xs">
                   Hospital
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Premier Clinical Center</p>
+              <p className="text-[11px] text-slate-400 font-medium hidden sm:block mt-0.5">Premier Clinical Center</p>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center space-x-6 text-xs font-semibold text-slate-600">
+          <nav className="hidden lg:flex items-center space-x-1.5 text-xs font-semibold text-slate-600 px-2 py-1">
             {user && (
               <button
                 onClick={() => onNavigate('dashboard')}
-                className={`hover:text-medical-600 transition ${currentView === 'dashboard' ? 'text-medical-600 font-bold' : ''}`}
+                className={`px-3.5 py-2 rounded-xl transition ${
+                  currentView === 'dashboard'
+                    ? 'bg-medical-50 text-medical-700 font-bold border border-medical-200/80 shadow-xs'
+                    : 'hover:bg-slate-100 hover:text-slate-900'
+                }`}
               >
                 {isAdmin ? 'Admin Portal' : role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}
               </button>
             )}
             <button
               onClick={() => onNavigate('landing')}
-              className={`hover:text-medical-600 transition ${currentView === 'landing' ? 'text-medical-600 font-bold' : ''}`}
+              className={`px-3.5 py-2 rounded-xl transition ${
+                currentView === 'landing'
+                  ? 'bg-medical-50 text-medical-700 font-bold border border-medical-200/80 shadow-xs'
+                  : 'hover:bg-slate-100 hover:text-slate-900'
+              }`}
             >
               Hospital Home
             </button>
             <button
               onClick={() => handleScrollTo('about')}
-              className="hover:text-medical-600 transition"
+              className="px-3.5 py-2 rounded-xl transition hover:bg-slate-100 hover:text-slate-900"
             >
               About Hospital
             </button>
             <button
               onClick={() => handleScrollTo('departments')}
-              className="hover:text-medical-600 transition"
+              className="px-3.5 py-2 rounded-xl transition hover:bg-slate-100 hover:text-slate-900"
             >
               Departments
             </button>
             <button
               onClick={() => handleScrollTo('doctors')}
-              className="hover:text-medical-600 transition"
+              className="px-3.5 py-2 rounded-xl transition hover:bg-slate-100 hover:text-slate-900"
             >
               Our Doctors
             </button>
             <button
               onClick={() => handleScrollTo('contact')}
-              className="hover:text-medical-600 transition"
+              className="px-3.5 py-2 rounded-xl transition hover:bg-slate-100 hover:text-slate-900"
             >
               Contact & Hours
             </button>
           </nav>
 
-          <div className="flex items-center space-x-2 sm:space-x-3">
+          <div className="flex items-center space-x-2.5 sm:space-x-3 py-1">
             {user ? (
               <>
-
                 <button
                   onClick={() => onNavigate('dashboard')}
-                  className={`hidden sm:flex items-center space-x-1.5 px-3.5 py-2 text-xs font-bold rounded-xl transition ${
+                  className={`hidden sm:flex items-center space-x-2 px-4 py-2.5 text-xs font-bold rounded-xl transition ${
                     currentView === 'dashboard'
                       ? 'bg-medical-600 text-white shadow-sm'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
-                  <Calendar className="w-3.5 h-3.5" />
+                  <Calendar className="w-4 h-4" />
                   <span>{isAdmin ? 'Admin Portal' : role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}</span>
                 </button>
 
                 <button
                   onClick={onOpenProfile}
                   title="Click to view & edit profile settings"
-                  className="hidden sm:flex items-center space-x-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left badge-3d"
+                  className="hidden sm:flex items-center space-x-2.5 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left badge-3d shadow-xs"
                 >
                   {isAdmin ? (
                     <ShieldCheck className="w-4 h-4 text-teal-600 flex-shrink-0" />
@@ -130,7 +137,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                 <button
                   onClick={onOpenProfile}
                   title="Profile Settings"
-                  className="sm:hidden p-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
+                  className="sm:hidden p-2.5 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition"
                 >
                   <User className="w-4 h-4" />
                 </button>
@@ -138,25 +145,24 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                 <button
                   onClick={() => setShowLogoutModal(true)}
                   title="Sign out from portal"
-                  className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition badge-3d"
+                  className="inline-flex items-center space-x-1.5 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition badge-3d"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">Logout</span>
                 </button>
               </>
             ) : (
-              <div className="flex items-center space-x-2">
-
+              <div className="flex items-center space-x-2 sm:space-x-2.5">
                 <button
                   onClick={() => onNavigate('auth', 'patient', 'login')}
-                  className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
+                  className="px-3.5 sm:px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition"
                 >
                   Sign In
                 </button>
 
                 <button
                   onClick={() => onNavigate('auth', 'patient', 'signup')}
-                  className="px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold text-white bg-medical-600 btn-3d flex items-center space-x-1"
+                  className="px-3.5 sm:px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-medical-600 hover:bg-medical-700 btn-3d shadow-md shadow-medical-600/20 flex items-center space-x-1.5"
                 >
                   <User className="w-3.5 h-3.5" />
                   <span>Sign Up</span>
@@ -164,7 +170,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
                 <button
                   onClick={() => onNavigate('auth', 'doctor', 'login')}
-                  className="hidden lg:flex px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition items-center space-x-1.5 border border-slate-200 badge-3d"
+                  className="hidden sm:flex px-3.5 sm:px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 transition items-center space-x-1.5 border border-slate-200 badge-3d"
                 >
                   <Stethoscope className="w-3.5 h-3.5 text-medical-600" />
                   <span>Staff Portal</span>
@@ -174,7 +180,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => setMobileMenuOpen(prev => !prev)}
-              className="md:hidden p-2 rounded-xl text-slate-700 hover:bg-slate-100 transition border border-slate-200"
+              className="lg:hidden p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 transition border border-slate-200 ml-1"
               aria-label="Toggle navigation menu"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -183,13 +189,13 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200/70 bg-white/80 backdrop-blur-2xl px-4 py-4 space-y-2 shadow-2xl animate-fade-in">
+          <div className="lg:hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-2xl px-4 sm:px-6 py-4 space-y-2 shadow-2xl animate-fade-in">
             {user && (
               <button
                 onClick={() => { setMobileMenuOpen(false); onNavigate('dashboard'); }}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-medical-50 text-medical-800 font-bold text-xs border border-medical-200"
+                className="w-full flex items-center justify-between p-3.5 rounded-xl bg-medical-50 text-medical-800 font-bold text-xs border border-medical-200"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2.5">
                   <Calendar className="w-4 h-4 text-medical-600" />
                   <span>{isAdmin ? 'Hospital Admin Dashboard' : role === 'doctor' ? 'Doctor Portal Dashboard' : 'My Patient Dashboard'}</span>
                 </div>
@@ -199,7 +205,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => { setMobileMenuOpen(false); onNavigate('landing'); }}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
+              className="w-full flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
             >
               <span>Hospital Home</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -207,7 +213,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => handleScrollTo('about')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
+              className="w-full flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
             >
               <span>About Hospital</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -215,7 +221,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => handleScrollTo('departments')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
+              className="w-full flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
             >
               <span>Medical Departments</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -223,7 +229,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => handleScrollTo('doctors')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
+              className="w-full flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
             >
               <span>Our Verified Doctors</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -231,7 +237,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
 
             <button
               onClick={() => handleScrollTo('contact')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
+              className="w-full flex items-center justify-between p-3.5 rounded-xl hover:bg-slate-100 text-slate-800 font-semibold text-xs transition"
             >
               <span>Contact & Clinic Hours</span>
               <ChevronRight className="w-4 h-4 text-slate-400" />
@@ -240,25 +246,25 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
             {user ? (
               <button
                 onClick={() => { setMobileMenuOpen(false); onOpenProfile(); }}
-                className="w-full flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs transition"
+                className="w-full flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 font-semibold text-xs transition"
               >
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-2.5">
                   <User className="w-4 h-4 text-emerald-600" />
                   <span className="font-bold">{isAdmin ? 'Hospital Administrator' : user.name}</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-400" />
               </button>
             ) : (
-              <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2">
+              <div className="pt-2 border-t border-slate-100 grid grid-cols-2 gap-2.5">
                 <button
                   onClick={() => { setMobileMenuOpen(false); onNavigate('auth', 'patient', 'login'); }}
-                  className="w-full py-2.5 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs text-center"
+                  className="w-full py-3 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs text-center hover:bg-slate-200 transition"
                 >
                   Patient Sign In
                 </button>
                 <button
                   onClick={() => { setMobileMenuOpen(false); onNavigate('auth', 'doctor', 'login'); }}
-                  className="w-full py-2.5 rounded-xl bg-medical-50 text-medical-800 font-bold text-xs text-center border border-medical-200"
+                  className="w-full py-3 rounded-xl bg-medical-50 text-medical-800 font-bold text-xs text-center border border-medical-200 hover:bg-medical-100 transition"
                 >
                   Doctor Portal
                 </button>
