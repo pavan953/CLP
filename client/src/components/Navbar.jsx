@@ -43,12 +43,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
               <HeartPulse className="w-6 h-6" />
             </div>
             <div className="py-0.5">
-              <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-tight">Clinic Living Plus</span>
-                <span className="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full bg-medical-50 text-medical-700 border border-medical-200 shadow-xs">
-                  Hospital
-                </span>
-              </div>
+              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 leading-tight block">Clinic Living Plus</span>
               <p className="text-[11px] text-slate-400 font-medium hidden sm:block mt-0.5">Premier Clinical Center</p>
             </div>
           </div>
