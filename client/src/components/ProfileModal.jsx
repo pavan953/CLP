@@ -10,7 +10,7 @@ import {
   Heart,
   Award,
   Calendar,
-  DollarSign,
+  IndianRupee,
   Building,
   Clock,
   ShieldCheck,
@@ -35,7 +35,16 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   const [qualification, setQualification] = useState(user?.qualification || '');
   const [experience, setExperience] = useState(user?.experience || '');
   const [bio, setBio] = useState(user?.bio || '');
-  const [consultationFee, setConsultationFee] = useState(user?.consultationFee || '$50');
+  const [consultationFee, setConsultationFee] = useState(() => {
+    if (!user?.consultationFee) return '₹500';
+    const clean = user.consultationFee.trim();
+    if (clean.startsWith('$')) {
+      const num = parseFloat(clean.replace('$', ''));
+      return !isNaN(num) ? (num <= 100 ? `₹${num * 10}` : `₹${num}`) : '₹500';
+    }
+    if (clean.startsWith('₹')) return clean;
+    return `₹${clean}`;
+  });
   const [availableDays, setAvailableDays] = useState(user?.availableDays || 'Mon - Fri');
   const [cabinNumber, setCabinNumber] = useState(user?.cabinNumber || '');
 
@@ -74,7 +83,15 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
         payload.qualification = qualification.trim();
         payload.experience = experience.trim();
         payload.bio = bio.trim();
-        payload.consultationFee = consultationFee.trim();
+        const cleanFee = consultationFee.trim();
+        if (cleanFee.startsWith('$')) {
+          const num = parseFloat(cleanFee.replace('$', ''));
+          payload.consultationFee = !isNaN(num) ? (num <= 100 ? `₹${num * 10}` : `₹${num}`) : '₹500';
+        } else if (cleanFee.startsWith('₹')) {
+          payload.consultationFee = cleanFee;
+        } else {
+          payload.consultationFee = `₹${cleanFee}`;
+        }
         payload.availableDays = availableDays.trim();
         payload.cabinNumber = cabinNumber.trim();
       } else {
@@ -332,15 +349,20 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
 
                     <div>
                       <label className="block text-xs font-bold text-slate-700 mb-1">
-                        Consultation Fee
+                        Consultation Fee (₹)
                       </label>
-                      <input
-                        type="text"
-                        value={consultationFee}
-                        onChange={(e) => setConsultationFee(e.target.value)}
-                        placeholder="e.g. $50"
-                        className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                      />
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+                          <IndianRupee className="w-3.5 h-3.5" />
+                        </div>
+                        <input
+                          type="text"
+                          value={consultationFee}
+                          onChange={(e) => setConsultationFee(e.target.value)}
+                          placeholder="e.g. ₹500"
+                          className="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
+                        />
+                      </div>
                     </div>
 
                     <div className="sm:col-span-2">

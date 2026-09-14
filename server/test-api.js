@@ -216,7 +216,7 @@ const runTests = async () => {
       experience: '14+ Years',
       bio: 'Board-certified cardiologist dedicated to preventive care, non-invasive imaging, and heart health.',
       cabinNumber: 'Room 304, East Wing',
-      consultationFee: '$65'
+      consultationFee: '₹650'
     }, adminToken);
     console.log('✔ Doctor Clinical Profile Update:', doctorProfileUpdate.status, doctorProfileUpdate.body.user?.qualification, 'Complete:', doctorProfileUpdate.body.user?.isProfileComplete);
 
@@ -228,7 +228,7 @@ const runTests = async () => {
       specialty: 'Fake Surgeon',
       department: 'Surgery',
       qualification: 'Fake Degree',
-      consultationFee: '$500'
+      consultationFee: '₹500'
     }, patientToken);
     console.log('✔ Patient Health Profile Update:', patientProfileUpdate.status, 'Blood Group:', patientProfileUpdate.body.user?.bloodGroup);
 

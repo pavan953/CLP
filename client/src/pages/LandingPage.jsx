@@ -32,6 +32,17 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
   const [isAutoScrollPaused, setIsAutoScrollPaused] = useState(false);
   const doctorsScrollRef = useRef(null);
 
+  const formatFee = (fee) => {
+    if (!fee) return '₹500';
+    const clean = String(fee).trim();
+    if (clean.startsWith('$')) {
+      const num = parseFloat(clean.replace('$', '').trim());
+      return !isNaN(num) ? (num <= 100 ? `₹${num * 10}` : `₹${num}`) : '₹500';
+    }
+    if (clean.startsWith('₹')) return clean;
+    return `₹${clean}`;
+  };
+
   const scrollDoctors = (direction) => {
     if (doctorsScrollRef.current) {
       const scrollAmount = direction === 'left' ? -290 : 290;
@@ -443,7 +454,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
 
                     <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500">
                       <span>Exp: {doc.experience || 'Experienced'}</span>
-                      <span className="font-bold text-slate-800">Fee: {doc.consultationFee || '$50'}</span>
+                      <span className="font-bold text-slate-800">Fee: {formatFee(doc.consultationFee)}</span>
                     </div>
 
                     {doc.phone && (

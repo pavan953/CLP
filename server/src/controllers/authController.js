@@ -7,6 +7,17 @@ const generateToken = (id, role) => {
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 
+const formatFeeInRupees = (fee) => {
+  if (!fee) return '₹500';
+  const str = String(fee).trim();
+  if (str.startsWith('$')) {
+    const val = parseFloat(str.replace('$', '').trim());
+    return !isNaN(val) ? (val <= 100 ? `₹${val * 10}` : `₹${val}`) : '₹500';
+  }
+  if (str.startsWith('₹')) return str;
+  return `₹${str}`;
+};
+
 const formatSafeUser = (user) => {
   const base = {
     id: user._id || user.id,
@@ -25,7 +36,7 @@ const formatSafeUser = (user) => {
       qualification: user.qualification || '',
       experience: user.experience || '',
       bio: user.bio || '',
-      consultationFee: user.consultationFee || '$50',
+      consultationFee: formatFeeInRupees(user.consultationFee),
       availableDays: user.availableDays || 'Mon - Fri',
       cabinNumber: user.cabinNumber || '',
       isProfileComplete: !!user.isProfileComplete
@@ -209,7 +220,7 @@ const addDoctor = async (req, res) => {
       qualification: qualification ? qualification.trim() : '',
       experience: experience ? experience.trim() : '',
       bio: bio ? bio.trim() : '',
-      consultationFee: consultationFee ? consultationFee.trim() : '$50',
+      consultationFee: formatFeeInRupees(consultationFee),
       cabinNumber: cabinNumber ? cabinNumber.trim() : '',
       isProfileComplete: !!(qualification && bio)
     });
@@ -265,7 +276,7 @@ const updateProfile = async (req, res) => {
       if (qualification !== undefined) updateFields.qualification = qualification.trim();
       if (experience !== undefined) updateFields.experience = experience.trim();
       if (bio !== undefined) updateFields.bio = bio.trim();
-      if (consultationFee !== undefined) updateFields.consultationFee = consultationFee.trim();
+      if (consultationFee !== undefined) updateFields.consultationFee = formatFeeInRupees(consultationFee);
       if (availableDays !== undefined) updateFields.availableDays = availableDays.trim();
       if (cabinNumber !== undefined) updateFields.cabinNumber = cabinNumber.trim();
 

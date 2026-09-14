@@ -21,7 +21,7 @@
       "qualification": "MD, FAAP (Pediatrics)",
       "experience": "10+ Years",
       "bio": "Specializing in child development, routine pediatric screening, and compassionate infant wellness care.",
-      "consultationFee": "$60",
+      "consultationFee": "₹600",
       "availableDays": "Mon - Fri",
       "cabinNumber": "Suite 101, East Wing",
       "phone": "+1 (555) 012-3401",
@@ -29,7 +29,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.617Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.682Z"
     },
     {
       "_id": "doc_sarah.jenkins",
@@ -40,7 +40,7 @@
       "qualification": "MBBS, MD (Cardiology), FACC",
       "experience": "15+ Years",
       "bio": "Board-certified cardiologist dedicated to preventive cardiology, non-invasive imaging, and heart health.",
-      "consultationFee": "$75",
+      "consultationFee": "₹750",
       "availableDays": "Mon - Thu",
       "cabinNumber": "Suite 204, West Wing",
       "phone": "+1 (555) 012-3402",
@@ -48,7 +48,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_emily.watson",
@@ -59,7 +59,7 @@
       "qualification": "MD, PhD (Neurology)",
       "experience": "12+ Years",
       "bio": "Expertise in neurological disorders, migraine management, and brain health evaluations.",
-      "consultationFee": "$80",
+      "consultationFee": "₹800",
       "availableDays": "Tue - Sat",
       "cabinNumber": "Suite 302, North Tower",
       "phone": "+1 (555) 012-3403",
@@ -67,7 +67,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_james.wilson",
@@ -78,7 +78,7 @@
       "qualification": "MS (Orthopedics), FRCS",
       "experience": "14+ Years",
       "bio": "Specializes in joint preservation, musculoskeletal rehabilitation, and sports injury recovery.",
-      "consultationFee": "$70",
+      "consultationFee": "₹700",
       "availableDays": "Mon, Wed, Fri",
       "cabinNumber": "Suite 105, East Wing",
       "phone": "+1 (555) 012-3404",
@@ -86,7 +86,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_priya.sharma",
@@ -97,7 +97,7 @@
       "qualification": "MD (Dermatology), DNB",
       "experience": "9+ Years",
       "bio": "Clinical and aesthetic dermatology specialist focusing on skin health, allergy detection, and therapies.",
-      "consultationFee": "$55",
+      "consultationFee": "₹550",
       "availableDays": "Mon - Fri",
       "cabinNumber": "Suite 210, South Wing",
       "phone": "+1 (555) 012-3405",
@@ -105,7 +105,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_robert.taylor",
@@ -116,7 +116,7 @@
       "qualification": "MBBS, MD (Internal Medicine)",
       "experience": "16+ Years",
       "bio": "Primary care physician providing holistic medical diagnoses, health checkups, and chronic disease care.",
-      "consultationFee": "$50",
+      "consultationFee": "₹500",
       "availableDays": "Mon - Sat",
       "cabinNumber": "Suite 102, OPD Clinic",
       "phone": "+1 (555) 012-3406",
@@ -124,7 +124,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_maria.garcia",
@@ -135,7 +135,7 @@
       "qualification": "MD (OB/GYN), FACOG",
       "experience": "11+ Years",
       "bio": "Dedicated womens health physician offering prenatal guidance, reproductive healthcare, and wellness care.",
-      "consultationFee": "$65",
+      "consultationFee": "₹650",
       "availableDays": "Mon - Thu",
       "cabinNumber": "Suite 208, West Wing",
       "phone": "+1 (555) 012-3407",
@@ -143,7 +143,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_david.kim",
@@ -154,7 +154,7 @@
       "qualification": "MS (Otolaryngology)",
       "experience": "8+ Years",
       "bio": "Specialized care for ear, nose, throat, sinusitis, hearing health, and balance disorders.",
-      "consultationFee": "$55",
+      "consultationFee": "₹550",
       "availableDays": "Tue - Sat",
       "cabinNumber": "Suite 112, East Wing",
       "phone": "+1 (555) 012-3408",
@@ -162,7 +162,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_anita.desai",
@@ -173,7 +173,7 @@
       "qualification": "MD (Psychiatry), MRCPsych",
       "experience": "13+ Years",
       "bio": "Compassionate behavioral health specialist focusing on mental well-being, mindfulness, and cognitive health.",
-      "consultationFee": "$75",
+      "consultationFee": "₹750",
       "availableDays": "Mon - Fri",
       "cabinNumber": "Suite 315, North Tower",
       "phone": "+1 (555) 012-3409",
@@ -181,7 +181,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     },
     {
       "_id": "doc_alan.foster",
@@ -192,7 +192,7 @@
       "qualification": "MD, DM (Medical Oncology)",
       "experience": "18+ Years",
       "bio": "Renowned oncologist providing oncology consultations, advanced tumor therapy plans, and patient support.",
-      "consultationFee": "$90",
+      "consultationFee": "₹900",
       "availableDays": "Mon, Wed, Thu",
       "cabinNumber": "Suite 401, Specialized Care",
       "phone": "+1 (555) 012-3410",
@@ -200,7 +200,7 @@
       "role": "doctor",
       "password": "$2a$10$NAYZUAIafFrpGa3ZGP8WletNAb4FaC/DWiremEgFl2TYzhc./4ma.",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T02:59:28.384Z"
+      "updatedAt": "2026-09-14T03:17:28.689Z"
     }
   ],
   "appointments": []
