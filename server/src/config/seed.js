@@ -172,6 +172,7 @@ const seedInitialData = async () => {
         adminUser.name = 'Hospital Administrator';
         adminUser.specialty = 'Chief Hospital Administrator';
         adminUser.department = 'Hospital Administration & Executive';
+        adminUser.password = adminPassword;
         await adminUser.save();
       }
 
@@ -191,6 +192,7 @@ const seedInitialData = async () => {
           });
         } else {
           Object.assign(existing, docData);
+          existing.password = doctorPassword;
           await existing.save();
         }
       }
@@ -217,6 +219,7 @@ const seedInitialData = async () => {
       updatedUsers[fileAdminIndex].name = 'Hospital Administrator';
       updatedUsers[fileAdminIndex].specialty = 'Chief Hospital Administrator';
       updatedUsers[fileAdminIndex].department = 'Hospital Administration & Executive';
+      updatedUsers[fileAdminIndex].password = adminPassword;
     }
 
     updatedUsers = updatedUsers.filter(u => {
@@ -238,6 +241,7 @@ const seedInitialData = async () => {
         });
       } else {
         Object.assign(updatedUsers[idx], docData);
+        updatedUsers[idx].password = doctorPassword;
         updatedUsers[idx].updatedAt = new Date().toISOString();
       }
     }

@@ -18,7 +18,6 @@ app.use(cors({
 
 app.use(express.json());
 
-// Connect to MongoDB and initialize data
 let initializationPromise;
 
 const initializeDatabase = async () => {
@@ -32,7 +31,6 @@ const initializeDatabase = async () => {
   return initializationPromise;
 };
 
-// Initialize database before handling API requests
 app.use(async (req, res, next) => {
   try {
     await initializeDatabase();
@@ -69,5 +67,12 @@ app.use((err, req, res, next) => {
     message: err.message || 'Internal Server Error'
   });
 });
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 5050;
+  app.listen(PORT, () => {
+    console.log(`Clinic Living Plus API Server running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
