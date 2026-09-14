@@ -74,6 +74,9 @@ const runTests = async () => {
       password: 'Admin@123'
     });
     console.log('✔ Hospital Admin Login:', adminLogin.status, adminLogin.body.user?.name);
+    if (adminLogin.body.user?.name !== 'Hospital Administrator') {
+      throw new Error(`Expected admin name to be "Hospital Administrator", got "${adminLogin.body.user?.name}"`);
+    }
     const adminToken = adminLogin.body.token;
 
     const runId = Date.now();
@@ -175,6 +178,25 @@ const runTests = async () => {
       throw new Error(`Expected 201 for valid booking, got ${booking.status}`);
     }
     const apptId = booking.body.appointment._id || booking.body.appointment.id;
+
+    const marcusLogin = await request('POST', '/auth/login', {
+      email: docEmail,
+      password: 'Password@123',
+      role: 'doctor'
+    });
+    console.log('✔ Doctor Login:', marcusLogin.status, marcusLogin.body.user?.name);
+    const marcusToken = marcusLogin.body.token;
+
+    const allHospitalAppointments = await request('GET', '/appointments', null, adminToken);
+    const marcusAppointments = await request('GET', '/appointments', null, marcusToken);
+    console.log(`✔ Admin Sees All Clinic Appointments (${allHospitalAppointments.body.count}), Doctor Only Sees Assigned (${marcusAppointments.body.count})`);
+
+    if (marcusAppointments.body.appointments.some(a => !a.doctorName.toLowerCase().includes('marcus chen'))) {
+      throw new Error('Doctor received appointments belonging to other doctors!');
+    }
+    if (marcusAppointments.body.count > allHospitalAppointments.body.count) {
+      throw new Error('Doctor appointments count exceeds total clinic appointments!');
+    }
 
     const doctorQueue = await request('GET', '/appointments', null, adminToken);
     console.log(`✔ Doctor Real-Time Patient Queue Count: ${doctorQueue.body.count}`);

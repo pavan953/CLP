@@ -28,6 +28,8 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
     onNavigate('landing');
   };
 
+  const isAdmin = user?.email === 'admin@hospital.com' || (user?.name && user.name.toLowerCase().includes('admin'));
+
   return (
     <>
       <header className="w-full bg-white/75 backdrop-blur-xl backdrop-saturate-150 border-b border-slate-200/70 shadow-sm shadow-slate-900/5 transition-all">
@@ -57,7 +59,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                 onClick={() => onNavigate('dashboard')}
                 className={`hover:text-medical-600 transition ${currentView === 'dashboard' ? 'text-medical-600 font-bold' : ''}`}
               >
-                {role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}
+                {isAdmin ? 'Admin Portal' : role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}
               </button>
             )}
             <button
@@ -105,7 +107,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   }`}
                 >
                   <Calendar className="w-3.5 h-3.5" />
-                  <span>{role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}</span>
+                  <span>{isAdmin ? 'Admin Portal' : role === 'doctor' ? 'Doctor Portal' : 'My Dashboard'}</span>
                 </button>
 
                 <button
@@ -113,15 +115,19 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
                   title="Click to view & edit profile settings"
                   className="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200 text-xs transition cursor-pointer text-left badge-3d"
                 >
-                  {role === 'doctor' ? (
+                  {isAdmin ? (
+                    <ShieldCheck className="w-4 h-4 text-teal-600 flex-shrink-0" />
+                  ) : role === 'doctor' ? (
                     <Stethoscope className="w-4 h-4 text-medical-600 flex-shrink-0" />
                   ) : (
                     <User className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                   )}
                   <div>
-                    <span className="font-bold text-slate-900 block leading-none">{user.name}</span>
+                    <span className="font-bold text-slate-900 block leading-none">
+                      {isAdmin ? 'Hospital Administrator' : user.name}
+                    </span>
                     <span className="text-[10px] text-slate-500 capitalize">
-                      {role === 'doctor' ? 'Edit Doctor Profile' : 'Profile Settings'}
+                      {isAdmin ? 'Chief Administrator' : role === 'doctor' ? 'Edit Doctor Profile' : 'Profile Settings'}
                     </span>
                   </div>
                 </button>
@@ -190,7 +196,7 @@ export const Navbar = ({ currentView, onNavigate, onOpenProfile }) => {
               >
                 <div className="flex items-center space-x-2">
                   <Calendar className="w-4 h-4 text-medical-600" />
-                  <span>{role === 'doctor' ? 'Doctor Portal Dashboard' : 'My Patient Dashboard'}</span>
+                  <span>{isAdmin ? 'Hospital Admin Dashboard' : role === 'doctor' ? 'Doctor Portal Dashboard' : 'My Patient Dashboard'}</span>
                 </div>
                 <ChevronRight className="w-4 h-4 text-medical-400" />
               </button>

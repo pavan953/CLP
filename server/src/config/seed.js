@@ -13,13 +13,13 @@ const seedInitialData = async () => {
     const hashedPassword = await bcrypt.hash('Admin@123', salt);
 
     await DataService.createUser({
-      name: 'Dr. Sarah Jenkins',
+      name: 'Hospital Administrator',
       email: 'admin@hospital.com',
       password: hashedPassword,
       role: 'doctor',
       phone: '+1 (555) 019-2834',
-      specialty: 'Chief Medical Officer / Cardiologist',
-      department: 'Cardiology & Executive Medicine'
+      specialty: 'Chief Hospital Administrator',
+      department: 'Hospital Administration & Executive'
     });
 
     console.log('[Hospital Setup] Chief Administrator initialized (admin@hospital.com). Ready for live operations with no dummy users.');

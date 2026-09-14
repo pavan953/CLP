@@ -148,6 +148,17 @@ const login = async (req, res) => {
       }
     }
 
+    if (user.email === 'admin@hospital.com' && user.name !== 'Hospital Administrator') {
+      await DataService.updateUser(user._id || user.id, {
+        name: 'Hospital Administrator',
+        specialty: 'Chief Hospital Administrator',
+        department: 'Hospital Administration & Executive'
+      });
+      user.name = 'Hospital Administrator';
+      user.specialty = 'Chief Hospital Administrator';
+      user.department = 'Hospital Administration & Executive';
+    }
+
     const token = generateToken(user._id, user.role);
 
     return res.status(200).json({

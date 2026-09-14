@@ -17,11 +17,14 @@ import {
   AlertCircle,
   Check,
   X,
-  Loader2
+  Loader2,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   const { user, role, updateUser } = useAuth();
+  const isAdmin = user?.email === 'admin@hospital.com' || (user?.name && user.name.toLowerCase().includes('admin'));
   const [activeTab, setActiveTab] = useState('profile');
 
   const [name, setName] = useState(user?.name || '');
@@ -45,6 +48,9 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -117,16 +123,18 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
         <div className="p-6 bg-gradient-to-r from-medical-700 via-medical-600 to-teal-700 text-white flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2.5 rounded-2xl bg-white/15 backdrop-blur-md text-white border border-white/20">
-              {role === 'doctor' ? <Stethoscope className="w-6 h-6" /> : <User className="w-6 h-6" />}
+              {isAdmin ? <ShieldCheck className="w-6 h-6" /> : (role === 'doctor' ? <Stethoscope className="w-6 h-6" /> : <User className="w-6 h-6" />)}
             </div>
             <div>
               <h3 className="text-lg font-bold">
-                {role === 'doctor' ? 'Doctor Professional Profile' : 'Patient Account & Health Profile'}
+                {isAdmin ? 'Hospital Administrator Profile' : (role === 'doctor' ? 'Doctor Professional Profile' : 'Patient Account & Health Profile')}
               </h3>
               <p className="text-xs text-medical-100">
-                {role === 'doctor'
-                  ? 'Update your clinical qualifications, practice hours, and bio'
-                  : 'Manage your personal details, emergency contact, and medical records'}
+                {isAdmin
+                  ? 'Manage administrative credentials, contact details, and executive settings'
+                  : (role === 'doctor'
+                    ? 'Update your clinical qualifications, practice hours, and bio'
+                    : 'Manage your personal details, emergency contact, and medical records')}
               </p>
             </div>
           </div>
@@ -450,39 +458,66 @@ export const ProfileModal = ({ isOpen, onClose, showToast }) => {
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Current Password
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Enter current password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      placeholder="Enter current password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     New Password (min 6 characters)
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Enter new password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showNewPassword ? "text" : "password"}
+                      placeholder="Enter new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Confirm New Password
                   </label>
-                  <input
-                    type="password"
-                    placeholder="Repeat new password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Repeat new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

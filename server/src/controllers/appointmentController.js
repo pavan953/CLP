@@ -74,8 +74,10 @@ const getAppointments = async (req, res) => {
     }
 
     else if (req.user && req.user.role === 'doctor') {
-
-      if (req.query.myOnly === 'true') {
+      const isAdmin = req.user.email === 'admin@hospital.com' || (req.user.name && req.user.name.toLowerCase().includes('admin'));
+      if (!isAdmin) {
+        filter.doctorName = req.user.name;
+      } else if (req.query.myOnly === 'true') {
         filter.doctorName = req.user.name;
       }
     }

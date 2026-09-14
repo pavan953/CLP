@@ -19,15 +19,50 @@ import {
   Lock,
   Mail,
   Phone,
-  Building
+  Building,
+  Eye,
+  EyeOff
 } from 'lucide-react';
+
+const DEPARTMENT_OPTIONS = [
+  'Cardiology & Vascular',
+  'Pediatrics & Child Care',
+  'General Medicine & OPD',
+  'Orthopedics & Joint Care',
+  'Neurology & Neurosurgery',
+  'Dermatology & Cosmetology',
+  'Obstetrics & Gynecology',
+  'Emergency & Trauma Care',
+  'ENT (Ear, Nose, Throat)',
+  'Psychiatry & Behavioral Health',
+  'Radiology & Imaging',
+  'Oncology & Cancer Care'
+];
+
+const SPECIALTY_OPTIONS = [
+  'General Physician',
+  'Cardiologist',
+  'Pediatrician',
+  'Orthopedic Surgeon',
+  'Neurologist',
+  'Dermatologist',
+  'Gynecologist & Obstetrician',
+  'Emergency Medicine Specialist',
+  'ENT Specialist',
+  'Psychiatrist',
+  'Radiologist',
+  'Oncologist',
+  'General Surgeon'
+];
 
 export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const { user } = useAuth();
+  const isAdmin = user?.email === 'admin@hospital.com' || (user?.name && user.name.toLowerCase().includes('admin'));
+
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('list');
-  const [myOnly, setMyOnly] = useState(false);
+  const [myOnly, setMyOnly] = useState(!isAdmin);
 
   const [doctorsList, setDoctorsList] = useState([]);
   const [patientsList, setPatientsList] = useState([]);
@@ -36,15 +71,17 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
   const [newDocName, setNewDocName] = useState('');
   const [newDocEmail, setNewDocEmail] = useState('');
   const [newDocPassword, setNewDocPassword] = useState('');
-  const [newDocSpecialty, setNewDocSpecialty] = useState('Cardiologist');
-  const [newDocDepartment, setNewDocDepartment] = useState('Cardiology');
+  const [showNewDocPassword, setShowNewDocPassword] = useState(false);
+  const [newDocSpecialty, setNewDocSpecialty] = useState('General Physician');
+  const [newDocDepartment, setNewDocDepartment] = useState('General Medicine & OPD');
   const [newDocPhone, setNewDocPhone] = useState('');
   const [addingDoc, setAddingDoc] = useState(false);
 
   const fetchAppointments = async (silent = false) => {
     try {
       if (!silent) setLoading(true);
-      const res = await api.getAppointments({ myOnly: myOnly ? 'true' : 'false' });
+      const isMyOnly = !isAdmin || myOnly;
+      const res = await api.getAppointments({ myOnly: isMyOnly ? 'true' : 'false' });
       if (res.success) {
         setAppointments(res.appointments);
       }
@@ -88,7 +125,7 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [myOnly]);
+  }, [myOnly, isAdmin]);
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
@@ -145,18 +182,25 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
             <div className="space-y-1.5">
               <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold backdrop-blur-md badge-3d">
                 <Activity className="w-3.5 h-3.5" />
-                <span>Hospital Clinical Staff Portal • Live Real-Time Queue</span>
+                <span>
+                  {isAdmin
+                    ? 'Hospital Administration Portal • System-Wide Overview'
+                    : 'Doctor Clinical Staff Portal • My Assigned Patients Queue'}
+                </span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight translate-z-10">
-                {user?.name || 'Doctor'}
+                {isAdmin ? 'Hospital Administrator' : user?.name || 'Doctor'}
               </h1>
               <p className="text-sm text-medical-100 max-w-xl">
-                Specialty: <span className="font-semibold text-white">{user?.specialty || 'Medical Specialist'}</span> • Department: <span className="font-semibold text-white">{user?.department || 'OPD'}</span>
+                {isAdmin ? (
+                  <span>Role: <strong className="text-white">Chief Hospital Administrator</strong> • Executive Oversight & Operations</span>
+                ) : (
+                  <span>Specialty: <span className="font-semibold text-white">{user?.specialty || 'Medical Specialist'}</span> • Department: <span className="font-semibold text-white">{user?.department || 'OPD'}</span></span>
+                )}
               </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-2.5 translate-z-20">
-
               <div className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-white/10 text-xs font-semibold border border-white/15 badge-3d">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span>Live Sync Active</span>
@@ -174,8 +218,12 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 onClick={onOpenProfile}
                 className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 shadow-sm transition flex items-center space-x-1.5 badge-3d"
               >
-                <Stethoscope className="w-4 h-4 text-teal-300" />
-                <span>Edit My Profile</span>
+                {isAdmin ? (
+                  <ShieldCheck className="w-4 h-4 text-teal-300" />
+                ) : (
+                  <Stethoscope className="w-4 h-4 text-teal-300" />
+                )}
+                <span>{isAdmin ? 'Admin Profile' : 'Edit My Profile'}</span>
               </button>
 
               <button
@@ -186,19 +234,26 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                 <span>Onboard Doctor</span>
               </button>
 
-              <button
-                onClick={() => setMyOnly(!myOnly)}
-                className="px-4 py-2.5 rounded-xl bg-white text-medical-800 font-bold text-xs btn-3d-white flex items-center space-x-2"
-              >
-                <Users className="w-4 h-4 text-medical-600" />
-                <span>{myOnly ? 'Showing My Patients' : 'Showing All Patients'}</span>
-              </button>
+              {isAdmin ? (
+                <button
+                  onClick={() => setMyOnly(!myOnly)}
+                  className="px-4 py-2.5 rounded-xl bg-white text-medical-800 font-bold text-xs btn-3d-white flex items-center space-x-2"
+                >
+                  <Users className="w-4 h-4 text-medical-600" />
+                  <span>{myOnly ? 'Showing My Patients' : 'Showing All Hospital Patients'}</span>
+                </button>
+              ) : (
+                <div className="px-3.5 py-2.5 rounded-xl bg-white/15 border border-white/20 text-white font-bold text-xs flex items-center space-x-2 badge-3d">
+                  <Users className="w-3.5 h-3.5 text-teal-300" />
+                  <span>My Assigned Appointments ({appointments.length})</span>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </ThreeDCard>
 
-      {!user?.isProfileComplete && (
+      {!isAdmin && !user?.isProfileComplete && (
         <ThreeDCard depth={8} maxRotation={3} className="rounded-2xl mb-8">
           <div className="p-5 rounded-2xl bg-amber-50 border border-amber-200 shadow-soft flex flex-col sm:flex-row sm:items-center justify-between gap-4 preserve-3d">
             <div className="flex items-start space-x-3">
@@ -448,28 +503,30 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Specialty <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Pediatrician"
+                  <select
                     value={newDocSpecialty}
                     onChange={(e) => setNewDocSpecialty(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none cursor-pointer"
+                  >
+                    {SPECIALTY_OPTIONS.map((spec) => (
+                      <option key={spec} value={spec}>{spec}</option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Department <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Pediatrics"
+                  <select
                     value={newDocDepartment}
                     onChange={(e) => setNewDocDepartment(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none cursor-pointer"
+                  >
+                    {DEPARTMENT_OPTIONS.map((dept) => (
+                      <option key={dept} value={dept}>{dept}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -492,14 +549,23 @@ export const DoctorDashboard = ({ showToast, onOpenProfile }) => {
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Temporary Password <span className="text-rose-500">*</span>
                   </label>
-                  <input
-                    type="password"
-                    required
-                    placeholder="Min 6 characters"
-                    value={newDocPassword}
-                    onChange={(e) => setNewDocPassword(e.target.value)}
-                    className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showNewDocPassword ? "text" : "password"}
+                      required
+                      placeholder="Min 6 characters"
+                      value={newDocPassword}
+                      onChange={(e) => setNewDocPassword(e.target.value)}
+                      className="w-full pl-3 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:bg-white focus:ring-2 focus:ring-medical-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewDocPassword(!showNewDocPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                    >
+                      {showNewDocPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
 

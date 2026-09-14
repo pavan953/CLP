@@ -163,7 +163,10 @@ const DataService = {
     if (isMongoConnected) {
       const query = {};
       if (filter.patientId) query.patientId = filter.patientId;
-      if (filter.doctorName) query.doctorName = new RegExp(filter.doctorName, 'i');
+      if (filter.doctorName) {
+        const cleanDoc = filter.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').trim();
+        query.doctorName = new RegExp(cleanDoc, 'i');
+      }
       if (filter.status) query.status = filter.status;
       if (filter.date) query.appointmentDate = filter.date;
       return await Appointment.find(query).sort({ appointmentDate: 1, appointmentTime: 1 });
@@ -176,8 +179,8 @@ const DataService = {
       list = list.filter(a => a.patientId && a.patientId.toString() === filter.patientId.toString());
     }
     if (filter.doctorName) {
-      const docName = filter.doctorName.toLowerCase();
-      list = list.filter(a => a.doctorName && a.doctorName.toLowerCase().includes(docName));
+      const cleanDoc = filter.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').trim();
+      list = list.filter(a => a.doctorName && a.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').includes(cleanDoc));
     }
     if (filter.status) {
       list = list.filter(a => a.status === filter.status);
