@@ -180,12 +180,6 @@ const seedInitialData = async () => {
         await adminUser.save();
       }
 
-      const allAllowedEmails = ['admin@hospital.com', ...canonicalEmails];
-      await User.deleteMany({
-        role: 'doctor',
-        email: { $nin: allAllowedEmails }
-      });
-
       for (const docData of CANONICAL_DOCTORS) {
         const existing = await User.findOne({ email: docData.email.toLowerCase() });
         if (!existing) {
@@ -228,12 +222,6 @@ const seedInitialData = async () => {
         updatedUsers[fileAdminIndex].department = 'Hospital Administration & Executive';
         updatedUsers[fileAdminIndex].password = preservedAdminPassword;
       }
-
-      updatedUsers = updatedUsers.filter(u => {
-        if (u.role !== 'doctor') return true;
-        if (u.email === 'admin@hospital.com') return true;
-        return canonicalEmails.includes(u.email.toLowerCase());
-      });
 
       for (const docData of CANONICAL_DOCTORS) {
         const idx = updatedUsers.findIndex(u => u.email.toLowerCase() === docData.email.toLowerCase());

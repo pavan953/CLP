@@ -172,7 +172,7 @@ const DataService = {
       const query = {};
       if (filter.patientId) query.patientId = filter.patientId;
       if (filter.doctorName) {
-        const cleanDoc = filter.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').trim();
+        const cleanDoc = filter.doctorName.toLowerCase().replace(/^(dr\b\.?|doctor\b)\s*/i, '').trim();
         query.doctorName = new RegExp(cleanDoc, 'i');
       }
       if (filter.status) query.status = filter.status;
@@ -187,8 +187,8 @@ const DataService = {
       list = list.filter(a => a.patientId && a.patientId.toString() === filter.patientId.toString());
     }
     if (filter.doctorName) {
-      const cleanDoc = filter.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').trim();
-      list = list.filter(a => a.doctorName && a.doctorName.toLowerCase().replace(/^dr\.?\s*/i, '').includes(cleanDoc));
+      const cleanDoc = filter.doctorName.toLowerCase().replace(/^(dr\b\.?|doctor\b)\s*/i, '').trim();
+      list = list.filter(a => a.doctorName && a.doctorName.toLowerCase().replace(/^(dr\b\.?|doctor\b)\s*/i, '').includes(cleanDoc));
     }
     if (filter.status) {
       list = list.filter(a => a.status === filter.status);

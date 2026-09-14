@@ -426,7 +426,7 @@ export const LandingPage = ({ onNavigateToAuth, onNavigateToBooking }) => {
                   <div>
                     <div className="flex items-start justify-between mb-2.5">
                       <div className="w-9 h-9 rounded-xl bg-medical-500/10 border border-medical-200/50 flex items-center justify-center text-medical-700 font-bold text-sm shadow-xs">
-                        {doc.name.replace('Dr. ', '').charAt(0)}
+                        {doc.name.replace(/^(dr\b\.?|doctor\b)\s*/i, '').charAt(0)}
                       </div>
                       <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-200/60 backdrop-blur-sm">
                         ● Active Duty

@@ -89,6 +89,14 @@ const handleHealth = (req, res) => {
 app.get('/api/health', handleHealth);
 app.get('/health', handleHealth);
 
+app.get('/', (req, res) => {
+  res.status(200).json({
+    status: 'online',
+    service: 'Clinic Living Plus API',
+    health: '/api/health'
+  });
+});
+
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);
 
