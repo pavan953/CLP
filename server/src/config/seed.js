@@ -156,6 +156,8 @@ const seedInitialData = async () => {
 
     const { isMongoConnected } = getStatus();
 
+    const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+
     if (isMongoConnected) {
       const adminUser = await User.findOne({ email: 'admin@hospital.com' });
       if (!adminUser) {
@@ -172,7 +174,9 @@ const seedInitialData = async () => {
         adminUser.name = 'Hospital Administrator';
         adminUser.specialty = 'Chief Hospital Administrator';
         adminUser.department = 'Hospital Administration & Executive';
-        adminUser.password = adminPassword;
+        if (!adminUser.password) {
+          adminUser.password = adminPassword;
+        }
         await adminUser.save();
       }
 
@@ -191,63 +195,68 @@ const seedInitialData = async () => {
             password: doctorPassword
           });
         } else {
+          const preservedPassword = existing.password || doctorPassword;
           Object.assign(existing, docData);
-          existing.password = doctorPassword;
+          existing.password = preservedPassword;
           await existing.save();
         }
       }
     }
 
-    const fileData = readData();
-    let updatedUsers = fileData.users || [];
+    if (!isProd && !isMongoConnected) {
+      const fileData = readData();
+      let updatedUsers = fileData.users || [];
 
-    const fileAdminIndex = updatedUsers.findIndex(u => u.email === 'admin@hospital.com');
-    if (fileAdminIndex === -1) {
-      updatedUsers.push({
-        _id: '6aa6c66c03030196952abfa9',
-        name: 'Hospital Administrator',
-        email: 'admin@hospital.com',
-        password: adminPassword,
-        role: 'doctor',
-        phone: '+1 (555) 019-2834',
-        specialty: 'Chief Hospital Administrator',
-        department: 'Hospital Administration & Executive',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      });
-    } else {
-      updatedUsers[fileAdminIndex].name = 'Hospital Administrator';
-      updatedUsers[fileAdminIndex].specialty = 'Chief Hospital Administrator';
-      updatedUsers[fileAdminIndex].department = 'Hospital Administration & Executive';
-      updatedUsers[fileAdminIndex].password = adminPassword;
-    }
-
-    updatedUsers = updatedUsers.filter(u => {
-      if (u.role !== 'doctor') return true;
-      if (u.email === 'admin@hospital.com') return true;
-      return canonicalEmails.includes(u.email.toLowerCase());
-    });
-
-    for (const docData of CANONICAL_DOCTORS) {
-      const idx = updatedUsers.findIndex(u => u.email.toLowerCase() === docData.email.toLowerCase());
-      if (idx === -1) {
+      const fileAdminIndex = updatedUsers.findIndex(u => u.email === 'admin@hospital.com');
+      if (fileAdminIndex === -1) {
         updatedUsers.push({
-          _id: 'doc_' + docData.email.split('@')[0],
-          ...docData,
+          _id: '6aa6c66c03030196952abfa9',
+          name: 'Hospital Administrator',
+          email: 'admin@hospital.com',
+          password: adminPassword,
           role: 'doctor',
-          password: doctorPassword,
+          phone: '+1 (555) 019-2834',
+          specialty: 'Chief Hospital Administrator',
+          department: 'Hospital Administration & Executive',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         });
       } else {
-        Object.assign(updatedUsers[idx], docData);
-        updatedUsers[idx].password = doctorPassword;
-        updatedUsers[idx].updatedAt = new Date().toISOString();
+        const preservedAdminPassword = updatedUsers[fileAdminIndex].password || adminPassword;
+        updatedUsers[fileAdminIndex].name = 'Hospital Administrator';
+        updatedUsers[fileAdminIndex].specialty = 'Chief Hospital Administrator';
+        updatedUsers[fileAdminIndex].department = 'Hospital Administration & Executive';
+        updatedUsers[fileAdminIndex].password = preservedAdminPassword;
       }
-    }
 
-    fileData.users = updatedUsers;
-    writeData(fileData);
+      updatedUsers = updatedUsers.filter(u => {
+        if (u.role !== 'doctor') return true;
+        if (u.email === 'admin@hospital.com') return true;
+        return canonicalEmails.includes(u.email.toLowerCase());
+      });
+
+      for (const docData of CANONICAL_DOCTORS) {
+        const idx = updatedUsers.findIndex(u => u.email.toLowerCase() === docData.email.toLowerCase());
+        if (idx === -1) {
+          updatedUsers.push({
+            _id: 'doc_' + docData.email.split('@')[0],
+            ...docData,
+            role: 'doctor',
+            password: doctorPassword,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          });
+        } else {
+          const preservedDoctorPassword = updatedUsers[idx].password || doctorPassword;
+          Object.assign(updatedUsers[idx], docData);
+          updatedUsers[idx].password = preservedDoctorPassword;
+          updatedUsers[idx].updatedAt = new Date().toISOString();
+        }
+      }
+
+      fileData.users = updatedUsers;
+      writeData(fileData);
+    }
 
     console.log('[Hospital Setup] Initialized 10 canonical doctors with distinct specialties. Purged all duplicate staff records.');
   } catch (err) {

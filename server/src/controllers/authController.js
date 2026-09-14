@@ -2,8 +2,19 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const DataService = require('../services/dataService');
 
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production' || !!process.env.VERCEL) {
+      throw new Error('JWT_SECRET environment variable is required in production.');
+    }
+    return 'clp_local_dev_jwt_secret_2025';
+  }
+  return secret;
+};
+
 const generateToken = (id, role) => {
-  const secret = process.env.JWT_SECRET || 'super_secret_appointment_jwt_token_key_2025';
+  const secret = getJwtSecret();
   return jwt.sign({ id, role }, secret, { expiresIn: '7d' });
 };
 

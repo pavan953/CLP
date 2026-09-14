@@ -27,10 +27,18 @@ const sanitizePatientData = (data) => {
   return clean;
 };
 
+const ensureDatabase = () => {
+  const { isMongoConnected } = getStatus();
+  if (!isMongoConnected && (process.env.NODE_ENV === 'production' || !!process.env.VERCEL)) {
+    throw new Error('Database is unavailable. MongoDB Atlas connection is required in production.');
+  }
+  return isMongoConnected;
+};
+
 const DataService = {
 
   async findUserByEmail(email) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await User.findOne({ email: email.toLowerCase() });
     }
@@ -39,7 +47,7 @@ const DataService = {
   },
 
   async findUserById(id) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await User.findById(id).select('-password');
     }
@@ -59,7 +67,7 @@ const DataService = {
       cleanData = sanitizePatientData(cleanData);
     }
 
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       const user = new User(cleanData);
       return await user.save();
@@ -83,7 +91,7 @@ const DataService = {
       cleanUpdate = sanitizePatientData(cleanUpdate);
     }
 
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await User.findByIdAndUpdate(
         id,
@@ -115,7 +123,7 @@ const DataService = {
   },
 
   async getDoctors() {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await User.find({ role: 'doctor', email: { $ne: 'admin@hospital.com' } }).select('-password');
     }
@@ -126,7 +134,7 @@ const DataService = {
   },
 
   async getPatients() {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       const patients = await User.find({ role: 'patient' }).select('-password').sort({ createdAt: -1 });
       return patients.map(p => sanitizePatientData(p.toObject ? p.toObject() : p));
@@ -138,7 +146,7 @@ const DataService = {
   },
 
   async createAppointment(appointmentData) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       const appt = new Appointment(appointmentData);
       return await appt.save();
@@ -159,7 +167,7 @@ const DataService = {
   },
 
   async getAppointments(filter = {}) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       const query = {};
       if (filter.patientId) query.patientId = filter.patientId;
@@ -199,7 +207,7 @@ const DataService = {
   },
 
   async findAppointmentById(id) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await Appointment.findById(id);
     }
@@ -208,7 +216,7 @@ const DataService = {
   },
 
   async updateAppointmentStatus(id, newStatus) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await Appointment.findByIdAndUpdate(
         id,
@@ -227,7 +235,7 @@ const DataService = {
   },
 
   async deleteAppointment(id) {
-    const { isMongoConnected } = getStatus();
+    const isMongoConnected = ensureDatabase();
     if (isMongoConnected) {
       return await Appointment.findByIdAndDelete(id);
     }

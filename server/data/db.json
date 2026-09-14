@@ -4,7 +4,7 @@
       "_id": "6aa6c66c03030196952abfa9",
       "name": "Hospital Administrator",
       "email": "admin@hospital.com",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.ZR5DpDJuzl7ECGWwTnm63g8T4kYUVFO",
+      "password": "$2a$10$VJGwnXQMzvm9xsuXXSs41uY4K.XGqdxbeV9WDWbZVEjA/av6Zv5IG",
       "role": "doctor",
       "phone": "+1 (555) 019-2834",
       "specialty": "Chief Hospital Administrator",
@@ -27,9 +27,9 @@
       "phone": "+1 (555) 012-3401",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.617Z",
-      "updatedAt": "2026-09-14T04:34:23.580Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_sarah.jenkins",
@@ -46,9 +46,9 @@
       "phone": "+1 (555) 012-3402",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_emily.watson",
@@ -65,9 +65,9 @@
       "phone": "+1 (555) 012-3403",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_james.wilson",
@@ -84,9 +84,9 @@
       "phone": "+1 (555) 012-3404",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_priya.sharma",
@@ -103,9 +103,9 @@
       "phone": "+1 (555) 012-3405",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_robert.taylor",
@@ -122,9 +122,9 @@
       "phone": "+1 (555) 012-3406",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_maria.garcia",
@@ -141,9 +141,9 @@
       "phone": "+1 (555) 012-3407",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_david.kim",
@@ -160,9 +160,9 @@
       "phone": "+1 (555) 012-3408",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_anita.desai",
@@ -179,9 +179,9 @@
       "phone": "+1 (555) 012-3409",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     },
     {
       "_id": "doc_alan.foster",
@@ -198,9 +198,9 @@
       "phone": "+1 (555) 012-3410",
       "isProfileComplete": true,
       "role": "doctor",
-      "password": "$2a$10$6BtMizDTIga9pf7bU4zYo.vOsZRkTqBUOOZsulkmxCRdrtkNlV84a",
+      "password": "$2a$10$7wXFIMu0nf4Bm3gZQtHd4uWFEnjrPI2O8TsbPL07ZNQdrJf3YiZv2",
       "createdAt": "2026-09-14T02:55:55.622Z",
-      "updatedAt": "2026-09-14T04:34:23.582Z"
+      "updatedAt": "2026-09-14T04:57:48.572Z"
     }
   ],
   "appointments": []

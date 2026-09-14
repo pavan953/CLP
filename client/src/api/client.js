@@ -1,4 +1,13 @@
-const API_BASE = '/api';
+const getApiBase = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (!envUrl) {
+    return '/api';
+  }
+  const clean = envUrl.replace(/\/+$/, '');
+  return clean.endsWith('/api') ? clean : `${clean}/api`;
+};
+
+const API_BASE = getApiBase();
 
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem('clp_token') || localStorage.getItem('medibook_token');

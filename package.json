@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Mini Appointment Booking Application with React, Node.js, Express, and MongoDB",
   "scripts": {
-    "build": "npm --prefix client run build",
+    "build": "cd client && npm run build",
     "dev:server": "node --watch server/src/server.js",
     "dev:client": "npm --prefix client run dev",
     "start:server": "node server/src/server.js",

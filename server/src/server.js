@@ -10,10 +10,24 @@ dotenv.config({ path: path.join(__dirname, '../.env') });
 
 const app = express();
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:3000'
+].filter(Boolean);
+
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: (origin, callback) => {
+    if (!origin || !process.env.FRONTEND_URL || allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 }));
 
 app.use(express.json());
@@ -25,7 +39,10 @@ const initializeDatabase = async () => {
     initializationPromise = (async () => {
       await connectDB();
       await seedInitialData();
-    })();
+    })().catch((err) => {
+      initializationPromise = null;
+      throw err;
+    });
   }
 
   return initializationPromise;
@@ -36,19 +53,29 @@ app.use(async (req, res, next) => {
     await initializeDatabase();
     next();
   } catch (err) {
-    console.error('Database initialization error:', err);
+    console.error('Database initialization error:', err.message);
     res.status(500).json({
       success: false,
-      message: 'Database initialization failed'
+      message: 'Database initialization failed',
+      error: process.env.NODE_ENV === 'production' ? 'Database connection unavailable' : err.message
     });
   }
 });
 
-app.use('/api/auth', require('./routes/authRoutes'));
-app.use('/api/appointments', require('./routes/appointmentRoutes'));
-app.use('/api/ai', require('./routes/aiRoutes'));
+const authRoutes = require('./routes/authRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
-app.get('/api/health', (req, res) => {
+app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
+
+app.use('/api/appointments', appointmentRoutes);
+app.use('/appointments', appointmentRoutes);
+
+app.use('/api/ai', aiRoutes);
+app.use('/ai', aiRoutes);
+
+const handleHealth = (req, res) => {
   const status = getStatus();
 
   res.status(200).json({
@@ -57,7 +84,10 @@ app.get('/api/health', (req, res) => {
     database: status.persistenceMode,
     isMongoConnected: status.isMongoConnected
   });
-});
+};
+
+app.get('/api/health', handleHealth);
+app.get('/health', handleHealth);
 
 app.use((err, req, res, next) => {
   console.error('Unhandled Server Error:', err);
@@ -68,7 +98,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-if (require.main === module) {
+if (require.main === module && !process.env.VERCEL) {
   const PORT = process.env.PORT || 5050;
   app.listen(PORT, () => {
     console.log(`Clinic Living Plus API Server running on port ${PORT}`);

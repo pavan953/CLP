@@ -1,6 +1,17 @@
 const jwt = require('jsonwebtoken');
 const DataService = require('../services/dataService');
 
+const getJwtSecret = () => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production' || !!process.env.VERCEL) {
+      throw new Error('JWT_SECRET environment variable is required in production.');
+    }
+    return 'clp_local_dev_jwt_secret_2025';
+  }
+  return secret;
+};
+
 const protect = async (req, res, next) => {
   let token;
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -14,8 +25,9 @@ const protect = async (req, res, next) => {
     });
   }
 
+  const secret = getJwtSecret();
+
   try {
-    const secret = process.env.JWT_SECRET || 'super_secret_appointment_jwt_token_key_2025';
     const decoded = jwt.verify(token, secret);
     const user = await DataService.findUserById(decoded.id);
 

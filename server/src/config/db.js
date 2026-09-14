@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const fs = require('fs');
 const path = require('path');
 
-let isMongoConnected = false;
+let cached = global.mongoose;
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
 
 const defaultData = {
   users: [],
@@ -11,34 +14,19 @@ const defaultData = {
 
 const localDataDir = path.join(__dirname, '../../data');
 const localDataFilePath = path.join(localDataDir, 'db.json');
-const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
-const tmpFilePath = '/tmp/clp_db.json';
 
-const getActiveDataFilePath = () => {
-  if (isServerless) {
-    if (!fs.existsSync(tmpFilePath)) {
-      try {
-        if (fs.existsSync(localDataFilePath)) {
-          const initial = fs.readFileSync(localDataFilePath, 'utf8');
-          fs.writeFileSync(tmpFilePath, initial);
-        } else {
-          fs.writeFileSync(tmpFilePath, JSON.stringify(defaultData, null, 2));
-        }
-      } catch (err) {
-        return localDataFilePath;
-      }
-    }
-    return tmpFilePath;
-  }
-  return localDataFilePath;
+const isProductionEnvironment = () => {
+  return process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
 };
 
 try {
-  if (!isServerless && !fs.existsSync(localDataDir)) {
-    fs.mkdirSync(localDataDir, { recursive: true });
-  }
-  if (!isServerless && !fs.existsSync(localDataFilePath)) {
-    fs.writeFileSync(localDataFilePath, JSON.stringify(defaultData, null, 2));
+  if (!isProductionEnvironment()) {
+    if (!fs.existsSync(localDataDir)) {
+      fs.mkdirSync(localDataDir, { recursive: true });
+    }
+    if (!fs.existsSync(localDataFilePath)) {
+      fs.writeFileSync(localDataFilePath, JSON.stringify(defaultData, null, 2));
+    }
   }
 } catch (err) {
 }
@@ -46,13 +34,10 @@ try {
 let inMemoryCache = null;
 
 const readData = () => {
+  if (isProductionEnvironment()) {
+    return { users: [], appointments: [] };
+  }
   try {
-    const targetPath = getActiveDataFilePath();
-    if (fs.existsSync(targetPath)) {
-      const raw = fs.readFileSync(targetPath, 'utf8');
-      inMemoryCache = JSON.parse(raw);
-      return inMemoryCache;
-    }
     if (fs.existsSync(localDataFilePath)) {
       const raw = fs.readFileSync(localDataFilePath, 'utf8');
       inMemoryCache = JSON.parse(raw);
@@ -65,39 +50,62 @@ const readData = () => {
 };
 
 const writeData = (data) => {
+  if (isProductionEnvironment()) {
+    return;
+  }
   inMemoryCache = data;
   try {
-    const targetPath = getActiveDataFilePath();
-    fs.writeFileSync(targetPath, JSON.stringify(data, null, 2));
+    fs.writeFileSync(localDataFilePath, JSON.stringify(data, null, 2));
   } catch (err) {
-    try {
-      fs.writeFileSync(tmpFilePath, JSON.stringify(data, null, 2));
-    } catch (e) {
-    }
   }
 };
 
 const connectDB = async () => {
-  const mongoURI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/appointment_booking';
-  try {
+  const isProd = isProductionEnvironment();
+  const mongoURI = process.env.MONGODB_URI;
+
+  if (isProd && !mongoURI) {
+    throw new Error('MONGODB_URI environment variable is required in production.');
+  }
+
+  const targetURI = mongoURI || 'mongodb://127.0.0.1:27017/appointment_booking';
+
+  if (cached.conn && mongoose.connection.readyState === 1) {
+    return cached.conn;
+  }
+
+  if (!cached.promise) {
     mongoose.set('strictQuery', false);
-    const conn = await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 2000
+    const options = {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: isProd ? 5000 : 2000
+    };
+    cached.promise = mongoose.connect(targetURI, options).then((mongooseInstance) => {
+      console.log(`[MongoDB] Connected successfully: ${mongooseInstance.connection.host}`);
+      return mongooseInstance;
     });
-    isMongoConnected = true;
-    console.log(`[MongoDB] Connected successfully: ${conn.connection.host}`);
+  }
+
+  try {
+    cached.conn = await cached.promise;
+    return cached.conn;
   } catch (err) {
-    isMongoConnected = false;
-    console.warn(`[Storage] MongoDB server not reachable at ${mongoURI} (${err.message}).`);
-    console.log(`[Storage] Using resilient persistent disk store at: ${getActiveDataFilePath()}`);
-    console.log(`[Storage] Appointments and user data will persist permanently across refreshes and restarts!`);
+    cached.promise = null;
+    cached.conn = null;
+    if (isProd) {
+      throw new Error(`MongoDB connection failed in production: ${err.message}`);
+    }
+    console.warn(`[Storage] Local MongoDB offline (${err.message}). Using local file store.`);
   }
 };
 
-const getStatus = () => ({
-  isMongoConnected,
-  persistenceMode: isMongoConnected ? 'MongoDB' : 'Persistent File Store'
-});
+const getStatus = () => {
+  const isConnected = mongoose.connection.readyState === 1;
+  return {
+    isMongoConnected: isConnected,
+    persistenceMode: isConnected ? 'MongoDB' : 'Persistent File Store'
+  };
+};
 
 module.exports = {
   connectDB,
